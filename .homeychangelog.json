@@ -10,5 +10,8 @@
   },
   "0.1.5": {
     "en": "Some change for certification"
+  },
+  "1.0.0": {
+    "en": "Revised for GA"
   }
 }
