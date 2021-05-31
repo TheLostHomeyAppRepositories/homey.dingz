@@ -8,11 +8,11 @@ Adds support for [dingz device](https://www.dingz.ch/).
 
 The application is still in an early beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
 
-**Due to the new mDNS service, all devices (incl. sub-devices) have to be reinstalled**
+Please check if your device has the correct firmware version (> 1.3.25) installed.
 
-Please check if your device has the correct firmware version (> 1.3.25) installed
+**Due to the new mDNS service, all devices (incl. sub-devices) have to be reinstalled.**
 
-**Sporadically the discovery service does not find the dingz-Device (No new device have been found) during pairing. As a workaround, first search for the device under World Wide Web HTTP ( \_http.\_tcp) using a Bonjour browser (e.g. iOS discovery app). After restarting the pairing process, the Homey discovery service finds the device (why? no idea!!).**
+**Sporadically the discovery service does not find the dingz-Device (No new device have been found) during pairing. As a workaround, first search for the device under DNS-SD -> World Wide Web HTTP ( \_http.\_tcp) using a Bonjour browser (e.g. iOS discovery app). After restarting the pairing process, the Homey discovery service finds the device (why? no idea!!).**
 
 ---
 
