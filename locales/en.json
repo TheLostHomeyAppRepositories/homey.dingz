@@ -1,0 +1,20 @@
+{
+  "pair": {
+    "title": "Add a dingz device...",
+    "intro": "** Still to write **"
+  },
+  "device": {
+    "error": "device error (__code__)",
+    "buttonAction-1": "short",
+    "buttonAction-2": "double",
+    "buttonAction-3": "long",
+    "buttonPressed": "**__device__** [__action__] button pressed",
+    "stateSet": "set state to: __value__",
+    "rampSet": "set ramp to: __value__",
+    "dimSet": "set dim to: __value__%",
+    "lightHueSet": "set hue to: __value__",
+    "lightSaturationSet": "set saturation to: __value__",
+    "windowCoveringsSet": "set covering to: __value__%",
+    "windowCoveringsTiltSet": "set tilt to: __value__%"
+  }
+}

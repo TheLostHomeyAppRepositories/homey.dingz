@@ -1,0 +1,67 @@
+"use strict";
+
+const Homey = require("homey");
+
+const { DINGZ } = require("../device");
+const Device = require("../device");
+
+module.exports = class SwitchDevice extends Device {
+  onInit(options = {}) {
+    super.onInit(options);
+
+    this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
+
+    Homey.on("dingzGenAction", (params) => {
+      this.deviceActionReceived("dingzGenAction", params);
+    });
+
+    Homey.on("measurePowerChanged", (params) => {
+      if (params.output === this.data.absoluteIdx) {
+        // this.debug(`Homey-Event: 'measurePowerChanged' received > value: ${params.value}`);
+        this.setCapabilityValue("measure_power", Math.round(params.value * 10) / 10);
+      }
+    });
+
+    this.debug("device has been inited");
+  }
+
+  async deviceReady() {
+    try {
+      await super.deviceReady();
+      await this.getDeviceValues();
+    } catch {}
+  }
+
+  isActionForDevice(params) {
+    return super.isActionForDevice(params) && params.index <= DINGZ.BTN4;
+  }
+
+  handleDeviceAction(params) {
+    this.getDeviceValues();
+  }
+
+  async onCapabilityOnOff(value, opts) {
+    const current = this.getCapabilityValue("onoff");
+    if (current === value) return Promise.resolve();
+
+    const action = value ? "on" : "off";
+    const ramp = (this.data.deviceId === "switch" ? 0 : DINGZ.RAMP_DEFAULT) * 10;
+
+    this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+
+    return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
+      .then(await this.getDeviceValues())
+      .then(() => {
+        const current = this.getCapabilityValue("onoff");
+        this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));
+      })
+      .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
+  }
+
+  async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
+    return super.getDeviceValues(url).then((data) => {
+      this.setCapabilityValue("onoff", data.on);
+      return data;
+    });
+  }
+};

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+  .center {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  iframe {
+    width: 100%;
+    border: none;
+  }
+</style>
+
+<div class="container">
+  <div class="center">
+    <iframe id="dingzWebUI"></iframe>
+    <h1>Note</h1>
+    <span>
+        The current dingz-Device firmware does not yet accept an integrated configurator. For this reason the WebUI is
+        started in a separate window.
+    </span>
+  </div>
+</div>
+
+<script type="text/javascript">
+  Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
+    Homey.setTitle("Edit dingz-Device settings...");    
+    Homey.popup(`http://${dingzConfig.data.ipAddress}/`);
+    // Workaround - see: https://web.dev/what-is-mixed-content/:
+    // document.getElementById("dingzWebUI").src = `https://${dingzConfig.data.ipAddress}/`;
+  });
+</script>

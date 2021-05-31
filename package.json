@@ -1,0 +1,50 @@
+{
+  "name": "homey.dingz",
+  "version": "0.1.5",
+  "description": "Control dingz-devices",
+  "main": "app.js",
+  "scripts": {
+    "test": "homey app run",
+    "start": "npm install && homey app install",
+    "build": "homey app build",
+    "publish": "homey app publish",
+    "postpublish": "npm run init && git commit --amend --no-edit ./package.json && git push -f origin main",
+    "validate": "homey app validate -l publish",
+    "validateTest": "homey app validate",
+    "init": "npm init --quiet -y 1>/dev/null",
+    "eslint": "eslint .",
+    "prettier": "prettier"
+  },
+  "keywords": [
+    "Smarthome",
+    "homey",
+    "app",
+    "Dingz",
+    "org.cflat-inc.dingz"
+  ],
+  "author": "Chris Gross <cghome@cflat-inc.org>",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgHome/org.cflat-inc.dingz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cgHome/org.cflat-inc.dingz/issues"
+  },
+  "homepage": "https://homey.app/a/org.cflat-inc.iolo",
+  "dependencies": {
+    "athom-api": "^3.4.0",
+    "axios": "^0.21.1"
+  },
+  "engines": {
+    "node": ">=12.16.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0",
+    "eslint-config-athom": "^2.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "2.2.1"
+  }
+}

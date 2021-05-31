@@ -1,0 +1,425 @@
+{
+  "id": "org.cflat-inc.dingz",
+  "version": "0.1.5",
+  "compatibility": ">=1.5.0",
+  "sdk": 2,
+  "name": {
+    "en": "Dingz"
+  },
+  "description": {
+    "en": "Control dingz-devices"
+  },
+  "tags": {
+    "en": ["dingz", "button", "switch", "multiswitch", "shutter"]
+  },
+  "category": "appliances",
+  "permissions": ["homey:manager:api"],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "brandColor": "#3B5E68",
+  "author": {
+    "name": "Chris Gross",
+    "email": "cghome@cflat-inc.org"
+  },
+  "discovery": {
+    "dingz": {
+      "type": "mdns-sd",
+      "mdns-sd": {
+        "name": "http",
+        "protocol": "tcp"
+      },
+      "id": "{{txt.mac}}",
+      "conditions": [
+        [
+          {
+            "field": "txt.mac",
+            "match": {
+              "type": "regex",
+              "value": "^246F28"
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "drivers": [
+    {
+      "id": "dingz",
+      "name": "dingz Device",
+      "class": "other",
+      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "motion_mode"],
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "discovery": "dingz",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "options": {
+            "singular": true
+          },
+          "navigation": {
+            "next": "dingzWebUI"
+          }
+        },
+        {
+          "id": "dingzWebUI",
+          "navigation": {
+            "next": "confirmation"
+          }
+        },
+        {
+          "id": "confirmation",
+          "navigation": {
+            "prev": "dingzWebUI",
+            "next": "done"
+          }
+        },
+        {
+          "id": "done"
+        }
+      ]
+    },
+    {
+      "id": "led",
+      "name": {
+        "en": "dingz frontLED"
+      },
+      "class": "light",
+      "capabilities": ["onoff", "dim", "ramp.dim", "light_hue", "light_saturation"],
+      "capabilitiesOptions": {
+        "onoff": {
+          "setOnDim": false
+        }
+      },
+      "icon": "../../led/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    },
+    {
+      "id": "button",
+      "name": {
+        "en": "dingz Button"
+      },
+      "class": "other",
+      "capabilities": ["button"],
+      "icon": "../../button/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    },
+    {
+      "id": "switch",
+      "name": {
+        "en": "dingz Switch"
+      },
+      "class": "socket",
+      "capabilities": ["onoff", "measure_power"],
+      "icon": "../../switch/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    },
+    {
+      "id": "light",
+      "name": {
+        "en": "dingz Light"
+      },
+      "class": "light",
+      "capabilities": ["onoff", "dim", "ramp.dim", "measure_power"],
+      "capabilitiesOptions": {
+        "onoff": {
+          "setOnDim": false
+        }
+      },
+      "icon": "../../light/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    },
+    {
+      "id": "shade",
+      "name": {
+        "en": "dingz Shade"
+      },
+      "class": "sunshade",
+      "capabilities": ["windowcoverings_set"],
+      "icon": "../../shade/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    },
+    {
+      "id": "blind",
+      "name": {
+        "en": "dingz Blind"
+      },
+      "class": "blinds",
+      "capabilities": ["windowcoverings_set", "windowcoverings_tilt_set"],
+      "icon": "../../blind/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      }
+    }
+  ],
+  "capabilities": {
+    "dingz_button": {
+      "type": "boolean",
+      "title": "dingzButton",
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "getable": false,
+      "setable": false
+    },
+    "motion_mode": {
+      "type": "enum",
+      "title": { "en": "Motion detector mode", "de": "Bewegungsmelder-Modus" },
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "getable": true,
+      "setable": false,
+      "values": [
+        { "id": "14", "title": { "en": "Night", "de": "Nacht" } },
+        { "id": "15", "title": { "en": "Twilight", "de": "Dämmerung" } },
+        { "id": "16", "title": { "en": "Day", "de": "Tag" } }
+      ]
+    },
+    "ramp": {
+      "type": "number",
+      "title": "ramp",
+      "uiComponent": null,
+      "getable": false,
+      "setable": true,
+      "units": { "en": "sec", "de": "Sek" },
+      "min": 0,
+      "max": 255,
+      "step": 1
+    }
+  },
+  "flow": {
+    "triggers": [
+      {
+        "id": "button_pressed",
+        "title": {
+          "en": "Button is pressed",
+          "de": "Taste ist gedrückt"
+        },
+        "titleFormatted": {
+          "en": "Button is [[action]]",
+          "de": "Taste ist [[action]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=dingz&capabilities=dingz_button|button"
+          },
+          {
+            "name": "action",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Short Press",
+                  "de": "Kurz gedrückt"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Double Press",
+                  "de": "2x Kurz gedrückt"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lange gedrückt"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "motionMode_changed",
+        "title": {
+          "en": "Motion detector mode changed",
+          "de": "Bewegungsmelder-Modus geändert"
+        },
+        "titleFormatted": {
+          "en": "Motion detector mode changed to [[motionMode]]",
+          "de": "Bewegungsmelder-Modus geändert auf [[motionMode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=dingz&capabilities=motion_mode"
+          },
+          {
+            "name": "motionMode",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "14",
+                "label": {
+                  "en": "Night",
+                  "de": "Nacht"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "Twilight",
+                  "de": "Dämmerung"
+                }
+              },
+              {
+                "id": "16",
+                "label": {
+                  "en": "Day",
+                  "de": "Tag"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is_motionMode",
+        "title": {
+          "en": "Motion detector mode is !{{|not}}",
+          "de": "Bewegungsmelder-Modus ist !{{|nicht}}"
+        },
+        "titleFormatted": {
+          "en": "Motion detector mode is !{{|not}} [[motionMode]]",
+          "de": "Bewegungsmelder-Modus ist !{{|nicht}} [[motionMode]]"
+        },
+        "hint": {
+          "en": "Checks if it is/is not motion detector mode"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=dingz&capabilities=motion_mode"
+          },
+          {
+            "name": "motionMode",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "14",
+                "label": {
+                  "en": "Night",
+                  "de": "Nacht"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "Twilight",
+                  "de": "Dämmerung"
+                }
+              },
+              {
+                "id": "16",
+                "label": {
+                  "en": "Day",
+                  "de": "Tag"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "ramp.dim",
+        "title": {
+          "en": "Fade dimmer",
+          "de": "Fade dimmer"
+        },
+        "titleFormatted": {
+          "en": "Dim light to [[dim]] in [[ramp]]sec",
+          "de": "Licht dimmen auf [[dim]] in [[ramp]]Sek"
+        },
+        "hint": {
+          "en": "Use this card to dim the light and the duration for dimming in seconds.",
+          "de": "Verwenden Sie diese Karte, um das Licht zu dimmen und die Dauer für das Dimmen in Sekunden."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dingz&capabilities=ramp.dim"
+          },
+          {
+            "name": "dim",
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "name": "ramp",
+            "type": "range",
+            "min": 0,
+            "max": 25,
+            "step": 1,
+            "labelMultiplier": 1,
+            "labelDecimals": 0
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_tilt_set",
+        "title": {
+          "en": "Set the tilt angel to."
+        },
+        "titleFormatted": {
+          "en": "Set the tilt angel to [[value]]"
+        },
+        "hint": "Change the position to open (100%), closed (0%), or a value in between.",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dingz&capabilities=windowcoverings_tilt_set"
+          },
+          {
+            "type": "range",
+            "name": "value",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          }
+        ]
+      }
+    ]
+  }
+}

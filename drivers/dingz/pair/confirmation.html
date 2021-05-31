@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<script type="text/javascript">
+  $(() => {
+    Homey.setTitle("Configuration confirmation...");
+    Homey.showLoadingOverlay();
+
+    Homey.emit("initDingzConfig", null, (error, dingzDevice) => {
+      if (error) {
+        Homey.hideLoadingOverlay();
+        Homey.alert(error);
+      } else {
+        Homey.hideLoadingOverlay();
+        Homey.setTitle(dingzDevice.name);
+        document.getElementById("room").value = dingzDevice.data.roomName;
+        document.getElementById("name").value = dingzDevice.data.dingzName;
+        document.getElementById("address").value = dingzDevice.data.ipAddress;
+        document.getElementById("internalTab").innerHTML = getDeviceRows(dingzDevice.intDevices);
+        document.getElementById("buttonsTab").innerHTML = getDeviceRows(dingzDevice.btnDevices);
+      }
+    });
+
+    function getDeviceRows(devices) {
+      let rows = '<thead><tr><th scope="col">Name</th><th scope="col">Device-ID</th></tr></thead>';
+      rows += "<tbody>";
+      devices.forEach((elm) => {
+        rows += `<tr><td>${elm.name}</td><td>${elm.deviceId}</td></tr>`;
+      });
+      rows += "</tbody>";
+      return rows;
+    }
+
+    $("#dingzWebUI").click(() => {
+      Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
+        Homey.popup(`http://${dingzConfig.data.ipAddress}/`);
+      });
+    });
+  });
+</script>
+
+<style type="text/css">
+  .device-conf {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  fieldset {
+    width: 100%;
+  }
+  table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th:nth-child(1) {
+    width: 70%;
+  }
+  thead th:nth-child(2) {
+    width: 30%;
+  }
+  tbody tr:first-child {
+    border-top: none;
+  }
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<html>
+  <body>
+    <div class="container device-conf">
+      <fieldset>
+        <form>
+          <legend data-i18n="pair.baseDevice">Base</legend>
+          <label for="room" data-i18n="pair.room">Room</label>
+          <input type="text" id="room" />
+          <label for="name" data-i18n="pair.name">Name</label>
+          <input type="text" id="name" />
+          <label for="address" data-i18n="pair.ipAddress">IP address</label>
+          <input type="text" id="address" />
+        </form>
+      </fieldset>
+      <fieldset>
+        <legend>Internal Devices</legend>
+        <table id="internalTab"></table>
+      </fieldset>
+      <fieldset>
+        <legend>Button Devices</legend>
+        <table id="buttonsTab"></table>
+      </fieldset>
+    </div>
+  </body>
+</html>

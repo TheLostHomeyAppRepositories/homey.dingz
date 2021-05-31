@@ -1,0 +1,18 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "plugins": ["prettier"],
+  "extends": [
+    "athom",
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "no-shadow": ["error", { "allow": ["current", "err"]}],
+    "prefer-rest-params": "off",
+    "prettier/prettier": "error"
+  }
+}

@@ -1,0 +1,148 @@
+# Docu: https://github.com/Huachao/vscode-restclient/blob/master/README.md
+
+# Variables
+@url = http://192.168.50.118
+@api = {{url}}/api/v1
+
+//
+// dingz Information
+//
+#### GET General information
+{{url}}/info
+#### GET Get device specific information
+{{api}}/device
+#### GET Get system config
+{{api}}/system_config
+#### GET ?? Get button configuration 
+{{api}}/button_config
+#### GET state
+{{api}}/state
+#### GET Get (room) temperature
+{{api}}/temp
+#### GET Get motion sensor value
+{{api}}/motion
+### GET Get log
+{{url}}/log
+
+//
+// dingz Settings
+//
+### Get settings information
+{{api}}/settings
+
+### Get sensors information
+{{api}}/sensors
+
+//
+// dingz Actions
+//
+### GET Get generic button action
+{{api}}/action/generic
+
+//
+// dingz Motion Sensor (PIR)
+//
+### GET Get PIR configuration
+{{api}}/pir_config
+### POST Set PIR configuration
+POST {{api}}/pir_config
+
+### GET Get motion
+{{api}}/motion
+### GET Get PIR light sensor
+{{api}}/light
+
+### GET PIR action
+{{api}}/action/pir
+### POST Enable PIR generic feedback
+POST {{api}}/action/pir/generic/feedback/enable
+### POST Disable PIR generic feedback
+POST {{api}}/action/pir/generic/feedback/disable
+
+//
+// dingz Front LED
+//
+### GET Get current front LED information
+{{api}}/led/get
+### POST Set RGB channel values for front led
+POST {{api}}/led/red?value=0
+### POST Set RGB channel values for front led
+POST {{api}}/led/red?value=255
+### POST Set RGB channel values for front led
+POST {{api}}/led/set
+Content-Type: application/json
+
+{
+  "on": true,
+  "ramp": 10,
+  "mode": "hsv",
+  "color": "200;0;100",
+}
+
+### POST Set RGB channel values for front led
+POST {{api}}/led/set
+Content-Type: application/json
+
+{
+    "on": true,
+    "color": "FF0000",
+    "mode": "rgb",
+    "ramp": 2000
+}
+
+
+//
+// dingz Actions
+//
+### GET Get button actions
+{{api}}/action
+
+//
+// dingz Dimmers
+//
+#### GET Get dimmer config
+{{api}}/dimmer_config
+
+### GET Get dimmer status
+{{api}}/dimmer
+
+### ID-0 - Get switch status
+{{api}}/dimmer/0
+### ID-0 - Switch off
+POST {{api}}/dimmer/0/off
+### ID-0 - Switch off
+POST {{api}}/dimmer/0/on
+
+### ID-1 - Get Light status
+{{api}}/dimmer/1
+### ID-1 - Light off
+POST {{api}}/dimmer/1/off
+### ID-1 - Light on
+POST {{api}}/dimmer/1/on?value=70
+
+//
+// dingz Shades/Blinds
+//
+#### GET Get blind config
+{{api}}/blind_config
+
+### Get shade information
+{{api}}/shade
+
+### ID-0 Get shade information
+{{api}}/shade/0
+### ID-0 Set shade values
+POST {{api}}/shade/0?blind=0&lamella=100
+###
+POST {{api}}/shade/0?blind=100&lamella=0
+###
+POST {{api}}/shade/0?blind=55&lamella=0
+
+### ID-1 Get blind information
+{{api}}/shade/1
+### ID-1 Set blind values
+POST {{api}}/shade/1?blind=0&lamella=0
+###
+POST {{api}}/shade/1?blind=100&lamella=0
+###
+POST {{api}}/shade/1?blind=55&lamella=0
