@@ -1,6 +1,6 @@
 # dingz-app for homey
 
-Adds support for [dingz device](https://www.dingz.ch/).
+Adds support for [dingz switch](https://www.dingz.ch/).
 
 ---
 
@@ -42,6 +42,14 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
    - Configure all dimmers, blinds and shades
    - **Test if device is installed correctly**
 1. Add device to Homey.
+
+---
+
+## Changelog
+
+v1.0.0
+
+- Initial release
 
 ---
 
