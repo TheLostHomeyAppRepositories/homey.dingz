@@ -4,24 +4,25 @@
   "compatibility": ">=1.5.0",
   "sdk": 2,
   "name": {
-    "en": "Dingz"
+    "en": "dingz Switch"
   },
   "description": {
-    "en": "Control dingz-devices"
+    "en": "dingz for all your things"
   },
   "tags": {
     "en": [
       "dingz",
-      "button",
       "switch",
       "multiswitch",
-      "shutter"
+      "button",
+      "light",
+      "shutter",
+      "motion",
+      "temperature",
+      "luminance"
     ]
   },
   "category": "appliances",
-  "permissions": [
-    "homey:manager:api"
-  ],
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
@@ -31,6 +32,12 @@
     "name": "Chris Gross",
     "email": "cghome@cflat-inc.org"
   },
+  "source": "https://github.com/cgHome/homey.dingz",
+  "bugs": {
+    "url": "https://github.com/cgHome/homey.dingz/issues"
+  },
+  "homeyCommunityTopicId": 48029,
+  "support": "https://community.athom.com/t/48029",
   "discovery": {
     "dingz": {
       "type": "mdns-sd",
@@ -454,12 +461,17 @@
       {
         "id": "windowcoverings_tilt_set",
         "title": {
-          "en": "Set the tilt angel to."
+          "en": "Adjust the lamellas",
+          "de": "Stellen Sie die Lamellen ein"
         },
         "titleFormatted": {
-          "en": "Set the tilt angel to [[value]]"
+          "en": "Set the lamella to [[value]]",
+          "de": "Stellen Sie die Lamellen auf [[value]]"
         },
-        "hint": "Change the position to open (100%), closed (0%), or a value in between.",
+        "hint": {
+          "en": "Change the position to open (100%), closed (0%), or a value in between.",
+          "de": "Ändern Sie die Position auf offen (100 %), geschlossen (0 %) oder einen Wert dazwischen."
+        },
         "args": [
           {
             "type": "device",

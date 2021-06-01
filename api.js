@@ -2,8 +2,6 @@
 
 const Homey = require("homey");
 
-// TODO:
-// const apiAuthorizationPublic = !(Homey.ManagerSettings.get('httpSettings') === null ? true : Homey.ManagerSettings.get('httpSettings').apiAuthorization)
 const apiAuthorizationPublic = true;
 
 module.exports = [
