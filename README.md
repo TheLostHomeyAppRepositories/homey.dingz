@@ -47,13 +47,13 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 
 ## Changelog
 
-v1.0.0
-
-- Initial release
-
 v1.0.1
 
 - Some change for certification
+
+v1.0.0
+
+- Initial release
 
 ---
 
@@ -67,4 +67,4 @@ v1.0.1
 
 ## Copyright
 
-Copyright 2020, 2020 cFlat-inc.org
+Copyright 2021, 2021 cFlat-inc.org
