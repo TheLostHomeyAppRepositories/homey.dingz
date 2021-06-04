@@ -62,7 +62,7 @@
   "drivers": [
     {
       "id": "dingz",
-      "name": "dingz Device",
+      "name": "dingz Switch",
       "class": "other",
       "capabilities": [
         "alarm_motion",

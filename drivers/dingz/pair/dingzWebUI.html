@@ -17,7 +17,7 @@
     <iframe id="dingzWebUI"></iframe>
     <h1>Note</h1>
     <span>
-        The current dingz-Device firmware does not yet accept an integrated configurator. For this reason the WebUI is
+        The current dingz Switch firmware does not yet accept an integrated configurator. For this reason the WebUI is
         started in a separate window.
     </span>
   </div>
@@ -25,7 +25,7 @@
 
 <script type="text/javascript">
   Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
-    Homey.setTitle("Edit dingz-Device settings...");    
+    Homey.setTitle("Edit dingz Switch settings...");    
     Homey.popup(`http://${dingzConfig.data.ipAddress}/`);
     // Workaround - see: https://web.dev/what-is-mixed-content/:
     // document.getElementById("dingzWebUI").src = `https://${dingzConfig.data.ipAddress}/`;

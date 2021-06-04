@@ -29,12 +29,6 @@
       rows += "</tbody>";
       return rows;
     }
-
-    $("#dingzWebUI").click(() => {
-      Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
-        Homey.popup(`http://${dingzConfig.data.ipAddress}/`);
-      });
-    });
   });
 </script>
 
@@ -71,12 +65,12 @@
     <div class="container device-conf">
       <fieldset>
         <form>
-          <legend data-i18n="pair.baseDevice">Base</legend>
+          <legend>dingz Switch</legend>
           <label for="room" data-i18n="pair.room">Room</label>
           <input type="text" id="room" />
           <label for="name" data-i18n="pair.name">Name</label>
           <input type="text" id="name" />
-          <label for="address" data-i18n="pair.ipAddress">IP address</label>
+          <label for="address">IP address</label>
           <input type="text" id="address" />
         </form>
       </fieldset>
