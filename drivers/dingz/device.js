@@ -7,8 +7,11 @@ const { DINGZ } = require("../device");
 const Device = require("../device");
 
 module.exports = class DingzDevice extends Device {
-  onInit(options = {}) {
+  async onInit(options = {}) {
     super.onInit(options);
+
+    this.api = await HomeyAPI.forCurrentHomey();
+    this.deviceApi = this.api.devices;
 
     this.registerDingzAction("dingzGenAction", `action/generic`);
 
@@ -42,9 +45,13 @@ module.exports = class DingzDevice extends Device {
     clearInterval(this.temparatureSensorInterval);
     clearInterval(this.luminanceSensorInterval);
 
-    // Not working,
-    // see: https://github.com/athombv/homey-apps-sdk-issues/issues/123
-    // this.deleteSubDevices();
+    // Not working, see: https://github.com/athombv/homey-apps-sdk-issues/issues/123
+    // this.getSubDevices().forEach((device) => {
+    //   this.debug("onDeleted() - delete mySub-Devices");
+    //   this.deviceApi.deleteDevice({ id: device.id }).catch((error) => {
+    //     this.error(`deleteSubDevice - '${device.name}' > ${error}`);
+    //   });
+    // });
   }
 
   isActionForDevice(params) {
@@ -66,6 +73,14 @@ module.exports = class DingzDevice extends Device {
         break;
       default:
     }
+  }
+
+  async getSubDevices() {
+    this.debug("getSubDevices()");
+    // (device) => device.data.mac === this.data.mac && device.id !== this.id
+    return Object.values(await this.deviceApi.getDevices()).filter(
+      (device) => device.data.mac === this.data.mac && device.data.deviceId !== "dingz"
+    );
   }
 
   async getDingzDevice() {
@@ -187,18 +202,14 @@ module.exports = class DingzDevice extends Device {
     }
   }
 
-  async deleteSubDevices() {
-    this.debug("deleteSubDevices()");
-    const homeyAPI = await HomeyAPI.forCurrentHomey();
+  async updateSettingLabels() {
+    super.updateSettingLabels();
 
-    Object.values(await homeyAPI.devices.getDevices())
-      .filter((device) => device.data.mac === this.data.mac)
-      .forEach((device) => {
-        this.debug(`deleteSubDevice - '${device.name}' (${device.id})`);
-        homeyAPI.devices.deleteDevice({ id: device.id }).catch((error) => {
-          this.error(`deleteSubDevice() - '${device.name}' > ${error}`);
-        });
-      });
+    const labelSubDevices = (await this.getSubDevices())
+      .map((device) => `${device.name} (${device.zoneName})`)
+      .join("\r\n");
+
+    await this.setSettings({ labelSubDevices });
   }
 
   // Homey Discovery

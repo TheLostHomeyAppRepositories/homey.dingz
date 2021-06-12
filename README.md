@@ -47,6 +47,11 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 
 ## Changelog
 
+v1.1.0
+
+- 'About me' settings-view added
+- Some fixes
+
 v1.0.1
 
 - Some change for certification

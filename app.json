@@ -27,6 +27,9 @@
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
+  "permissions": [
+    "homey:manager:api"
+  ],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
@@ -62,7 +65,7 @@
   "drivers": [
     {
       "id": "dingz",
-      "name": "dingz Switch",
+      "name": "dingz Device",
       "class": "other",
       "capabilities": [
         "alarm_motion",
@@ -101,6 +104,89 @@
         },
         {
           "id": "done"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "About me"
+          },
+          "hint": {
+            "en": "Read only"
+          },
+          "children": [
+            {
+              "id": "labelName",
+              "type": "label",
+              "label": {
+                "en": "Name"
+              },
+              "value": "-"
+            },
+            {
+              "id": "labelDeviceId",
+              "type": "label",
+              "label": {
+                "en": "Device"
+              },
+              "value": "-"
+            },
+            {
+              "id": "ipAddress",
+              "type": "label",
+              "label": {
+                "en": "IP Address"
+              },
+              "value": "-"
+            },
+            {
+              "id": "labelSubDevices",
+              "type": "textarea",
+              "label": {
+                "en": "SubDevices"
+              },
+              "value": "-",
+               "hint": {
+                "en": ""
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "dingz Switch"
+          },
+          "hint": {
+            "en": "Read only"
+          },
+          "children": [
+            {
+              "id": "labelDingzStatus",
+              "type": "label",
+              "label": {
+                "en": "Status"
+              },
+              "value": "-"
+            },
+            {
+              "id": "labelFirmware",
+              "type": "label",
+              "label": {
+                "en": "Firmware"
+              },
+              "value": "-"
+            },
+            {
+              "id": "labelModel",
+              "type": "label",
+              "label": {
+                "en": "Model"
+              },
+              "value": "-"
+            }
+          ]
         }
       ]
     },
@@ -226,7 +312,7 @@
     "motion_mode": {
       "type": "enum",
       "title": {
-        "en": "Motion detector mode",
+        "en": "Motion mode",
         "de": "Bewegungsmelder-Modus"
       },
       "uiComponent": "sensor",
@@ -322,11 +408,11 @@
       {
         "id": "motionMode_changed",
         "title": {
-          "en": "Motion detector mode changed",
+          "en": "Motion mode changed",
           "de": "Bewegungsmelder-Modus geändert"
         },
         "titleFormatted": {
-          "en": "Motion detector mode changed to [[motionMode]]",
+          "en": "Motion mode changed to [[motionMode]]",
           "de": "Bewegungsmelder-Modus geändert auf [[motionMode]]"
         },
         "args": [
@@ -369,15 +455,15 @@
       {
         "id": "is_motionMode",
         "title": {
-          "en": "Motion detector mode is !{{|not}}",
+          "en": "Motion mode is !{{|not}}",
           "de": "Bewegungsmelder-Modus ist !{{|nicht}}"
         },
         "titleFormatted": {
-          "en": "Motion detector mode is !{{|not}} [[motionMode]]",
+          "en": "Motion mode is !{{|not}} [[motionMode]]",
           "de": "Bewegungsmelder-Modus ist !{{|nicht}} [[motionMode]]"
         },
         "hint": {
-          "en": "Checks if it is/is not motion detector mode"
+          "en": "Checks if it is/is not motion mode"
         },
         "args": [
           {
