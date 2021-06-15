@@ -149,41 +149,41 @@ module.exports = class Device extends Homey.Device {
   }
 
   getDeviceData(url) {
-    return this.http.get(url).then(
-      (data) => {
+    return this.http
+      .get(url)
+      .then((data) => {
         this.debug(`getDeviceData() - '${url}' > ${JSON.stringify(data)}`);
         this.setAvailable().catch((err) => {
           this.error(`setAvailable() > ${err}`);
         });
         return data;
-      },
-      (err) => {
+      })
+      .catch((err) => {
         this.error(`getDeviceData() - '${url}' > ${err}`);
         this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
-        return Error("get device data failed");
-      }
-    );
+        throw Error("get device data failed");
+      });
   }
 
   setDeviceData(url, value) {
-    return this.http.post(url, value).then(
-      (data) => {
+    return this.http
+      .post(url, value)
+      .then((data) => {
         this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ""}`);
         this.setAvailable().catch((err) => {
           this.error(`setAvailable() > ${err}`);
         });
         return data;
-      },
-      (err) => {
+      })
+      .catch((err) => {
         this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
         this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
-        return Error("set device data failed");
-      }
-    );
+        throw Error("set device data failed");
+      });
   }
 
   async updateSettingLabels() {

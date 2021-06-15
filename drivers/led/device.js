@@ -108,14 +108,19 @@ module.exports = class LedDevice extends Device {
   }
 
   async getDeviceValues(url = GET_URL) {
-    return super.getDeviceValues(url).then((data) => {
-      this.setCapabilityValue("onoff", data.on);
-      // this.setCapabilityValue("ramp", data.ramp * 100);
-      this.setCapabilityValue("light_hue", Math.round((1 / 360) * parseInt(data.hsv.split(";")[0], 10) * 100) / 100);
-      this.setCapabilityValue("light_saturation", parseInt(data.hsv.split(";")[1], 10) / 100);
-      this.setCapabilityValue("dim", parseInt(data.hsv.split(";")[2], 10) / 100);
-      return data;
-    });
+    return super
+      .getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue("onoff", data.on);
+        // this.setCapabilityValue("ramp", data.ramp * 100);
+        this.setCapabilityValue("light_hue", Math.round((1 / 360) * parseInt(data.hsv.split(";")[0], 10) * 100) / 100);
+        this.setCapabilityValue("light_saturation", parseInt(data.hsv.split(";")[1], 10) / 100);
+        this.setCapabilityValue("dim", parseInt(data.hsv.split(";")[2], 10) / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+      });
   }
 
   setDeviceData(url, data) {
