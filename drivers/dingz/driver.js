@@ -74,33 +74,38 @@ module.exports = class DingzDriver extends Driver {
   }
 
   onPair(socket) {
-    const discoveryStrategy = this.getDiscoveryStrategy();
-    const discoveryResults = discoveryStrategy.getDiscoveryResults();
-
     const dingzConfig = {};
+    const discoveryStrategy = this.getDiscoveryStrategy();
 
     socket.on("list_devices", (data, callback) => {
-      const devices = Object.values(discoveryResults).map((discoveryResult) => {
-        const roomName = !discoveryResult.txt.room ? "" : `${discoveryResult.txt.room} -`;
-        const dingzName = discoveryResult.txt.name || discoveryResult.name;
-        return {
-          name: `${roomName} ${dingzName}`,
+      const discoveryResults = Object.values(discoveryStrategy.getDiscoveryResults());
 
-          data: {
-            id: discoveryResult.id,
-            mac: discoveryResult.txt.mac,
-            ipAddress: discoveryResult.address,
-            roomName,
-            dingzName,
-          },
-        };
-      });
+      const devices = discoveryResults
+        // TempFix get always this.getDevice() > Error: invalid_device
+        // .filter((discoveryResult) => this.getDevice({ id: discoveryResult.id }) instanceof Error)
+        .filter((discoveryResult) => !this.getDevices().some((device) => device.data.id === discoveryResult.id))
+        .map((discoveryResult) => {
+          this.debug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
+          const roomName = !discoveryResult.txt.room ? "" : discoveryResult.txt.room;
+          const dingzName = discoveryResult.txt.name || discoveryResult.name;
+          return {
+            name: !roomName ? dingzName : `${roomName} - ${dingzName}`,
+            data: {
+              id: discoveryResult.id,
+              mac: discoveryResult.txt.mac,
+              address: discoveryResult.address,
+              roomName,
+              dingzName,
+            },
+          };
+        });
+
       callback(null, devices);
     });
 
     socket.on("list_devices_selection", (data, callback) => {
       this.debug(`onPair() - list_devices_selection > data: ${JSON.stringify(data[0])}`);
-      Object.assign(dingzConfig, data[0]);
+      Object.assign(dingzConfig, data[0].data);
       callback();
     });
 
@@ -110,41 +115,43 @@ module.exports = class DingzDriver extends Driver {
 
     socket.on("initDingzConfig", async (data, callback) => {
       try {
-        const { ipAddress } = dingzConfig.data;
+        const device = Object.values(await this.http.get(`http://${dingzConfig.address}/api/v1/device`))[0];
+        const dip = device.dip_config;
 
-        const device = await this.http.get(`http://${ipAddress}/api/v1/device`);
-        const dip = Object.values(device)[0]["dip_config"];
-
-        const system = await this.http.get(`http://${ipAddress}/api/v1/system_config`);
-        const roomName = system.room_name ? system.room_name : dingzConfig.data.roomName;
-        const dingzName = system.dingz_name ? system.dingz_name : dingzConfig.data.dingzName;
+        const system = await this.http.get(`http://${dingzConfig.address}/api/v1/system_config`);
+        const roomName = system.room_name;
+        const dingzName = !system.dingz_name ? dingzConfig.dingzName : system.dingz_name;
+        const deviceName = !roomName ? dingzName : `${roomName} ${dingzName}`;
 
         // Dimmer-Devices
-        let { dimmers } = await this.http.get(`http://${ipAddress}/api/v1/dimmer_config`);
+        let { dimmers } = await this.http.get(`http://${dingzConfig.address}/api/v1/dimmer_config`);
         dimmers = dimmers.map((elm, idx) => {
+          const name = `${deviceName} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`;
           return {
-            id: `dimmer:${idx}`,
+            id: `${dingzConfig.id}:dimmer:${idx}`,
             absoluteIdx: idx,
             deviceId: this.getDimmerDeviceId(elm.output),
-            name: `${roomName} ${elm.name.replace(/^\w/, (c) => c.toUpperCase())}`,
+            name,
           };
         });
 
         // Blind-Devices
-        let { blinds } = await this.http.get(`http://${ipAddress}/api/v1/blind_config`);
+        let { blinds } = await this.http.get(`http://${dingzConfig.address}/api/v1/blind_config`);
         blinds = blinds.map((elm, idx) => {
+          const name = `${deviceName} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`;
           return {
-            id: `blind:${idx}`,
+            id: `${dingzConfig.id}:blind:${idx}`,
             absoluteIdx: idx,
             deviceId: this.getBlindDeviceId(elm.type),
-            name: `${roomName} ${elm.name.replace(/^\w/, (c) => c.toUpperCase())}`,
+            name,
           };
         });
 
-        dingzConfig.data.roomName = roomName;
-        dingzConfig.data.dingzName = dingzName;
-        dingzConfig["dingzDevice"] = [{ id: "dingz", deviceId: "dingz", name: `${roomName} ${dingzName}` }];
-        dingzConfig["intDevices"] = [{ id: "led", deviceId: "led", name: `${roomName} ${dingzName} led` }];
+        dingzConfig.roomName = roomName;
+        dingzConfig.dingzName = dingzName;
+        dingzConfig.deviceName = deviceName;
+        dingzConfig["dingzDevice"] = [{ id: dingzConfig.id, deviceId: "dingz", name: deviceName }];
+        dingzConfig["intDevices"] = [{ id: `${dingzConfig.id}:led`, deviceId: "led", name: `${deviceName} led` }];
         dingzConfig["btnDevices"] = await this.defineButtonDevices(dip, dimmers, blinds);
 
         this.debug(`onPair() - initDeviceConfig > ${JSON.stringify(dingzConfig)}`);
@@ -156,7 +163,9 @@ module.exports = class DingzDriver extends Driver {
     });
 
     socket.on("getDevicesConfig", async (data, callback) => {
-      callback(null, [...dingzConfig.dingzDevice, ...dingzConfig.intDevices, ...dingzConfig.btnDevices]);
+      const deviceConfig = [...dingzConfig.dingzDevice, ...dingzConfig.intDevices, ...dingzConfig.btnDevices];
+      this.debug(`onPair() - getDevicesConfig > ${JSON.stringify(deviceConfig)}`);
+      callback(null, deviceConfig);
     });
 
     socket.on("getDeviceManifest", (deviceConfig, callback) => {
@@ -165,14 +174,17 @@ module.exports = class DingzDriver extends Driver {
       if (typeof appManifest !== "undefined") {
         const manifest = { ...appManifest };
         manifest.name = deviceConfig.name;
-        manifest["data"] = {};
-        manifest.data["id"] = `${dingzConfig.data.mac}:${deviceConfig.id}`;
+        manifest["data"] = manifest.data || {};
+        manifest.data["id"] = deviceConfig.id;
         manifest.data["deviceId"] = deviceConfig.deviceId;
-        manifest.data["mac"] = dingzConfig.data.mac;
-        manifest.data["relativeIdx"] = deviceConfig.relativeIdx;
-        manifest.data["absoluteIdx"] = deviceConfig.absoluteIdx;
+        manifest.data["mac"] = dingzConfig.mac;
+        manifest.data["relativeIdx"] = deviceConfig.relativeIdx || "";
+        manifest.data["absoluteIdx"] = deviceConfig.absoluteIdx || "";
+        manifest["store"] = manifest.store || {};
+        manifest.store["address"] = dingzConfig.address;
+        // FIX: ... error
+        // if ("settings" in manifest) delete manifest.settings;
         manifest["settings"] = {};
-        manifest.settings["ipAddress"] = dingzConfig.data.ipAddress;
 
         this.debug(`onPair() - getDeviceManifest > ${JSON.stringify(manifest)}`);
         callback(null, manifest);

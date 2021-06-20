@@ -10,26 +10,14 @@
     "en": "dingz for all your things"
   },
   "tags": {
-    "en": [
-      "dingz",
-      "switch",
-      "multiswitch",
-      "button", 
-      "light",
-      "shutter",
-      "motion",
-      "temperature",
-      "luminance"
-    ]
+    "en": ["dingz", "switch", "multiswitch", "button", "light", "shutter", "motion", "temperature", "luminance"]
   },
   "category": "appliances",
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": [
-    "homey:manager:api"
-  ],
+  "permissions": ["homey:manager:api"],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
@@ -67,12 +55,7 @@
       "id": "dingz",
       "name": "dingz Device",
       "class": "other",
-      "capabilities": [
-        "alarm_motion",
-        "measure_temperature",
-        "measure_luminance",
-        "motion_mode"
-      ],
+      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "motion_mode"],
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -92,18 +75,18 @@
         {
           "id": "dingzWebUI",
           "navigation": {
-            "next": "confirmation"
+            "next": "configuration"
           }
         },
         {
-          "id": "confirmation",
+          "id": "configuration",
           "navigation": {
             "prev": "dingzWebUI",
-            "next": "done"
+            "next": "create_devices"
           }
         },
         {
-          "id": "done"
+          "id": "create_devices"
         }
       ],
       "settings": [
@@ -133,7 +116,7 @@
               "value": "-"
             },
             {
-              "id": "ipAddress",
+              "id": "labelAddress",
               "type": "label",
               "label": {
                 "en": "IP Address"
@@ -147,7 +130,7 @@
                 "en": "SubDevices"
               },
               "value": "-",
-               "hint": {
+              "hint": {
                 "en": ""
               }
             }
@@ -196,13 +179,7 @@
         "en": "dingz frontLED"
       },
       "class": "light",
-      "capabilities": [
-        "onoff",
-        "dim",
-        "ramp.dim",
-        "light_hue",
-        "light_saturation"
-      ],
+      "capabilities": ["onoff", "dim", "ramp.dim", "light_hue", "light_saturation"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -220,9 +197,7 @@
         "en": "dingz Button"
       },
       "class": "other",
-      "capabilities": [
-        "button"
-      ],
+      "capabilities": ["button"],
       "icon": "../../button/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -235,10 +210,7 @@
         "en": "dingz Switch"
       },
       "class": "socket",
-      "capabilities": [
-        "onoff",
-        "measure_power"
-      ],
+      "capabilities": ["onoff", "measure_power"],
       "icon": "../../switch/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -251,12 +223,7 @@
         "en": "dingz Light"
       },
       "class": "light",
-      "capabilities": [
-        "onoff",
-        "dim",
-        "ramp.dim",
-        "measure_power"
-      ],
+      "capabilities": ["onoff", "dim", "ramp.dim", "measure_power"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -274,9 +241,7 @@
         "en": "dingz Shade"
       },
       "class": "sunshade",
-      "capabilities": [
-        "windowcoverings_set"
-      ],
+      "capabilities": ["windowcoverings_set"],
       "icon": "../../shade/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -289,10 +254,7 @@
         "en": "dingz Blind"
       },
       "class": "blinds",
-      "capabilities": [
-        "windowcoverings_set",
-        "windowcoverings_tilt_set"
-      ],
+      "capabilities": ["windowcoverings_set", "windowcoverings_tilt_set"],
       "icon": "../../blind/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",

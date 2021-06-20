@@ -32,10 +32,10 @@ module.exports = class Device extends Homey.Device {
   }
 
   async onInit(options = {}) {
-    this.debug("device init ...");
     super.onInit();
+    this.debug("device init ...");
 
-    const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getSetting("ipAddress")}/api/v1/`;
+    const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getStoreValue("address")}/api/v1/`;
     this.http = new Http(baseUrl);
 
     this.driver = this.getDriver();
@@ -65,7 +65,6 @@ module.exports = class Device extends Homey.Device {
 
   onAdded() {
     super.onAdded();
-    Homey.emit("dingzDevice.changed", this);
     this.log(`device ${this.getName()} added`);
   }
 

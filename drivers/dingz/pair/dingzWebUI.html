@@ -1,33 +1,65 @@
 <!DOCTYPE html>
 
+<script type="text/javascript">
+  Homey.setTitle("Edit dingz Switch settings...");
+
+  // Workaround - see: https://web.dev/what-is-mixed-content/:
+  // Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
+  //   document.getElementById("dingzWebUI").src = `https://${dingzConfig.address}/`;
+  // });
+
+  $("#open_dingzWebUI").click(function () {
+    Homey.showLoadingOverlay();
+    Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
+      Homey.popup(`http://${dingzConfig.address}/`);
+      Homey.hideLoadingOverlay();
+    });
+  });
+</script>
+
 <style type="text/css">
-  .center {
-    display: block;
+  .form-group {
     width: 100%;
-    height: 100%;
+    display: block;
+    margin-bottom: 12px;
   }
-  iframe {
+  .iframe {
     width: 100%;
     border: none;
   }
+  .node {
+    text-align: center;
+  }
+  .messages {
+    display: none;
+    padding-top: 10px;
+  }
+  .dingz-error,
+  .dingz-processing {
+    display: none;
+  }
+  .buttons {
+    text-align: center;
+    padding-top: 14px;
+  }
+  .button {
+    background-color: #00c139 !important;
+    color: #ffffff !important;
+    display: block;
+    min-width: 100%;
+    margin-bottom: 8px !important;
+  }
 </style>
 
-<div class="container">
-  <div class="center">
-    <iframe id="dingzWebUI"></iframe>
-    <h1>Note</h1>
-    <span>
-        The current dingz Switch firmware does not yet accept an integrated configurator. For this reason the WebUI is
-        started in a separate window.
-    </span>
+<div class="dingz-pairing">
+  <div class="form-group">
+    <iframe id="dingzWebUI" class="iframe"></iframe>
+    <div class="node">
+      <h1>Note</h1>
+      <span> The current dingz Switch firmware does not yet allow an integrated configurator. <br /><br /></span>
+    </div>
+    <div class="form-group buttons">
+      <button id="open_dingzWebUI" class="button" data-i18n="pair.next">Open dingzWebUI</button>
+    </div>
   </div>
 </div>
-
-<script type="text/javascript">
-  Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
-    Homey.setTitle("Edit dingz Switch settings...");    
-    Homey.popup(`http://${dingzConfig.data.ipAddress}/`);
-    // Workaround - see: https://web.dev/what-is-mixed-content/:
-    // document.getElementById("dingzWebUI").src = `https://${dingzConfig.data.ipAddress}/`;
-  });
-</script>
