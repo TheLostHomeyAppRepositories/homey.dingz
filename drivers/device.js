@@ -41,10 +41,6 @@ module.exports = class Device extends Homey.Device {
     this.driver = this.getDriver();
     this.data = this.getData();
 
-    Homey.on("dingzDevice.changed", (params) => {
-      this.updateSettingLabels();
-    });
-
     this.setUnavailable(Homey.__("connecting")).catch((err) => {
       this.error(`setUnavailable() > ${err}`);
     });
@@ -65,17 +61,26 @@ module.exports = class Device extends Homey.Device {
 
   onAdded() {
     super.onAdded();
+    this.updateSettingLabels();
     this.log(`device ${this.getName()} added`);
   }
 
   onDeleted() {
     super.onDeleted();
-    Homey.emit("dingzDevice.changed", this);
+    this.updateSettingLabels();
     this.log(`device ${this.getName()} deleted`);
   }
 
+  onDiscoveryAddressChanged(discoveryResult) {
+    this.debug(`onDiscoveryAddressChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
+    this.setStoreValue("address", discoveryResult.address)
+      .then(this.updateSettingLabels())
+      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
+  }
+
   onRenamed(name) {
-    Homey.emit("dingzDevice.changed", this);
+    this.debug(`onRenamed() name: ${name}`);
+    this.updateSettingLabels();
   }
 
   async registerDingzAction(action, url) {
@@ -188,8 +193,9 @@ module.exports = class Device extends Homey.Device {
   async updateSettingLabels() {
     this.debug("updateSettingLabels()");
     const labelName = this.getName();
+    const labelAddress = this.getStoreValue("address");
     const labelDeviceId = this.data.deviceId.replace(/^./, (str) => str.toUpperCase());
-    await this.setSettings({ labelName, labelDeviceId });
+    await this.setSettings({ labelName, labelAddress, labelDeviceId });
   }
 
   notify(msg) {

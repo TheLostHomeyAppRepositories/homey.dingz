@@ -98,7 +98,8 @@ module.exports = class DingzDriver extends Driver {
               dingzName,
             },
           };
-        });
+        })
+        .sort((a, b) => (a.name > b.name ? 1 : -1));
 
       callback(null, devices);
     });
@@ -129,7 +130,7 @@ module.exports = class DingzDriver extends Driver {
           const name = `${deviceName} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`;
           return {
             id: `${dingzConfig.id}:dimmer:${idx}`,
-            absoluteIdx: idx,
+            absoluteIdx: idx.toString(),
             deviceId: this.getDimmerDeviceId(elm.output),
             name,
           };
@@ -141,7 +142,7 @@ module.exports = class DingzDriver extends Driver {
           const name = `${deviceName} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`;
           return {
             id: `${dingzConfig.id}:blind:${idx}`,
-            absoluteIdx: idx,
+            absoluteIdx: idx.toString(),
             deviceId: this.getBlindDeviceId(elm.type),
             name,
           };
@@ -183,7 +184,6 @@ module.exports = class DingzDriver extends Driver {
         manifest["store"] = manifest.store || {};
         manifest.store["address"] = dingzConfig.address;
         // FIX: ... error
-        // if ("settings" in manifest) delete manifest.settings;
         manifest["settings"] = {};
 
         this.debug(`onPair() - getDeviceManifest > ${JSON.stringify(manifest)}`);
@@ -218,27 +218,27 @@ module.exports = class DingzDriver extends Driver {
     switch (dip) {
       case 0:
         this.debug("defineButtonDevices() > dip_config: [0] 2 SHADES");
-        blinds[0].relativeIdx = 0;
-        blinds[1].relativeIdx = 1;
+        blinds[0].relativeIdx = "0";
+        blinds[1].relativeIdx = "1";
         return blinds;
       case 1:
         this.debug("defineButtonDevices() > dip_config: [1] 2 DIMMERS and 1 SHADE");
-        dimmers[0].relativeIdx = 0;
-        dimmers[1].relativeIdx = 1;
-        blinds[1].relativeIdx = 0;
+        dimmers[0].relativeIdx = "0";
+        dimmers[1].relativeIdx = "1";
+        blinds[1].relativeIdx = "0";
         return [dimmers[0], dimmers[1], blinds[1]];
       case 2:
         this.debug("defineButtonDevices() > dip_config: [2] 1 SHADE and 2 DIMMERS");
-        blinds[0].relativeIdx = 0;
-        dimmers[2].relativeIdx = 0;
-        dimmers[3].relativeIdx = 1;
+        blinds[0].relativeIdx = "0";
+        dimmers[2].relativeIdx = "0";
+        dimmers[3].relativeIdx = "1";
         return [blinds[0], dimmers[2], dimmers[3]];
       case 3:
         this.debug("defineButtonDevices() > dip_config: [3] 4 DIMMERS");
-        dimmers[0].relativeIdx = 0;
-        dimmers[1].relativeIdx = 1;
-        dimmers[2].relativeIdx = 2;
-        dimmers[3].relativeIdx = 3;
+        dimmers[0].relativeIdx = "0";
+        dimmers[1].relativeIdx = "1";
+        dimmers[2].relativeIdx = "2";
+        dimmers[3].relativeIdx = "3";
         return dimmers;
       default:
         throw Error(`Unknown dip_config [${dip}]`);

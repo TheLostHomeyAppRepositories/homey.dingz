@@ -158,7 +158,7 @@ module.exports = class DingzDevice extends Device {
     return new Promise((resolve, reject) => {
       this.debug("initMotionDetector()");
       if (dingzDevice.has_pir) {
-        this.setDeviceData("/action/pir/generic/feedback/enable")
+        this.setDeviceData("action/pir/generic/feedback/enable")
           .then(this.debug("initMotionDetector() - enable PIR generic feedback"))
           .then(() => {
             if (!this.hasCapability("alarm_motion")) {
@@ -172,7 +172,7 @@ module.exports = class DingzDevice extends Device {
           .then(this.driver.motionModeTrigger(this, {}, { motionMode: this.getCapabilityValue("motion_mode") }))
           .catch((err) => reject(err));
       } else {
-        this.setDeviceData("/action/pir/generic/feedback/disable")
+        this.setDeviceData("action/pir/generic/feedback/disable")
           .then(this.debug("initMotionDetector() - disable PIR generic feedback"))
           .then(() => {
             if (this.hasCapability("alarm_motion")) {
