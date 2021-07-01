@@ -52,16 +52,22 @@ module.exports = class SwitchDevice extends Device {
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
       .then(await this.getDeviceValues())
       .then(() => {
-        const current = this.getCapabilityValue("onoff");
-        this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));
+        const val = this.getCapabilityValue("onoff") ? "on" : "off";
+        this.notify(Homey.__("device.stateSet", { value: val }));
       })
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
   async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
-    return super.getDeviceValues(url).then((data) => {
-      this.setCapabilityValue("onoff", data.on);
-      return data;
-    });
+    return super
+      .getDeviceValues(url)
+      .then(async (data) => {
+        await this.setCapabilityValue("onoff", data.on);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
   }
 };

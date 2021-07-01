@@ -106,7 +106,7 @@ module.exports = class Device extends Homey.Device {
     Homey.ManagerCloud.getLocalAddress()
       .then((localAddress) => {
         this.setDeviceData(url, "")
-          .then(() => this.debug(`deregisterDingzAction() ${action} registered`))
+          .then(() => this.debug(`deregisterDingzAction() ${action} deregistered`))
           .catch((err) => this.error(`deregisterDingzAction() > ${err}`));
       })
       .catch((err) => {
@@ -132,11 +132,12 @@ module.exports = class Device extends Homey.Device {
     // nop;
   }
 
-  setCapabilityValue(capabilityId, value) {
+  async setCapabilityValue(capabilityId, value) {
     const currentValue = this.getCapabilityValue(capabilityId);
     if (currentValue === value) return Promise.resolve(currentValue);
 
-    return super
+    // eslint-disable-next-line no-return-await
+    return await super
       .setCapabilityValue(capabilityId, value)
       .then(() => {
         this.debug(`setCapabilityValue() '${capabilityId}' - ${currentValue} > ${value}`);
@@ -198,9 +199,15 @@ module.exports = class Device extends Homey.Device {
     await this.setSettings({ labelName, labelAddress, labelDeviceId });
   }
 
+  showWarning(message) {
+    return this.setWarning(message)
+      .then(setTimeout(() => this.unsetWarning(), 3000))
+      .catch((err) => this.error(`showWarning() > ${err}`));
+  }
+
   notify(msg) {
     // new Homey.Notification({ excerpt: `**${this.getName()}** ${msg}` }).register();
-    this.log(`Notify: ${msg}`);
+    this.log(`[notify] ${msg}`);
   }
 
   // Homey-App Loggers

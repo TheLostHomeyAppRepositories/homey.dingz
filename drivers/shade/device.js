@@ -61,16 +61,22 @@ module.exports = class ShadeDevice extends Device {
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
       .then(() => {
-        const current = this.getCapabilityValue("windowcoverings_set");
-        this.notify(Homey.__("device.windowCoveringsSet", { value: current * 100 }));
+        const val = this.getCapabilityValue("windowcoverings_set") * 100;
+        this.notify(Homey.__("device.windowCoveringsSet", { value: val }));
       })
       .catch((err) => this.error(`onCapabilityWindowCoveringsSet() > ${err}`));
   }
 
   async getDeviceValues(url = `shade/${this.data.relativeIdx}`) {
-    return super.getDeviceValues(url).then((data) => {
-      this.setCapabilityValue("windowcoverings_set", (100 - data.target.blind) / 100);
-      return data;
-    });
+    return super
+      .getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue("windowcoverings_set", (100 - data.target.blind) / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
   }
 };

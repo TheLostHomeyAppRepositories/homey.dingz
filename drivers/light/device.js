@@ -27,16 +27,22 @@ module.exports = class LightDevice extends SwitchDevice {
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
       .then(await this.getDeviceValues())
       .then(() => {
-        const current = this.getCapabilityValue("dim");
-        this.notify(Homey.__("device.dimSet", { value: Math.round(current * 100) }));
+        const val = Math.round(this.getCapabilityValue("dim") * 100);
+        this.notify(Homey.__("device.dimSet", { value: val }));
       })
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 
   async getDeviceValues(url) {
-    return super.getDeviceValues(url).then((data) => {
-      this.setCapabilityValue("dim", data.value / 100);
-      return data;
-    });
+    return super
+      .getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue("dim", data.value / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
   }
 };

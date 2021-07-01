@@ -8,9 +8,9 @@ module.exports = class ButtonDevice extends Device {
   async onInit(options = {}) {
     super.onInit(options);
 
-    this.btn = (this.data.absoluteIdx + 1).toString();
-
     this.registerCapabilityListener("button", this.onCapabilityButton.bind(this));
+
+    this.btn = (parseInt(this.data.absoluteIdx, 10) + 1).toString();
 
     this.registerDingzAction("dingzButtonGenAction", `action/btn${this.btn}/generic`);
     Homey.on("dingzButtonGenAction", (params) => {
