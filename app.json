@@ -55,7 +55,7 @@
       "id": "dingz",
       "name": "dingz Device",
       "class": "other",
-      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "motion_mode"],
+      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "light_state"],
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -271,11 +271,11 @@
       "getable": false,
       "setable": false
     },
-    "motion_mode": {
+    "light_state": {
       "type": "enum",
       "title": {
-        "en": "Motion mode",
-        "de": "Bewegungsmelder-Modus"
+        "en": "Light state",
+        "de": "Lichtstatus"
       },
       "uiComponent": "sensor",
       "uiQuickAction": false,
@@ -283,24 +283,24 @@
       "setable": false,
       "values": [
         {
-          "id": "14",
+          "id": "day",
           "title": {
-            "en": "Night",
-            "de": "Nacht"
+            "en": "Day",
+            "de": "Tag"
           }
         },
         {
-          "id": "15",
+          "id": "twilight",
           "title": {
             "en": "Twilight",
             "de": "Dämmerung"
           }
         },
         {
-          "id": "16",
+          "id": "night",
           "title": {
-            "en": "Day",
-            "de": "Tag"
+            "en": "Night",
+            "de": "Nacht"
           }
         }
       ]
@@ -368,41 +368,41 @@
         ]
       },
       {
-        "id": "motionMode_changed",
+        "id": "lightState_changed",
         "title": {
-          "en": "Motion mode changed",
-          "de": "Bewegungsmelder-Modus geändert"
+          "en": "Light state changed",
+          "de": "Lichtstatus geändert"
         },
         "titleFormatted": {
-          "en": "Motion mode changed to [[motionMode]]",
-          "de": "Bewegungsmelder-Modus geändert auf [[motionMode]]"
+          "en": "Light state changed to [[lightState]]",
+          "de": "Lichtstatus geändert auf [[lightState]]"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=dingz&capabilities=motion_mode"
+            "filter": "driver_id=dingz&capabilities=light_state"
           },
           {
-            "name": "motionMode",
+            "name": "lightState",
             "type": "dropdown",
             "values": [
               {
-                "id": "14",
+                "id": "night",
                 "label": {
                   "en": "Night",
                   "de": "Nacht"
                 }
               },
               {
-                "id": "15",
+                "id": "twilight",
                 "label": {
                   "en": "Twilight",
                   "de": "Dämmerung"
                 }
               },
               {
-                "id": "16",
+                "id": "day",
                 "label": {
                   "en": "Day",
                   "de": "Tag"
@@ -415,44 +415,45 @@
     ],
     "conditions": [
       {
-        "id": "is_motionMode",
+        "id": "is_lightState",
         "title": {
-          "en": "Motion mode is !{{|not}}",
-          "de": "Bewegungsmelder-Modus ist !{{|nicht}}"
+          "en": "Light state is !{{|not}}",
+          "de": "Lichtstatus ist !{{|nicht}}"
         },
         "titleFormatted": {
-          "en": "Motion mode is !{{|not}} [[motionMode]]",
-          "de": "Bewegungsmelder-Modus ist !{{|nicht}} [[motionMode]]"
+          "en": "Light state is !{{|not}} [[lightState]]",
+          "de": "Lichtstatus ist !{{|nicht}} [[lightState]]"
         },
         "hint": {
-          "en": "Checks if it is/is not motion mode"
+          "en": "Checks the current light condition",
+          "de": "Prüft den aktuellen Lichtstatus"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=dingz&capabilities=motion_mode"
+            "filter": "driver_id=dingz&capabilities=light_state"
           },
           {
-            "name": "motionMode",
+            "name": "lightState",
             "type": "dropdown",
             "values": [
               {
-                "id": "14",
+                "id": "night",
                 "label": {
                   "en": "Night",
                   "de": "Nacht"
                 }
               },
               {
-                "id": "15",
+                "id": "twilight",
                 "label": {
                   "en": "Twilight",
                   "de": "Dämmerung"
                 }
               },
               {
-                "id": "16",
+                "id": "day",
                 "label": {
                   "en": "Day",
                   "de": "Tag"

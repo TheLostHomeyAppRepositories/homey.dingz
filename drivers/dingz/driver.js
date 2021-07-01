@@ -25,13 +25,13 @@ module.exports = class DingzDriver extends Driver {
       .register()
       .registerRunListener((args, state) => args.action === state.action);
 
-    this._motionModeTrigger = new Homey.FlowCardTriggerDevice("motionMode_changed")
+    this._lightStateTrigger = new Homey.FlowCardTriggerDevice("lightState_changed")
       .register()
-      .registerRunListener((args, state) => args.motionMode === state.motionMode);
+      .registerRunListener((args, state) => args.lightState === state.lightState);
 
-    this._motionModeCondition = new Homey.FlowCardCondition("is_motionMode")
+    this._lightStateCondition = new Homey.FlowCardCondition("is_lightState")
       .register()
-      .registerRunListener((args, state) => args.device.getCapabilityValue("motion_mode") === args.motionMode);
+      .registerRunListener((args, state) => args.device.getCapabilityValue("light_state") === args.lightState);
 
     this._rampAction = new Homey.FlowCardAction("ramp.dim")
       .register()
@@ -252,11 +252,11 @@ module.exports = class DingzDriver extends Driver {
       .catch((err) => this.error(`buttonPressedTrigger() > ${err}`));
   }
 
-  motionModeTrigger(device, tokens, state) {
-    this._motionModeTrigger
+  lightStateTrigger(device, tokens, state) {
+    this._lightStateTrigger
       .trigger(device, tokens, state)
-      .then(this.log(`${device.getName()} Motion detector mode to ${this.getMotionModeLabel(state.motionMode)}`))
-      .catch((err) => this.error(`motionModeChanged() > ${err}`));
+      .then(this.log(`${device.getName()} light state changed to ${state.lightState}`))
+      .catch((err) => this.error(`lightStateChanged() > ${err}`));
   }
 
   getActionLabel(action) {
@@ -269,19 +269,6 @@ module.exports = class DingzDriver extends Driver {
         return "long";
       default:
         return `[${action}]`;
-    }
-  }
-
-  getMotionModeLabel(mode) {
-    switch (mode) {
-      case DINGZ.MOTION_DAY:
-        return "Day";
-      case DINGZ.MOTION_TWILIGHT:
-        return "Twilight";
-      case DINGZ.MOTION_NIGHT:
-        return "Night";
-      default:
-        return `[${mode}]`;
     }
   }
 };

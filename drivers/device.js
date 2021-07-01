@@ -24,6 +24,10 @@ const DINGZ = {
   MOTION_NIGHT: "14",
   MOTION_TWILIGHT: "15",
   MOTION_DAY: "16",
+  // Light state
+  LIGHT_STATE_DAY: "day",
+  LIGHT_STATE_TWILIGHT: "twilight",
+  LIGHT_STATE_NIGHT: "night",
 };
 
 module.exports = class Device extends Homey.Device {
