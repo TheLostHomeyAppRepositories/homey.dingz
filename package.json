@@ -34,7 +34,7 @@
   "homepage": "https://homey.app/a/org.cflat-inc.dingz",
   "dependencies": {
     "athom-api": "^3.6.3",
-    "http.min": "^2.1.0"
+    "axios": "^0.21.1"
   },
   "engines": {
     "node": ">=12.16.1"
