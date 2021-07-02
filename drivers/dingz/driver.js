@@ -33,7 +33,7 @@ module.exports = class DingzDriver extends Driver {
       .register()
       .registerRunListener((args, state) => args.device.getCapabilityValue("light_state") === args.lightState);
 
-    this._rampAction = new Homey.FlowCardAction("ramp.dim")
+    this._rampAction = new Homey.FlowCardAction("ramp")
       .register()
       .registerRunListener((args, state) => args.device.onCapabilityDim(args, {}));
 

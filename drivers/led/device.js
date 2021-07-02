@@ -15,7 +15,7 @@ module.exports = class LedDevice extends Device {
     super.onInit(options);
 
     this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
-    this.registerMultipleCapabilityListener(["dim", "ramp.dim"], this.onCapabilityDim.bind(this));
+    this.registerMultipleCapabilityListener(["dim", "ramp"], this.onCapabilityDim.bind(this));
     this.registerMultipleCapabilityListener(["light_hue", "light_saturation"], this.onCapabilityLightHue.bind(this));
 
     this.debug("device has been inited");

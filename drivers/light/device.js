@@ -9,7 +9,7 @@ module.exports = class LightDevice extends SwitchDevice {
   onInit(options = {}) {
     super.onInit(options);
 
-    this.registerMultipleCapabilityListener(["dim", "ramp.dim"], this.onCapabilityDim.bind(this));
+    this.registerMultipleCapabilityListener(["dim", "ramp"], this.onCapabilityDim.bind(this));
 
     this.debug("device has been inited");
   }

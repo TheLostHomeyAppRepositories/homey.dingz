@@ -179,7 +179,7 @@
         "en": "dingz frontLED"
       },
       "class": "light",
-      "capabilities": ["onoff", "dim", "ramp.dim", "light_hue", "light_saturation"],
+      "capabilities": ["onoff", "dim", "ramp", "light_hue", "light_saturation"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -223,7 +223,7 @@
         "en": "dingz Light"
       },
       "class": "light",
-      "capabilities": ["onoff", "dim", "ramp.dim", "measure_power"],
+      "capabilities": ["onoff", "dim", "ramp", "measure_power"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -466,7 +466,7 @@
     ],
     "actions": [
       {
-        "id": "ramp.dim",
+        "id": "ramp",
         "title": {
           "en": "Fade dimmer",
           "de": "Fade dimmer"
@@ -483,7 +483,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz&capabilities=ramp.dim"
+            "filter": "driver_id=dingz&capabilities=ramp"
           },
           {
             "name": "dim",
