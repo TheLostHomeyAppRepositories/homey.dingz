@@ -37,10 +37,9 @@ module.exports = class Device extends Homey.Device {
 
   async onInit(options = {}) {
     super.onInit();
-    this.debug("device init...");
+    this.debug("onInit()");
 
-    const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getStoreValue("address")}/api/v1/`;
-    this.http = new Http(baseUrl, this._logLinePrefix());
+    this.http = new Http(this.getBaseURL(), this._logLinePrefix());
 
     this.driver = this.getDriver();
     this.data = this.getData();
@@ -49,15 +48,30 @@ module.exports = class Device extends Homey.Device {
       this.error(`setUnavailable() > ${err}`);
     });
 
-    this.ready(() => {
-      this.log("device ready ...");
-      this.deviceReady();
-    });
+    this.ready(() => this.deviceReady());
   }
 
   deviceReady() {
-    this.updateSettingLabels();
+    this.debug("deviceReady()");
+    this.setAvailable()
+      .then(this.updateSettingLabels())
+      .catch((err) => this.error(`setAvailable() > ${err}`));
+  }
 
+  getBaseURL() {
+    return `http://${this.getStoreValue("address")}/api/v1/`;
+  }
+
+  onDiscoveryAddressChanged(discoveryResult) {
+    this.debug(`onDiscoveryAddressChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
+    this.setStoreValue("address", discoveryResult.address)
+      .then(this.http.setBaseURL(this.getBaseURL()))
+      .then(this.updateSettingLabels())
+      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
+  }
+
+  onDiscoveryLastSeenChanged(discoveryResult) {
+    this.debug(`onDiscoveryLastSeenChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
     this.setAvailable().catch((err) => {
       this.error(`setAvailable() > ${err}`);
     });
@@ -73,13 +87,6 @@ module.exports = class Device extends Homey.Device {
     super.onDeleted();
     this.updateSettingLabels();
     this.log(`device ${this.getName()} deleted`);
-  }
-
-  onDiscoveryAddressChanged(discoveryResult) {
-    this.debug(`onDiscoveryAddressChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
-    this.setStoreValue("address", discoveryResult.address)
-      .then(this.updateSettingLabels())
-      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
   }
 
   onRenamed(name) {
