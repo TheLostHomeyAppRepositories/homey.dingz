@@ -37,10 +37,10 @@ module.exports = class Device extends Homey.Device {
 
   async onInit(options = {}) {
     super.onInit();
-    this.debug("device init ...");
+    this.debug("device init...");
 
     const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getStoreValue("address")}/api/v1/`;
-    this.http = new Http(baseUrl);
+    this.http = new Http(baseUrl, this._logLinePrefix());
 
     this.driver = this.getDriver();
     this.data = this.getData();
@@ -169,10 +169,10 @@ module.exports = class Device extends Homey.Device {
       })
       .catch((err) => {
         this.error(`getDeviceData() - '${url}' > ${err}`);
-        this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
-          this.error(`setUnavailable() > ${err}`);
-        });
-        throw Error("get device data failed");
+        if (err.response.status === 404) {
+          this.setUnavailable(Homey.__("device.error", { code: err.response.status }));
+        }
+        return Promise.reject(new Error(`Get device data failed (${err.response.status})`));
       });
   }
 
@@ -188,10 +188,10 @@ module.exports = class Device extends Homey.Device {
       })
       .catch((err) => {
         this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
-        this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
-          this.error(`setUnavailable() > ${err}`);
-        });
-        throw Error("set device data failed");
+        if (err.response.status === 404) {
+          this.setUnavailable(Homey.__("device.error", { code: err.response.status }));
+        }
+        return Promise.reject(new Error(`Set device data failed (${err.response.status})`));
       });
   }
 
@@ -216,18 +216,18 @@ module.exports = class Device extends Homey.Device {
 
   // Homey-App Loggers
   log(msg) {
-    Homey.app.log(`${this._logLinePrefix()} ${msg}`);
+    Homey.app.log(`${this._logLinePrefix()} > ${msg}`);
   }
 
   error(msg) {
-    Homey.app.error(`${this._logLinePrefix()} ${msg}`);
+    Homey.app.error(`${this._logLinePrefix()} > ${msg}`);
   }
 
   debug(msg) {
-    Homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+    Homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
   }
 
   _logLinePrefix() {
-    return `${this.constructor.name}::${this.getName()} >`;
+    return `${this.constructor.name}::${this.getName()}`;
   }
 };
