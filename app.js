@@ -15,7 +15,7 @@ const Homey = require("homey");
 
 module.exports = class dingzApp extends Homey.App {
   onInit() {
-    this.log(`${Homey.app.manifest.name.en}-App - v${Homey.app.manifest.version} is running...`);
+    this.log(`${Homey.app.manifest.name.en} app - v${Homey.app.manifest.version} is running...`);
   }
 
   // Homey-App Loggers
@@ -28,6 +28,9 @@ module.exports = class dingzApp extends Homey.App {
   }
 
   debug(msg) {
-    super.log(`»»» ${msg}`);
+    // Show the debug message only in debug mode.
+    if (process.env.DEBUG === "1") {
+      super.log(`[DEBUG] ${msg}`);
+    }
   }
 };
