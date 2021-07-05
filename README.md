@@ -6,13 +6,9 @@ Adds support for [dingz switch](https://www.dingz.ch/).
 
 ## Attention
 
-The application is still in an early beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
+The application is still in an beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
 
 Please check if your device has the correct firmware version (> 1.3.25) installed.
-
-**Due to the new mDNS service, all devices (incl. sub-devices) have to be reinstalled.**
-
-**Sporadically the discovery service does not find the dingz Switch (No new device have been found) during pairing. As a workaround, first search for the device under DNS-SD -> World Wide Web HTTP ( \_http.\_tcp) using a Bonjour browser (e.g. iOS discovery app). After restarting the pairing process, the Homey discovery service finds the device (why? no idea!!).**
 
 ---
 
@@ -20,7 +16,6 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 
 - **If you have problems after the upgrade, remove and re-register all devices.**
 - If you change one off the sub-device, you must first delete all sub-devices and the dingz Switch itself, afterwards all devices can be re-registered.
-- At the moment the Shade & Blinds must be defined with the default buttons (T1 = M1-up, T2 = M1-down or T3 = M2-up, T4 = M2-down)
 
 ---
 
