@@ -39,7 +39,7 @@ module.exports = class Device extends Homey.Device {
     super.onInit();
     this.debug("onInit()");
 
-    this.http = new Http(this.getBaseURL(), this._logLinePrefix());
+    this.http = new Http({ baseURL: this.getBaseURL() }, this._logLinePrefix());
 
     this.driver = this.getDriver();
     this.data = this.getData();
@@ -80,13 +80,12 @@ module.exports = class Device extends Homey.Device {
   onAdded() {
     super.onAdded();
     this.updateSettingLabels();
-    this.log(`device ${this.getName()} added`);
+    this.log(`Device added`);
   }
 
   onDeleted() {
     super.onDeleted();
-    this.updateSettingLabels();
-    this.log(`device ${this.getName()} deleted`);
+    this.log(`Device deleted`);
   }
 
   onRenamed(name) {
