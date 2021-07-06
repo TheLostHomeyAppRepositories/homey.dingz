@@ -6,6 +6,8 @@ Adds support for [dingz switch](https://www.dingz.ch/).
 
 ## Attention
 
+**If you still have installed dingz devices from a previous version, then you need to delete them first and then reinstall the devices.**
+
 The application is still in an beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
 
 Please check if your device has the correct firmware version (> 1.3.25) installed.
@@ -21,8 +23,8 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 
 ## Supported Devices
 
-- dingz Switch       FW: > 1.3.25
-- dingz Switch plus  FW: > 1.3.25
+- dingz Switch FW: > 1.3.25
+- dingz Switch plus FW: > 1.3.25
 
 ---
 
