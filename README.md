@@ -21,8 +21,8 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 
 ## Supported Devices
 
-- dingz       FW: > 1.3.25
-- dingz plus  FW: > 1.3.25
+- dingz Switch       FW: > 1.3.25
+- dingz Switch plus  FW: > 1.3.25
 
 ---
 
@@ -59,8 +59,6 @@ v1.0.0
 
 ## ToDo
 
-- Discovery service does not always find the dingz Switch during pairing
-- Fix width of the confirmation-view during the paring process
 - Add embedded dingz webUI.
 
 ---
