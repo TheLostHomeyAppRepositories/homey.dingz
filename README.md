@@ -65,6 +65,12 @@ v1.0.0
 
 ---
 
+## Disclaimer
+
+Use at your own risk. I accept no responsibility for any damages caused by using this app.
+
+---
+
 ## Copyright
 
 Copyright 2021, 2021 cFlat-inc.org
