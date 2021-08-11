@@ -28,8 +28,8 @@ module.exports = class LedDevice extends Device {
     } catch {}
   }
 
-  isActionForDevice(params) {
-    return false; // >> no-action
+  handleDeviceAction(params) {
+    // nop
   }
 
   async onCapabilityOnOff(value, opts) {

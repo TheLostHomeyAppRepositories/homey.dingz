@@ -4,32 +4,20 @@
   "compatibility": ">=1.5.0",
   "sdk": 2,
   "name": {
-    "en": "dingz Switch"
+    "en": "dingz"
   },
   "description": {
     "en": "dingz for all your things"
   },
   "tags": {
-    "en": [
-      "dingz",
-      "switch",
-      "multiswitch",
-      "button",
-      "light",
-      "shutter",
-      "motion",
-      "temperature",
-      "luminance"
-    ]
+    "en": ["dingz", "switch", "multiswitch", "button", "light", "shutter", "motion", "temperature", "luminance"]
   },
   "category": "appliances",
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": [
-    "homey:manager:api"
-  ],
+  "permissions": ["homey:manager:api"],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
@@ -65,14 +53,9 @@
   "drivers": [
     {
       "id": "dingz",
-      "name": "dingz Device",
+      "name": "dingz Switch",
       "class": "other",
-      "capabilities": [
-        "alarm_motion",
-        "measure_temperature",
-        "measure_luminance",
-        "light_state"
-      ],
+      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "light_state", "dingz_buttons"],
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -193,16 +176,10 @@
     {
       "id": "led",
       "name": {
-        "en": "dingz frontLED"
+        "en": "FrontLED"
       },
       "class": "light",
-      "capabilities": [
-        "onoff",
-        "dim",
-        "ramp",
-        "light_hue",
-        "light_saturation"
-      ],
+      "capabilities": ["onoff", "dim", "ramp", "light_hue", "light_saturation"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -215,30 +192,12 @@
       }
     },
     {
-      "id": "button",
-      "name": {
-        "en": "dingz Button"
-      },
-      "class": "other",
-      "capabilities": [
-        "button"
-      ],
-      "icon": "../../button/assets/icon.svg",
-      "images": {
-        "large": "drivers/dingz/assets/images/large.png",
-        "small": "drivers/dingz/assets/images/small.png"
-      }
-    },
-    {
       "id": "switch",
       "name": {
-        "en": "dingz Switch"
+        "en": "Switch"
       },
       "class": "socket",
-      "capabilities": [
-        "onoff",
-        "measure_power"
-      ],
+      "capabilities": ["onoff", "measure_power"],
       "icon": "../../switch/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -248,15 +207,10 @@
     {
       "id": "light",
       "name": {
-        "en": "dingz Light"
+        "en": "Light"
       },
       "class": "light",
-      "capabilities": [
-        "onoff",
-        "dim",
-        "ramp",
-        "measure_power"
-      ],
+      "capabilities": ["onoff", "dim", "ramp", "measure_power"],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
@@ -271,12 +225,10 @@
     {
       "id": "shade",
       "name": {
-        "en": "dingz Shade"
+        "en": "Shade"
       },
       "class": "sunshade",
-      "capabilities": [
-        "windowcoverings_set"
-      ],
+      "capabilities": ["windowcoverings_set"],
       "icon": "../../shade/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -286,13 +238,10 @@
     {
       "id": "blind",
       "name": {
-        "en": "dingz Blind"
+        "en": "Blind"
       },
       "class": "blinds",
-      "capabilities": [
-        "windowcoverings_set",
-        "windowcoverings_tilt_set"
-      ],
+      "capabilities": ["windowcoverings_set", "windowcoverings_tilt_set"],
       "icon": "../../blind/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -301,9 +250,9 @@
     }
   ],
   "capabilities": {
-    "dingz_button": {
+    "dingz_buttons": {
       "type": "boolean",
-      "title": "dingzButton",
+      "title": "Button",
       "uiComponent": null,
       "uiQuickAction": false,
       "getable": false,
@@ -361,20 +310,54 @@
   "flow": {
     "triggers": [
       {
-        "id": "button_pressed",
+        "id": "dingzButton_pressed",
         "title": {
           "en": "Button is pressed",
           "de": "Taste ist gedrückt"
         },
         "titleFormatted": {
-          "en": "Button is [[action]]",
-          "de": "Taste ist [[action]]"
+          "en": "Button [[index]] is [[action]]",
+          "de": "Taste [[index]] ist [[action]]"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=dingz&capabilities=dingz_button|button"
+            "filter": "driver_id=dingz&capabilities=dingz_buttons"
+          },
+          {
+            "name": "index",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Button 1",
+                  "de": "Taste 1"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Button 2",
+                  "de": "Taste 2"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Button 3",
+                  "de": "Taste 3"
+                }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Button 4",
+                  "de": "Taste 4"
+                }
+              }
+            ]
           },
           {
             "name": "action",

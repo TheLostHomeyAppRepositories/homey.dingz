@@ -8,7 +8,6 @@ const { DINGZ } = require("../device");
 const Driver = require("../driver");
 const DingzDevice = require("./device");
 const LedDevice = require("../led/device");
-const ButtonDevice = require("../button/device");
 const SwitchDevice = require("../switch/device");
 const LightDevice = require("../light/device");
 const ShadeDevice = require("../shade/device");
@@ -21,9 +20,9 @@ module.exports = class DingzDriver extends Driver {
     this.http = new Http();
 
     // Create flow-cards
-    this._buttonPressedTrigger = new Homey.FlowCardTriggerDevice("button_pressed")
+    this._dingzButtonPressedTrigger = new Homey.FlowCardTriggerDevice("dingzButton_pressed")
       .register()
-      .registerRunListener((args, state) => args.action === state.action);
+      .registerRunListener((args, state) => args.index === state.index && args.action === state.action);
 
     this._lightStateTrigger = new Homey.FlowCardTriggerDevice("lightState_changed")
       .register()
@@ -52,9 +51,6 @@ module.exports = class DingzDriver extends Driver {
       case "led":
         // this.debug(`onMapDeviceClass - LedDevice`);
         return LedDevice;
-      case "button":
-        // this.debug(`onMapDeviceClass - ButtonDevice`);
-        return ButtonDevice;
       case "switch":
         // this.debug(`onMapDeviceClass - SwitchDevice`);
         return SwitchDevice;
@@ -151,9 +147,9 @@ module.exports = class DingzDriver extends Driver {
         dingzConfig.roomName = roomName;
         dingzConfig.dingzName = dingzName;
         dingzConfig.deviceName = deviceName;
-        dingzConfig["dingzDevice"] = [{ id: dingzConfig.id, deviceId: "dingz", name: deviceName }];
+        dingzConfig["dingzSwitch"] = [{ id: dingzConfig.id, deviceId: "dingz", name: deviceName }];
         dingzConfig["intDevices"] = [{ id: `${dingzConfig.id}:led`, deviceId: "led", name: `${deviceName} led` }];
-        dingzConfig["btnDevices"] = await this.defineButtonDevices(dip, dimmers, blinds);
+        dingzConfig["dingzDevices"] = await this.defineDingzDevices(dip, dimmers, blinds);
 
         this.debug(`onPair() - initDeviceConfig > ${JSON.stringify(dingzConfig)}`);
         callback(null, dingzConfig);
@@ -164,9 +160,9 @@ module.exports = class DingzDriver extends Driver {
     });
 
     socket.on("getDevicesConfig", async (data, callback) => {
-      const deviceConfig = [...dingzConfig.dingzDevice, ...dingzConfig.intDevices, ...dingzConfig.btnDevices];
-      this.debug(`onPair() - getDevicesConfig > ${JSON.stringify(deviceConfig)}`);
-      callback(null, deviceConfig);
+      const devicesConfig = [...dingzConfig.dingzSwitch, ...dingzConfig.intDevices, ...dingzConfig.dingzDevices];
+      this.debug(`onPair() - getDevicesConfig > ${JSON.stringify(devicesConfig)}`);
+      callback(null, devicesConfig);
     });
 
     socket.on("getDeviceManifest", (deviceConfig, callback) => {
@@ -197,7 +193,7 @@ module.exports = class DingzDriver extends Driver {
   getDimmerDeviceId(type) {
     switch (type) {
       case "not_connected":
-        return "button";
+        return "[none]";
       case "non_dimmable":
         return "switch";
       default:
@@ -214,27 +210,27 @@ module.exports = class DingzDriver extends Driver {
     }
   }
 
-  defineButtonDevices(dip, dimmers, blinds) {
+  defineDingzDevices(dip, dimmers, blinds) {
     switch (dip) {
       case 0:
-        this.debug("defineButtonDevices() > dip_config: [0] 2 SHADES");
+        this.debug("defineDingzDevices() > dip_config: [0] 2 SHADES");
         blinds[0].relativeIdx = "0";
         blinds[1].relativeIdx = "1";
         return blinds;
       case 1:
-        this.debug("defineButtonDevices() > dip_config: [1] 2 DIMMERS and 1 SHADE");
+        this.debug("defineDingzDevices() > dip_config: [1] 2 DIMMERS and 1 SHADE");
         dimmers[0].relativeIdx = "0";
         dimmers[1].relativeIdx = "1";
         blinds[1].relativeIdx = "0";
         return [dimmers[0], dimmers[1], blinds[1]];
       case 2:
-        this.debug("defineButtonDevices() > dip_config: [2] 1 SHADE and 2 DIMMERS");
+        this.debug("defineDingzDevices() > dip_config: [2] 1 SHADE and 2 DIMMERS");
         blinds[0].relativeIdx = "0";
         dimmers[2].relativeIdx = "0";
         dimmers[3].relativeIdx = "1";
         return [blinds[0], dimmers[2], dimmers[3]];
       case 3:
-        this.debug("defineButtonDevices() > dip_config: [3] 4 DIMMERS");
+        this.debug("defineDingzDevices() > dip_config: [3] 4 DIMMERS");
         dimmers[0].relativeIdx = "0";
         dimmers[1].relativeIdx = "1";
         dimmers[2].relativeIdx = "2";
@@ -245,28 +241,30 @@ module.exports = class DingzDriver extends Driver {
     }
   }
 
-  buttonPressedTrigger(device, tokens, state) {
-    this._buttonPressedTrigger
+  dingzButtonPressedTrigger(device, tokens, state) {
+    this._dingzButtonPressedTrigger
       .trigger(device, tokens, state)
-      .then(this.log(`${device.getName()} Button was ${this.getActionLabel(state.action)}-pressed`))
-      .catch((err) => this.error(`buttonPressedTrigger() > ${err}`));
+      .then(
+        this.log(`${device.getName()} dingzButton ${state.index} was '${this.getActionLabel(state.action)}' pressed`)
+      )
+      .catch((err) => this.error(`dingzButtonPressedTrigger() > ${err}`));
   }
 
   lightStateTrigger(device, tokens, state) {
     this._lightStateTrigger
       .trigger(device, tokens, state)
       .then(this.log(`${device.getName()} light state changed to ${state.lightState}`))
-      .catch((err) => this.error(`lightStateChanged() > ${err}`));
+      .catch((err) => this.error(`lightStateTrigger() > ${err}`));
   }
 
   getActionLabel(action) {
     switch (action) {
-      case DINGZ.SINGLE_PRESS:
-        return "short";
+      case DINGZ.SHORT_PRESS:
+        return "SHORT";
       case DINGZ.DOUBLE_PRESS:
-        return "double";
+        return "DOUBLE";
       case DINGZ.LONG_PRESS:
-        return "long";
+        return "LONG";
       default:
         return `[${action}]`;
     }

@@ -15,11 +15,6 @@ module.exports = class DingzDevice extends Device {
 
     this.registerDingzAction("dingzGenAction", `action/generic`);
 
-    this.registerDingzAction("dingzPirGenAction", `action/pir/generic`);
-    Homey.on("dingzPirGenAction", (params) => {
-      this.deviceActionReceived("dingzPirGenAction", params);
-    });
-
     this.debug("device has been inited");
   }
 
@@ -50,10 +45,6 @@ module.exports = class DingzDevice extends Device {
     // });
   }
 
-  isActionForDevice(params) {
-    return super.isActionForDevice(params) && params.index === DINGZ.PIR;
-  }
-
   handleDeviceAction(params) {
     switch (params.action) {
       case DINGZ.MOTION_START:
@@ -66,6 +57,11 @@ module.exports = class DingzDevice extends Device {
       case DINGZ.MOTION_TWILIGHT:
       case DINGZ.MOTION_NIGHT:
         this.setLightState(this.convertMotionMode(params.action));
+        break;
+      case DINGZ.SHORT_PRESS:
+      case DINGZ.DOUBLE_PRESS:
+      case DINGZ.LONG_PRESS:
+        this.dingzButtonPressed(params);
         break;
       default:
     }
@@ -145,6 +141,11 @@ module.exports = class DingzDevice extends Device {
   async setMotionDetector(motion) {
     this.debug(`setMotionDetector() > ${motion}`);
     this.setCapabilityValue("alarm_motion", motion);
+  }
+
+  dingzButtonPressed(params) {
+    this.debug(`dingzButtonPressed() > ${JSON.stringify(params)}`);
+    this.driver.dingzButtonPressedTrigger(this, {}, params);
   }
 
   convertMotionMode(mode) {

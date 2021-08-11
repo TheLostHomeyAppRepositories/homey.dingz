@@ -17,28 +17,30 @@
         } else {
           // console.debug(`<<< getDevicesConfig: ${devicesConfig}`);
           devicesConfig.forEach((deviceConfig) => {
-            // console.debug(`>>> getDeviceManifest: ${deviceConfig}`);
-            Homey.emit("getDeviceManifest", deviceConfig, (error, manifest) => {
-              // console.debug(`<<< getDeviceManifest: ${deviceConfig.name}`);
-              if (error !== null) {
-                console.error(`getDeviceManifest: ${deviceConfig.name} > ${error.message}`);
-                Homey.alert(error.message, "error");
-              } else {
-                // console.debug(`Create device: ${manifest.name}`);
-                Homey.createDevice(manifest)
-                  .then((device) => {
-                    console.debug(`Device created: ${device.name}`);
-                    // Homey.alert(`${device.name} device created`, "info");
-                  })
-                  .catch((error) => {
-                    if (error.message.match("[duplicate_device]")) {
-                      error = Error(`Device ${manifest.name} (id: ${manifest.data.id}) allready paired`);
-                    }
-                    console.error(`createDevice: ${manifest.name} > ${error.message}`);
-                    Homey.alert(error.message, "error");
-                  });
-              }
-            });
+            if (deviceConfig.deviceId !== "[none]") {
+              // console.debug(`>>> getDeviceManifest: ${deviceConfig}`);
+              Homey.emit("getDeviceManifest", deviceConfig, (error, manifest) => {
+                // console.debug(`<<< getDeviceManifest: ${deviceConfig.name}`);
+                if (error !== null) {
+                  console.error(`getDeviceManifest: ${deviceConfig.name} > ${error.message}`);
+                  Homey.alert(error.message, "error");
+                } else {
+                  // console.debug(`Create device: ${manifest.name}`);
+                  Homey.createDevice(manifest)
+                    .then((device) => {
+                      console.debug(`Device created: ${device.name}`);
+                      // Homey.alert(`${device.name} device created`, "info");
+                    })
+                    .catch((error) => {
+                      if (error.message.match("[duplicate_device]")) {
+                        error = Error(`Device ${manifest.name} (id: ${manifest.data.id}) allready paired`);
+                      }
+                      console.error(`createDevice: ${manifest.name} > ${error.message}`);
+                      Homey.alert(error.message, "error");
+                    });
+                }
+              });
+            }
           });
           setTimeout(() => {
             Homey.done();

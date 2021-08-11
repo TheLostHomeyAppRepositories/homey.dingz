@@ -14,7 +14,7 @@ const DINGZ = {
   PIR: "5",
   INPUT: "6",
   // params > action
-  SINGLE_PRESS: "1",
+  SHORT_PRESS: "1",
   DOUBLE_PRESS: "2",
   LONG_PRESS: "3",
   PRESS: "8",
@@ -43,6 +43,10 @@ module.exports = class Device extends Homey.Device {
 
     this.driver = this.getDriver();
     this.data = this.getData();
+
+    Homey.on("dingzGenAction", (params) => {
+      this.deviceActionReceived("dingzGenAction", params);
+    });
 
     this.setUnavailable(Homey.__("connecting")).catch((err) => {
       this.error(`setUnavailable() > ${err}`);
@@ -128,18 +132,21 @@ module.exports = class Device extends Homey.Device {
   }
 
   async deviceActionReceived(action, params) {
-    if (this.isActionForDevice(params)) {
-      this.debug(`deviceActionReceived() - ${action} > ${JSON.stringify(params)}`);
+    if (this.data.mac === params.mac) {
+      // this.debug(`deviceActionReceived() - ${action} > ${JSON.stringify(params)}`);
       this.handleDeviceAction(params);
     }
   }
 
-  isActionForDevice(params) {
-    return this.data.mac === params.mac;
-  }
-
   handleDeviceAction(params) {
-    // nop;
+    switch (params.action) {
+      case DINGZ.SHORT_PRESS:
+      case DINGZ.DOUBLE_PRESS:
+      case DINGZ.LONG_PRESS:
+        this.getDeviceValues();
+        break;
+      default:
+    }
   }
 
   async setCapabilityValue(capabilityId, value) {

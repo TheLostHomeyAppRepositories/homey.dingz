@@ -14,7 +14,7 @@
         document.getElementById("name").value = dingzDevice.dingzName;
         document.getElementById("address").value = dingzDevice.address;
         document.getElementById("internalTab").innerHTML = getDeviceRows(dingzDevice.intDevices);
-        document.getElementById("buttonsTab").innerHTML = getDeviceRows(dingzDevice.btnDevices);
+        document.getElementById("devicesTab").innerHTML = getDeviceRows(dingzDevice.dingzDevices);
       }
     });
 
@@ -72,8 +72,8 @@
         <table id="internalTab"></table>
       </fieldset>
       <fieldset>
-        <legend>Button Devices</legend>
-        <table id="buttonsTab"></table>
+        <legend>Dingz Devices</legend>
+        <table id="devicesTab"></table>
       </fieldset>
     </form>
   </div>

@@ -1,18 +1,14 @@
 "use strict";
 
 const Homey = require("homey");
+
 const Device = require("../device");
-const { DINGZ } = require("../device");
 
 module.exports = class ShadeDevice extends Device {
   onInit(options = {}) {
     super.onInit(options);
 
     this.registerCapabilityListener("windowcoverings_set", this.onCapabilityWindowCoveringsSet.bind(this));
-
-    Homey.on("dingzGenAction", (params) => {
-      this.deviceActionReceived("dingzGenAction", params);
-    });
 
     this.debug("device has been inited");
   }
@@ -22,14 +18,6 @@ module.exports = class ShadeDevice extends Device {
       await super.deviceReady();
       await this.getDeviceValues();
     } catch {}
-  }
-
-  isActionForDevice(params) {
-    return super.isActionForDevice(params) && params.index <= DINGZ.BTN4;
-  }
-
-  handleDeviceAction(params) {
-    this.getDeviceValues();
   }
 
   waitForPosition() {

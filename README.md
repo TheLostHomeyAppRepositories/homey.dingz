@@ -6,7 +6,7 @@ Adds support for [dingz switch](https://www.dingz.ch/).
 
 ## Attention
 
-**If you still have installed dingz devices from a previous version, then you need to delete them first and then reinstall the devices.**
+**If you still have installed dingz from a previous version, then you need to delete them first and then reinstall the devices.**
 
 The application is still in an beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
 
@@ -17,7 +17,7 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 **Note:**
 
 - **If you have problems after the upgrade, remove and re-register all devices.**
-- If you change one off the sub-device, you must first delete all sub-devices and the dingz Switch itself, afterwards all devices can be re-registered.
+- If you change one off the dingz devices, you must first delete all devices and the dingz Switch itself, afterwards all devices can be re-registered.
 
 ---
 
@@ -38,11 +38,15 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
    - Add each dimmers, shades, blinds name
    - Configure all dimmers, blinds and shades
    - **Test if device is installed correctly**
-1. Add device to Homey.
+1. Add dingz Switch to Homey.
 
 ---
 
 ## Changelog
+
+v1.1.1
+
+- dingzButtons reworked
 
 v1.1.0
 

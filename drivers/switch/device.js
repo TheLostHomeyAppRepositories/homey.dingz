@@ -11,10 +11,6 @@ module.exports = class SwitchDevice extends Device {
 
     this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
 
-    Homey.on("dingzGenAction", (params) => {
-      this.deviceActionReceived("dingzGenAction", params);
-    });
-
     Homey.on("measurePowerChanged", (params) => {
       if (params.output === this.data.absoluteIdx) {
         // this.debug(`Homey-Event: 'measurePowerChanged' received > value: ${params.value}`);
@@ -30,14 +26,6 @@ module.exports = class SwitchDevice extends Device {
       await super.deviceReady();
       await this.getDeviceValues();
     } catch {}
-  }
-
-  isActionForDevice(params) {
-    return super.isActionForDevice(params) && params.index <= DINGZ.BTN4;
-  }
-
-  handleDeviceAction(params) {
-    this.getDeviceValues();
   }
 
   async onCapabilityOnOff(value, opts) {
