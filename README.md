@@ -48,6 +48,7 @@ v1.1.1
 
 - dingzButtons reworked
 - dingzAction fixed
+- mDNS fixed
 
 v1.1.0
 

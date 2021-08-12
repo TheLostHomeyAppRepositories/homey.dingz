@@ -40,10 +40,10 @@
       "conditions": [
         [
           {
-            "field": "txt.mac",
+            "field": "name",
             "match": {
               "type": "regex",
-              "value": "^246F28"
+              "value": "^DINGZ"
             }
           }
         ]
