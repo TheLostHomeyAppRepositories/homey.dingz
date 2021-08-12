@@ -47,6 +47,7 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 v1.1.1
 
 - dingzButtons reworked
+- dingzAction fixed
 
 v1.1.0
 

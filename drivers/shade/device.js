@@ -2,6 +2,7 @@
 
 const Homey = require("homey");
 
+const { DINGZ } = require("../device");
 const Device = require("../device");
 
 module.exports = class ShadeDevice extends Device {
@@ -9,6 +10,21 @@ module.exports = class ShadeDevice extends Device {
     super.onInit(options);
 
     this.registerCapabilityListener("windowcoverings_set", this.onCapabilityWindowCoveringsSet.bind(this));
+
+    // Temp: Until the dingz-devices event is revised
+    Homey.on("dingzButtonGenAction", (params) => {
+      if (this.isActionForDevice(params)) {
+        this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
+        switch (params.action) {
+          case DINGZ.SHORT_PRESS:
+          case DINGZ.DOUBLE_PRESS:
+          case DINGZ.LONG_PRESS:
+            this.getDeviceValues();
+            break;
+          default:
+        }
+      }
+    });
 
     this.debug("device has been inited");
   }

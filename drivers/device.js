@@ -44,10 +44,6 @@ module.exports = class Device extends Homey.Device {
     this.driver = this.getDriver();
     this.data = this.getData();
 
-    Homey.on("dingzGenAction", (params) => {
-      this.deviceActionReceived("dingzGenAction", params);
-    });
-
     this.setUnavailable(Homey.__("connecting")).catch((err) => {
       this.error(`setUnavailable() > ${err}`);
     });
@@ -97,56 +93,42 @@ module.exports = class Device extends Homey.Device {
     this.updateSettingLabels();
   }
 
-  async registerDingzAction(action, url) {
-    this.debug(`registerDingzAction() - ${action} > ${url}`);
+  async subscribeDingzAction(action, url) {
+    this.debug(`subscribeDingzAction() - ${action} > ${url}`);
 
     Homey.ManagerCloud.getLocalAddress()
       .then((localAddress) => {
         this.setDeviceData(url, `get://${localAddress.split(":")[0]}/api/app/org.cflat-inc.dingz/${action}`)
-          .then(() => this.debug(`registerDingzAction() ${action} registered`))
-          .catch((err) => this.error(`registerDingzAction() > ${err}`));
+          .then(() => this.debug(`subscribeDingzAction() ${action} registered`))
+          .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
       })
       .catch((err) => {
-        this.error(`registerDingzAction() getLocalAddress > ${err}`);
+        this.error(`subscribeDingzAction() getLocalAddress > ${err}`);
         this.setUnavailable(err).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
       });
   }
 
-  async deregisterDingzAction(action, url) {
-    this.debug(`deregisterDingzAction() - ${action} > ${url}`);
+  async unsubscribeDingzAction(action, url) {
+    this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
 
     Homey.ManagerCloud.getLocalAddress()
       .then((localAddress) => {
         this.setDeviceData(url, "")
-          .then(() => this.debug(`deregisterDingzAction() ${action} deregistered`))
-          .catch((err) => this.error(`deregisterDingzAction() > ${err}`));
+          .then(() => this.debug(`unsubscribeDingzAction() ${action} deregistered`))
+          .catch((err) => this.error(`unsubscribeDingzAction() > ${err}`));
       })
       .catch((err) => {
-        this.error(`deregisterDingzAction() getLocalAddress > ${err}`);
+        this.error(`unsubscribeDingzAction() getLocalAddress > ${err}`);
         this.setUnavailable(err).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
       });
   }
 
-  async deviceActionReceived(action, params) {
-    if (this.data.mac === params.mac) {
-      // this.debug(`deviceActionReceived() - ${action} > ${JSON.stringify(params)}`);
-      this.handleDeviceAction(params);
-    }
-  }
-
-  handleDeviceAction(params) {
-    switch (params.action) {
-      case DINGZ.SHORT_PRESS:
-      case DINGZ.DOUBLE_PRESS:
-      case DINGZ.LONG_PRESS:
-        this.getDeviceValues();
-        break;
-      default:
-    }
+  isActionForDevice(params) {
+    return this.data.mac === params.mac;
   }
 
   async setCapabilityValue(capabilityId, value) {

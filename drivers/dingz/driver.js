@@ -20,9 +20,12 @@ module.exports = class DingzDriver extends Driver {
     this.http = new Http();
 
     // Create flow-cards
-    this._dingzButtonPressedTrigger = new Homey.FlowCardTriggerDevice("dingzButton_pressed")
+    this._triggerDingzButton = new Homey.FlowCardTriggerDevice("dingzButton_pressed");
+    this._triggerDingzButton
       .register()
-      .registerRunListener((args, state) => args.index === state.index && args.action === state.action);
+      .registerRunListener((args, state) => args.index === state.index && args.action === state.action)
+      .getArgument("button")
+      .registerAutocompleteListener((query, args, callback) => args.device.onButtonAutocomplete(query, args, callback));
 
     this._lightStateTrigger = new Homey.FlowCardTriggerDevice("lightState_changed")
       .register()
@@ -242,7 +245,7 @@ module.exports = class DingzDriver extends Driver {
   }
 
   dingzButtonPressedTrigger(device, tokens, state) {
-    this._dingzButtonPressedTrigger
+    this._triggerDingzButton
       .trigger(device, tokens, state)
       .then(
         this.log(`${device.getName()} dingzButton ${state.index} was '${this.getActionLabel(state.action)}' pressed`)

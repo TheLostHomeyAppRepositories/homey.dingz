@@ -56,6 +56,7 @@
       "name": "dingz Switch",
       "class": "other",
       "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "light_state", "dingz_buttons"],
+      "connectivity": ["lan"],
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -185,6 +186,7 @@
           "setOnDim": false
         }
       },
+      "connectivity": ["lan"],
       "icon": "../../led/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -198,6 +200,7 @@
       },
       "class": "socket",
       "capabilities": ["onoff", "measure_power"],
+      "connectivity": ["lan"],
       "icon": "../../switch/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -216,6 +219,7 @@
           "setOnDim": false
         }
       },
+      "connectivity": ["lan"],
       "icon": "../../light/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -229,6 +233,7 @@
       },
       "class": "sunshade",
       "capabilities": ["windowcoverings_set"],
+      "connectivity": ["lan"],
       "icon": "../../shade/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -242,6 +247,7 @@
       },
       "class": "blinds",
       "capabilities": ["windowcoverings_set", "windowcoverings_tilt_set"],
+      "connectivity": ["lan"],
       "icon": "../../blind/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -316,8 +322,8 @@
           "de": "Taste ist gedrückt"
         },
         "titleFormatted": {
-          "en": "Button [[index]] is [[action]]",
-          "de": "Taste [[index]] ist [[action]]"
+          "en": "Button [[button]] is [[action]]",
+          "de": "Taste '[[button]]' ist [[action]]"
         },
         "args": [
           {
@@ -326,38 +332,8 @@
             "filter": "driver_id=dingz&capabilities=dingz_buttons"
           },
           {
-            "name": "index",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "1",
-                "label": {
-                  "en": "Button 1",
-                  "de": "Taste 1"
-                }
-              },
-              {
-                "id": "2",
-                "label": {
-                  "en": "Button 2",
-                  "de": "Taste 2"
-                }
-              },
-              {
-                "id": "3",
-                "label": {
-                  "en": "Button 3",
-                  "de": "Taste 3"
-                }
-              },
-              {
-                "id": "4",
-                "label": {
-                  "en": "Button 4",
-                  "de": "Taste 4"
-                }
-              }
-            ]
+            "name": "button",
+            "type": "autocomplete"
           },
           {
             "name": "action",

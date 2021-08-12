@@ -13,7 +13,58 @@ module.exports = class DingzDevice extends Device {
     this.api = await HomeyAPI.forCurrentHomey();
     this.deviceApi = this.api.devices;
 
-    this.registerDingzAction("dingzGenAction", `action/generic`);
+    this.subscribeDingzAction("dingzGenAction", `action/generic`);
+    Homey.on("dingzGenAction", (params) => {
+      if (this.isActionForDevice(params)) {
+        this.debug(`dingzActionEvent: dingzGenAction > ${JSON.stringify(params)}`);
+        switch (params.index) {
+          case DINGZ.PIR:
+            Homey.emit("dingzPirGenAction", params);
+            break;
+          case DINGZ.BTN1:
+          case DINGZ.BTN2:
+          case DINGZ.BTN3:
+          case DINGZ.BTN4:
+            Homey.emit("dingzButtonGenAction", params);
+            break;
+          default:
+        }
+      }
+    });
+
+    Homey.on("dingzButtonGenAction", (params) => {
+      if (this.isActionForDevice(params)) {
+        this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
+        switch (params.action) {
+          case DINGZ.SHORT_PRESS:
+          case DINGZ.DOUBLE_PRESS:
+          case DINGZ.LONG_PRESS:
+            this.dingzButtonPressed(params);
+            break;
+          default:
+        }
+      }
+    });
+
+    Homey.on("dingzPirGenAction", (params) => {
+      if (this.isActionForDevice(params)) {
+        this.debug(`dingzActionEvent: dingzPirGenAction > ${JSON.stringify(params)}`);
+        switch (params.action) {
+          case DINGZ.MOTION_START:
+            this.setMotionDetector(true);
+            break;
+          case DINGZ.MOTION_STOP:
+            this.setMotionDetector(false);
+            break;
+          case DINGZ.MOTION_DAY:
+          case DINGZ.MOTION_TWILIGHT:
+          case DINGZ.MOTION_NIGHT:
+            this.setLightState(this.convertMotionMode(params.action));
+            break;
+          default:
+        }
+      }
+    });
 
     this.debug("device has been inited");
   }
@@ -31,8 +82,8 @@ module.exports = class DingzDevice extends Device {
   onDeleted() {
     super.onDeleted();
 
-    this.deregisterDingzAction("dingzGenAction", `action/generic`);
-    this.deregisterDingzAction("dingzPirGenAction", `action/pir/generic`);
+    this.unsubscribeDingzAction("dingzGenAction", `action/generic`);
+    this.unsubscribeDingzAction("dingzPirGenAction", `action/pir/generic`);
 
     clearInterval(this.dingzSensorsInterval);
 
@@ -43,28 +94,6 @@ module.exports = class DingzDevice extends Device {
     //     this.error(`deleteSubDevice - '${device.name}' > ${error}`);
     //   });
     // });
-  }
-
-  handleDeviceAction(params) {
-    switch (params.action) {
-      case DINGZ.MOTION_START:
-        this.setMotionDetector(true);
-        break;
-      case DINGZ.MOTION_STOP:
-        this.setMotionDetector(false);
-        break;
-      case DINGZ.MOTION_DAY:
-      case DINGZ.MOTION_TWILIGHT:
-      case DINGZ.MOTION_NIGHT:
-        this.setLightState(this.convertMotionMode(params.action));
-        break;
-      case DINGZ.SHORT_PRESS:
-      case DINGZ.DOUBLE_PRESS:
-      case DINGZ.LONG_PRESS:
-        this.dingzButtonPressed(params);
-        break;
-      default:
-    }
   }
 
   async getSubDevices() {
@@ -159,6 +188,11 @@ module.exports = class DingzDevice extends Device {
       default:
         return `[${mode}]`;
     }
+  }
+
+  onButtonAutocomplete() {
+    // this.getDeviceData(`button_config`);
+    return Promise.resolve([]);
   }
 
   async updateSettingLabels() {
