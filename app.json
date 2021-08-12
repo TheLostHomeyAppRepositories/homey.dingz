@@ -323,7 +323,7 @@
         },
         "titleFormatted": {
           "en": "Button [[button]] is [[action]]",
-          "de": "Taste '[[button]]' ist [[action]]"
+          "de": "Taste [[button]] ist [[action]]"
         },
         "args": [
           {
