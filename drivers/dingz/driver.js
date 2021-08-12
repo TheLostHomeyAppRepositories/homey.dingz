@@ -23,9 +23,11 @@ module.exports = class DingzDriver extends Driver {
     this._triggerDingzButton = new Homey.FlowCardTriggerDevice("dingzButton_pressed");
     this._triggerDingzButton
       .register()
-      .registerRunListener((args, state) => args.index === state.index && args.action === state.action)
+      .registerRunListener((args, state) => args.button.id === state.index && args.action === state.action)
       .getArgument("button")
-      .registerAutocompleteListener((query, args, callback) => args.device.onButtonAutocomplete(query, args, callback));
+      .registerAutocompleteListener((query, args, callback) =>
+        args.device.onDingzButtonAutocomplete(query, args, callback)
+      );
 
     this._lightStateTrigger = new Homey.FlowCardTriggerDevice("lightState_changed")
       .register()

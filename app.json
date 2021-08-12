@@ -274,6 +274,7 @@
       "uiQuickAction": false,
       "getable": true,
       "setable": false,
+      "insights": true,
       "values": [
         {
           "id": "day",
@@ -323,7 +324,7 @@
         },
         "titleFormatted": {
           "en": "Button [[button]] is [[action]]",
-          "de": "Taste '[[button]]' ist [[action]]"
+          "de": "Taste [[button]] ist [[action]]"
         },
         "args": [
           {

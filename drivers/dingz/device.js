@@ -66,6 +66,12 @@ module.exports = class DingzDevice extends Device {
       }
     });
 
+    Homey.on("unload", async () => {
+      this.debug(`homeyEvent: unload`);
+      clearInterval(this.dingzSensorsInterval);
+      await this.unsubscribeDingzAction("dingzGenAction", `action/generic`);
+    });
+
     this.debug("device has been inited");
   }
 
@@ -82,10 +88,7 @@ module.exports = class DingzDevice extends Device {
   onDeleted() {
     super.onDeleted();
 
-    this.unsubscribeDingzAction("dingzGenAction", `action/generic`);
     this.unsubscribeDingzAction("dingzPirGenAction", `action/pir/generic`);
-
-    clearInterval(this.dingzSensorsInterval);
 
     // Not working, see: https://github.com/athombv/homey-apps-sdk-issues/issues/123
     // this.getSubDevices().forEach((device) => {
@@ -190,9 +193,14 @@ module.exports = class DingzDevice extends Device {
     }
   }
 
-  onButtonAutocomplete() {
-    // this.getDeviceData(`button_config`);
-    return Promise.resolve([]);
+  onDingzButtonAutocomplete() {
+    return this.getDeviceData(`button_config`).then((buttonConf) =>
+      buttonConf.buttons.map((button, idx) => {
+        const id = (idx + 1).toString();
+        const name = button.name === "" ? `${id}` : `${button.name} (${id})`;
+        return { id, name };
+      })
+    );
   }
 
   async updateSettingLabels() {

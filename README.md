@@ -33,9 +33,10 @@ Please check if your device has the correct firmware version (> 1.3.25) installe
 1. Install dingz Switch.
 1. Add device to WLAN.
 1. Configure device with the Webinterface.
+   - Add buttons name
    - Add device name
    - Add room name
-   - Add each dimmers, shades, blinds name
+   - Add each dimmers, blinds name
    - Configure all dimmers, blinds and shades
    - **Test if device is installed correctly**
 1. Add dingz Switch to Homey.
@@ -48,7 +49,7 @@ v1.1.1
 
 - dingzButtons reworked
 - dingzAction fixed
-- mDNS fixed
+- mDNS discovery fixed
 
 v1.1.0
 
