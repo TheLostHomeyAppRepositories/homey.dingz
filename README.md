@@ -1,6 +1,6 @@
-# dingz Switch app for Homey
+# dingz app for Homey
 
-Adds support for [dingz switch](https://www.dingz.ch/).
+Adds support for [dingz](https://www.dingz.ch/).
 
 ---
 
