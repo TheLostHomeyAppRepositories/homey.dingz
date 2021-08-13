@@ -1,6 +1,6 @@
 {
   "id": "org.cflat-inc.dingz",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "compatibility": ">=1.5.0",
   "sdk": 2,
   "name": {
@@ -10,14 +10,26 @@
     "en": "dingz for all your things"
   },
   "tags": {
-    "en": ["dingz", "switch", "multiswitch", "button", "light", "shutter", "motion", "temperature", "luminance"]
+    "en": [
+      "dingz",
+      "switch",
+      "multiswitch",
+      "button",
+      "light",
+      "shutter",
+      "motion",
+      "temperature",
+      "luminance"
+    ]
   },
   "category": "appliances",
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": ["homey:manager:api"],
+  "permissions": [
+    "homey:manager:api"
+  ],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
@@ -55,8 +67,16 @@
       "id": "dingz",
       "name": "dingz Switch",
       "class": "other",
-      "capabilities": ["alarm_motion", "measure_temperature", "measure_luminance", "light_state", "dingz_buttons"],
-      "connectivity": ["lan"],
+      "capabilities": [
+        "alarm_motion",
+        "measure_temperature",
+        "measure_luminance",
+        "light_state",
+        "dingz_buttons"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -180,13 +200,21 @@
         "en": "FrontLED"
       },
       "class": "light",
-      "capabilities": ["onoff", "dim", "ramp", "light_hue", "light_saturation"],
+      "capabilities": [
+        "onoff",
+        "dim",
+        "ramp",
+        "light_hue",
+        "light_saturation"
+      ],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
         }
       },
-      "connectivity": ["lan"],
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../led/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -199,8 +227,13 @@
         "en": "Switch"
       },
       "class": "socket",
-      "capabilities": ["onoff", "measure_power"],
-      "connectivity": ["lan"],
+      "capabilities": [
+        "onoff",
+        "measure_power"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../switch/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -213,13 +246,20 @@
         "en": "Light"
       },
       "class": "light",
-      "capabilities": ["onoff", "dim", "ramp", "measure_power"],
+      "capabilities": [
+        "onoff",
+        "dim",
+        "ramp",
+        "measure_power"
+      ],
       "capabilitiesOptions": {
         "onoff": {
           "setOnDim": false
         }
       },
-      "connectivity": ["lan"],
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../light/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -232,8 +272,12 @@
         "en": "Shade"
       },
       "class": "sunshade",
-      "capabilities": ["windowcoverings_set"],
-      "connectivity": ["lan"],
+      "capabilities": [
+        "windowcoverings_set"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../shade/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -246,8 +290,13 @@
         "en": "Blind"
       },
       "class": "blinds",
-      "capabilities": ["windowcoverings_set", "windowcoverings_tilt_set"],
-      "connectivity": ["lan"],
+      "capabilities": [
+        "windowcoverings_set",
+        "windowcoverings_tilt_set"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../blind/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
