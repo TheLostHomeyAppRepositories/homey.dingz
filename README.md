@@ -4,20 +4,16 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ---
 
-## Attention
+## About
 
-**If you still have installed dingz from a previous version, then you need to delete them first and then reinstall the devices.**
-
-The application is still in an beta stage, as both the app and the device are new and still buggy. See the section on: [ToDo](##ToDo)
-
-Please check if your device has the correct firmware version (> 1.3.25) installed.
+The **dingz Switch** is a device that allows you to easily connect the wired devices to the Homey smart home. Depending on the configuration, it includes switches, dimmers, blinds control and a motion (only plus), brightness and temperature sensor.
 
 ---
 
 **Note:**
 
-- **If you have problems after the upgrade, remove and re-register all devices.**
-- If you change one off the dingz devices, you must first delete all devices and the dingz Switch itself, afterwards all devices can be re-registered.
+- When adding or removing an input, thermostat, light output or blind motor, all devices on the dingz Switch must be removed and reloaded via the Homey dingz app.
+- **If you have problems after the upgrade, remove and reload all devices.**
 
 ---
 
