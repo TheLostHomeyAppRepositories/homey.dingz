@@ -13,7 +13,7 @@ module.exports = class DingzDevice extends Device {
     this.api = await HomeyAPI.forCurrentHomey();
     this.deviceApi = this.api.devices;
 
-    this.subscribeDingzAction("dingzGenAction", `action/generic`);
+    this.subscribeDingzAction("dingzGenAction", "action/generic/generic/");
     Homey.on("dingzGenAction", (params) => {
       if (this.isActionForDevice(params)) {
         this.debug(`dingzActionEvent: dingzGenAction > ${JSON.stringify(params)}`);
@@ -69,7 +69,7 @@ module.exports = class DingzDevice extends Device {
     Homey.on("unload", async () => {
       this.debug(`homeyEvent: unload`);
       clearInterval(this.dingzSensorsInterval);
-      await this.unsubscribeDingzAction("dingzGenAction", `action/generic`);
+      await this.unsubscribeDingzAction("dingzGenAction", "action/generic/generic/");
     });
 
     this.debug("device has been inited");

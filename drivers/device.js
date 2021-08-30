@@ -30,6 +30,8 @@ const DINGZ = {
   LIGHT_STATE_NIGHT: "night",
 };
 
+const APP_PATH = "api/app/org.cflat-inc.dingz";
+
 module.exports = class Device extends Homey.Device {
   static get DINGZ() {
     return DINGZ;
@@ -96,14 +98,19 @@ module.exports = class Device extends Homey.Device {
   async subscribeDingzAction(action, url) {
     this.debug(`subscribeDingzAction() - ${action} > ${url}`);
 
-    Homey.ManagerCloud.getLocalAddress()
-      .then((localAddress) => {
-        this.setDeviceData(url, `get://${localAddress.split(":")[0]}/api/app/org.cflat-inc.dingz/${action}`)
-          .then(() => this.debug(`subscribeDingzAction() ${action} registered`))
-          .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
+    this.getDeviceData(url)
+      .then(async (dingzActions) => {
+        const localAddress = await Homey.ManagerCloud.getLocalAddress();
+        return dingzActions.url
+          .split("||")
+          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
+          .concat([`get://${localAddress.split(":")[0]}/${APP_PATH}/${action}`])
+          .join("||");
       })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`subscribeDingzAction() "${action}" subscribed`))
       .catch((err) => {
-        this.error(`subscribeDingzAction() getLocalAddress > ${err}`);
+        this.error(`subscribeDingzAction() > ${err}`);
         this.setUnavailable(err).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
@@ -113,14 +120,17 @@ module.exports = class Device extends Homey.Device {
   async unsubscribeDingzAction(action, url) {
     this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
 
-    Homey.ManagerCloud.getLocalAddress()
-      .then((localAddress) => {
-        this.setDeviceData(url, "")
-          .then(() => this.debug(`unsubscribeDingzAction() ${action} deregistered`))
-          .catch((err) => this.error(`unsubscribeDingzAction() > ${err}`));
+    this.getDeviceData(url)
+      .then((dingzActions) => {
+        return dingzActions.url
+          .split("||")
+          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
+          .join("||");
       })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`unsubscribeDingzAction() "${action}" unsubscribed`))
       .catch((err) => {
-        this.error(`unsubscribeDingzAction() getLocalAddress > ${err}`);
+        this.error(`unsubscribeDingzAction() > ${err}`);
         this.setUnavailable(err).catch((err) => {
           this.error(`setUnavailable() > ${err}`);
         });
