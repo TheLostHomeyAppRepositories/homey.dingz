@@ -27,7 +27,7 @@ module.exports = class SwitchDevice extends Device {
     });
 
     Homey.on("measurePowerChanged", (params) => {
-      if (params.output === this.data.absoluteIdx) {
+      if (params.output.toString() === this.data.absoluteIdx) {
         // this.debug(`dingzActionEvent: measurePowerChanged > ${JSON.stringify(params)`);
         this.setCapabilityValue("measure_power", Math.round(params.value * 10) / 10);
       }
