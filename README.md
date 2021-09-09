@@ -41,6 +41,10 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 
 ## Changelog
 
+v1.1.3
+
+- power fixed
+
 v1.1.2
 
 - added multiple generic actions
