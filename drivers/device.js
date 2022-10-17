@@ -19,6 +19,15 @@ const DINGZ = {
   LONG_PRESS: "3",
   PRESS: "8",
   RELEASE: "9",
+
+  BTN_1CLIC: "1",
+  BTN_2CLICS: "2",
+  // ? BTN_3CLICS: "3",
+  BTN_4CLICS: "4",
+  BTN_5CLICS: "5",
+  BTN_PRESS: "8",
+  BTN_RELEASE: "9",
+  // Motion
   MOTION_START: "8",
   MOTION_STOP: "9",
   MOTION_NIGHT: "14",

@@ -1,8 +1,6 @@
-"use strict";
+'use strict';
 
-/**
- * homey-debugger
- */
+const Homey = require('homey');
 
 /* eslint-disable */
 if (process.env.DEBUG === "1") {
@@ -11,9 +9,8 @@ if (process.env.DEBUG === "1") {
 }
 /* eslint-enable */
 
-const Homey = require("homey");
+module.exports = class DingzApp extends Homey.App {
 
-module.exports = class dingzApp extends Homey.App {
   onInit() {
     this.log(`${Homey.app.manifest.name.en} app - v${Homey.app.manifest.version} is running...`);
   }
@@ -29,8 +26,9 @@ module.exports = class dingzApp extends Homey.App {
 
   debug(msg) {
     // Show the debug message only in debug mode.
-    if (process.env.DEBUG === "1") {
+    if (process.env.DEBUG === '1') {
       super.log(`[DEBUG] ${msg}`);
     }
   }
+
 };

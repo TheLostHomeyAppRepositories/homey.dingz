@@ -8,12 +8,10 @@
     "start": "npm install && homey app install",
     "build": "homey app build",
     "publish": "homey app publish",
-    "postpublish": "npm run init && git commit --amend --no-edit ./package.json && git push -f origin main",
+    "postpublish": "git commit --amend --no-edit ./package.json && git push -f origin main",
     "validate": "homey app validate -l publish",
     "validateTest": "homey app validate",
-    "init": "npm init --quiet -y 1>/dev/null",
-    "eslint": "eslint .",
-    "prettier": "prettier"
+    "eslint": "eslint ."
   },
   "keywords": [
     "Smarthome",
@@ -33,19 +31,14 @@
   },
   "homepage": "https://homey.app/a/org.cflat-inc.dingz",
   "dependencies": {
-    "athom-api": "^3.6.4",
-    "axios": "^0.21.1"
+    "axios": "^1.1.3"
   },
   "engines": {
     "node": ">=12.16.1"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-athom": "^2.1.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "2.3.2"
+    "eslint": "^8.25.0",
+    "eslint-config-athom": "^3.1.1"
   },
   "directories": {
     "lib": "lib",
