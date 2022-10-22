@@ -1,27 +1,29 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
+const Homey = require('homey');
 
 module.exports = class Driver extends Homey.Driver {
+
   onInit(options = {}) {
-    this.debug("onInit()");
     super.onInit();
+    this.debug('onInit()');
   }
 
   // Homey-App Loggers
   log(msg) {
-    Homey.app.log(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.log(`${this._logLinePrefix()} ${msg}`);
   }
 
   error(msg) {
-    Homey.app.error(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.error(`${this._logLinePrefix()} ${msg}`);
   }
 
   debug(msg) {
-    Homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.debug(`${this._logLinePrefix()} ${msg}`);
   }
 
   _logLinePrefix() {
     return `${this.constructor.name} >`;
   }
+
 };

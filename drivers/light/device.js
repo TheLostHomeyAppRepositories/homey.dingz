@@ -1,21 +1,20 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-
-const { DINGZ } = require("../device");
-const SwitchDevice = require("../switch/device");
+const { DINGZ } = require('../device');
+const SwitchDevice = require('../switch/device');
 
 module.exports = class LightDevice extends SwitchDevice {
+
   onInit(options = {}) {
     super.onInit(options);
 
-    this.registerMultipleCapabilityListener(["dim", "ramp"], this.onCapabilityDim.bind(this));
+    this.registerMultipleCapabilityListener(['dim', 'ramp'], this.onCapabilityDim.bind(this));
 
-    this.debug("device has been inited");
+    this.debug('device has been inited');
   }
 
   async onCapabilityDim(valueObj, opts) {
-    const current = this.getCapabilityValue("dim");
+    const current = this.getCapabilityValue('dim');
     const value = valueObj.dim;
     if (current === value) return Promise.resolve();
 
@@ -27,8 +26,8 @@ module.exports = class LightDevice extends SwitchDevice {
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
       .then(await this.getDeviceValues())
       .then(() => {
-        const val = Math.round(this.getCapabilityValue("dim") * 100);
-        this.notify(Homey.__("device.dimSet", { value: val }));
+        const val = Math.round(this.getCapabilityValue('dim') * 100);
+        this.notify(this.homey.__('device.dimSet', { value: val }));
       })
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
@@ -37,7 +36,7 @@ module.exports = class LightDevice extends SwitchDevice {
     return super
       .getDeviceValues(url)
       .then((data) => {
-        this.setCapabilityValue("dim", data.value / 100);
+        this.setCapabilityValue('dim', data.value / 100);
         return data;
       })
       .catch((err) => {
@@ -45,4 +44,5 @@ module.exports = class LightDevice extends SwitchDevice {
         this.showWarning(err.message);
       });
   }
+
 };

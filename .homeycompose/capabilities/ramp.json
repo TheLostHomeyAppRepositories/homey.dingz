@@ -1,0 +1,14 @@
+{
+  "type": "number",
+  "title": "ramp",
+  "uiComponent": null,
+  "getable": false,
+  "setable": true,
+  "units": {
+    "en": "sec",
+    "de": "Sek"
+  },
+  "min": 0,
+  "max": 255,
+  "step": 1
+}

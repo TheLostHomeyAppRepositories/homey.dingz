@@ -1,18 +1,17 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-
-const { DINGZ } = require("../device");
-const Device = require("../device");
+const { DINGZ } = require('../device');
+const Device = require('../device');
 
 module.exports = class ShadeDevice extends Device {
+
   onInit(options = {}) {
     super.onInit(options);
 
-    this.registerCapabilityListener("windowcoverings_set", this.onCapabilityWindowCoveringsSet.bind(this));
+    this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowCoveringsSet.bind(this));
 
     // Temp: Until the dingz-devices event is revised
-    Homey.on("dingzButtonGenAction", (params) => {
+    this.homey.on('dingzButtonGenAction', (params) => {
       if (this.isActionForDevice(params)) {
         this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
         switch (params.action) {
@@ -26,7 +25,7 @@ module.exports = class ShadeDevice extends Device {
       }
     });
 
-    this.debug("device has been inited");
+    this.debug('device has been inited');
   }
 
   async deviceReady() {
@@ -47,14 +46,14 @@ module.exports = class ShadeDevice extends Device {
           return resolve();
         }
         setTimeout(wait, 2000);
-      })();
+      }());
     }).then(() => {
-      this.log("Device on position");
+      this.log('Device on position');
     });
   }
 
   async onCapabilityWindowCoveringsSet(value, opts) {
-    const current = this.getCapabilityValue("windowcoverings_set");
+    const current = this.getCapabilityValue('windowcoverings_set');
     if (current === value) return Promise.resolve();
 
     this.debug(`onCapabilityWindowCoveringsSet() - ${current} > ${value}`);
@@ -65,8 +64,8 @@ module.exports = class ShadeDevice extends Device {
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
       .then(() => {
-        const val = this.getCapabilityValue("windowcoverings_set") * 100;
-        this.notify(Homey.__("device.windowCoveringsSet", { value: val }));
+        const val = this.getCapabilityValue('windowcoverings_set') * 100;
+        this.notify(this.homey.__('device.windowCoveringsSet', { value: val }));
       })
       .catch((err) => this.error(`onCapabilityWindowCoveringsSet() > ${err}`));
   }
@@ -75,7 +74,7 @@ module.exports = class ShadeDevice extends Device {
     return super
       .getDeviceValues(url)
       .then((data) => {
-        this.setCapabilityValue("windowcoverings_set", (100 - data.target.blind) / 100);
+        this.setCapabilityValue('windowcoverings_set', (100 - data.target.blind) / 100);
         return data;
       })
       .catch((err) => {
@@ -83,4 +82,5 @@ module.exports = class ShadeDevice extends Device {
         this.showWarning(err.message);
       });
   }
+
 };

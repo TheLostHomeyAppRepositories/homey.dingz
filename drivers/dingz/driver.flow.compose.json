@@ -1,0 +1,200 @@
+{
+  "triggers": [
+    {
+      "id": "dingzButton_pressed",
+      "title": {
+        "en": "Button is pressed",
+        "de": "Taste ist gedrückt"
+      },
+      "titleFormatted": {
+        "en": "Button [[button]] is [[action]]",
+        "de": "Taste [[button]] ist [[action]]"
+      },
+      "args": [
+        {
+          "name": "button",
+          "type": "autocomplete"
+        },
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "1",
+              "label": {
+                "en": "Short Press",
+                "de": "Kurz gedrückt"
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Double Press",
+                "de": "2x Kurz gedrückt"
+              }
+            },
+            {
+              "id": "3",
+              "label": {
+                "en": "Long Press",
+                "de": "Lange gedrückt"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lightState_changed",
+      "title": {
+        "en": "Light state changed",
+        "de": "Lichtstatus geändert"
+      },
+      "titleFormatted": {
+        "en": "Light state changed to [[lightState]]",
+        "de": "Lichtstatus geändert auf [[lightState]]"
+      },
+      "args": [
+        {
+          "name": "lightState",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "night",
+              "label": {
+                "en": "Night",
+                "de": "Nacht"
+              }
+            },
+            {
+              "id": "twilight",
+              "label": {
+                "en": "Twilight",
+                "de": "Dämmerung"
+              }
+            },
+            {
+              "id": "day",
+              "label": {
+                "en": "Day",
+                "de": "Tag"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "is_lightState",
+      "title": {
+        "en": "Light state is !{{|not}}",
+        "de": "Lichtstatus ist !{{|nicht}}"
+      },
+      "titleFormatted": {
+        "en": "Light state is !{{|not}} [[lightState]]",
+        "de": "Lichtstatus ist !{{|nicht}} [[lightState]]"
+      },
+      "hint": {
+        "en": "Checks the current light condition",
+        "de": "Prüft den aktuellen Lichtstatus"
+      },
+      "args": [
+        {
+          "name": "lightState",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "night",
+              "label": {
+                "en": "Night",
+                "de": "Nacht"
+              }
+            },
+            {
+              "id": "twilight",
+              "label": {
+                "en": "Twilight",
+                "de": "Dämmerung"
+              }
+            },
+            {
+              "id": "day",
+              "label": {
+                "en": "Day",
+                "de": "Tag"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "ramp",
+      "title": {
+        "en": "Fade dimmer",
+        "de": "Fade dimmer"
+      },
+      "titleFormatted": {
+        "en": "Dim light to [[dim]] in [[ramp]]sec",
+        "de": "Licht dimmen auf [[dim]] in [[ramp]]Sek"
+      },
+      "hint": {
+        "en": "Use this card to dim the light and the duration for dimming in seconds.",
+        "de": "Verwenden Sie diese Karte, um das Licht zu dimmen und die Dauer für das Dimmen in Sekunden."
+      },
+      "args": [
+        {
+          "name": "dim",
+          "type": "range",
+          "min": 0,
+          "max": 1,
+          "step": 0.01,
+          "value": 0.5,
+          "label": "%",
+          "labelMultiplier": 100,
+          "labelDecimals": 0
+        },
+        {
+          "name": "ramp",
+          "type": "range",
+          "min": 0,
+          "max": 25,
+          "step": 1,
+          "labelMultiplier": 1,
+          "labelDecimals": 0
+        }
+      ]
+    },
+    {
+      "id": "windowcoverings_tilt_set",
+      "title": {
+        "en": "Adjust the lamellas",
+        "de": "Stellen Sie die Lamellen ein"
+      },
+      "titleFormatted": {
+        "en": "Set the lamella to [[value]]",
+        "de": "Stellen Sie die Lamellen auf [[value]]"
+      },
+      "hint": {
+        "en": "Change the position to open (100%), closed (0%), or a value in between.",
+        "de": "Ändern Sie die Position auf offen (100 %), geschlossen (0 %) oder einen Wert dazwischen."
+      },
+      "args": [
+        {
+          "type": "range",
+          "name": "value",
+          "min": 0,
+          "max": 1,
+          "step": 0.01,
+          "label": "%",
+          "labelMultiplier": 100,
+          "labelDecimals": 0
+        }
+      ]
+    }
+  ]
+}

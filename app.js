@@ -1,18 +1,30 @@
 'use strict';
 
 const Homey = require('homey');
+const { HomeyAPIApp } = require('homey-api');
 
 /* eslint-disable */
-if (process.env.DEBUG === "1") {
-  require("inspector").open(9229, "0.0.0.0", false);
-  // require("inspector").open(9229, "0.0.0.0", true);
+if (process.env.DEBUG === '1') {
+  require('inspector').open(9229, '0.0.0.0', false);
+  // require('inspector').open(9229, '0.0.0.0', true);
 }
 /* eslint-enable */
 
 module.exports = class DingzApp extends Homey.App {
 
-  onInit() {
-    this.log(`${Homey.app.manifest.name.en} app - v${Homey.app.manifest.version} is running...`);
+  async onInit() {
+    this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
+
+    this.api = new HomeyAPIApp({ homey: this.homey });
+    this.systemInfo = await this.api.system.getInfo();
+    this.homeyAddress = this.systemInfo.wifiAddress.split(':')[0];
+    this.debug(`homeyAddress: ${this.homeyAddress}`);
+  }
+
+  // Web-API
+  async dingzGenActionAPI(query) {
+    this.debug(`dingzGenActionAPI() - ${JSON.stringify(query)}`);
+    this.homey.emit('dingzGenAction', query);
   }
 
   // Homey-App Loggers

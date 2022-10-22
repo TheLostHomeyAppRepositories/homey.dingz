@@ -1,0 +1,35 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Light state",
+    "de": "Lichtstatus"
+  },
+  "uiComponent": "sensor",
+  "uiQuickAction": false,
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "values": [
+    {
+      "id": "day",
+      "title": {
+        "en": "Day",
+        "de": "Tag"
+      }
+    },
+    {
+      "id": "twilight",
+      "title": {
+        "en": "Twilight",
+        "de": "Dämmerung"
+      }
+    },
+    {
+      "id": "night",
+      "title": {
+        "en": "Night",
+        "de": "Nacht"
+      }
+    }
+  ]
+}

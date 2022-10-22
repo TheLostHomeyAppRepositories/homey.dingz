@@ -9,23 +9,23 @@
       console.error(`validate: ${error.message}`);
       Homey.alert(error.message, "error");
     } else {
-      // console.debug(`>>> getDevicesConfig`);
+      console.debug(`>>> getDevicesConfig`);
       Homey.emit("getDevicesConfig", null, (error, devicesConfig) => {
         if (error !== null) {
           console.error(`getDevicesConfig: ${error.message}`);
           Homey.alert(error.message, "error");
         } else {
-          // console.debug(`<<< getDevicesConfig: ${devicesConfig}`);
+          console.debug(`<<< getDevicesConfig: ${devicesConfig}`);
           devicesConfig.forEach((deviceConfig) => {
             if (deviceConfig.deviceId !== "[none]") {
-              // console.debug(`>>> getDeviceManifest: ${deviceConfig}`);
+              console.debug(`>>> getDeviceManifest: ${deviceConfig}`);
               Homey.emit("getDeviceManifest", deviceConfig, (error, manifest) => {
-                // console.debug(`<<< getDeviceManifest: ${deviceConfig.name}`);
+                console.debug(`<<< getDeviceManifest: ${deviceConfig.name}`);
                 if (error !== null) {
                   console.error(`getDeviceManifest: ${deviceConfig.name} > ${error.message}`);
                   Homey.alert(error.message, "error");
                 } else {
-                  // console.debug(`Create device: ${manifest.name}`);
+                  console.debug(`Create device: ${manifest.name}`);
                   Homey.createDevice(manifest)
                     .then((device) => {
                       console.debug(`Device created: ${device.name}`);

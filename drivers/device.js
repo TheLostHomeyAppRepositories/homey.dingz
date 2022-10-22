@@ -1,81 +1,81 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const Http = require("../lib/http");
+const Homey = require('homey');
+const Http = require('../lib/http');
 
 const DINGZ = {
   // default
-  RAMP_DEFAULT: "1",
+  RAMP_DEFAULT: '1',
   // params > index
-  BTN1: "1",
-  BTN2: "2",
-  BTN3: "3",
-  BTN4: "4",
-  PIR: "5",
-  INPUT: "6",
+  BTN1: '1',
+  BTN2: '2',
+  BTN3: '3',
+  BTN4: '4',
+  PIR: '5',
+  INPUT: '6',
   // params > action
-  SHORT_PRESS: "1",
-  DOUBLE_PRESS: "2",
-  LONG_PRESS: "3",
-  PRESS: "8",
-  RELEASE: "9",
+  SHORT_PRESS: '1',
+  DOUBLE_PRESS: '2',
+  LONG_PRESS: '3',
+  PRESS: '8',
+  RELEASE: '9',
 
-  BTN_1CLIC: "1",
-  BTN_2CLICS: "2",
+  BTN_1CLIC: '1',
+  BTN_2CLICS: '2',
   // ? BTN_3CLICS: "3",
-  BTN_4CLICS: "4",
-  BTN_5CLICS: "5",
-  BTN_PRESS: "8",
-  BTN_RELEASE: "9",
+  BTN_4CLICS: '4',
+  BTN_5CLICS: '5',
+  BTN_PRESS: '8',
+  BTN_RELEASE: '9',
   // Motion
-  MOTION_START: "8",
-  MOTION_STOP: "9",
-  MOTION_NIGHT: "14",
-  MOTION_TWILIGHT: "15",
-  MOTION_DAY: "16",
+  MOTION_START: '8',
+  MOTION_STOP: '9',
+  MOTION_NIGHT: '14',
+  MOTION_TWILIGHT: '15',
+  MOTION_DAY: '16',
   // Light state
-  LIGHT_STATE_DAY: "day",
-  LIGHT_STATE_TWILIGHT: "twilight",
-  LIGHT_STATE_NIGHT: "night",
+  LIGHT_STATE_DAY: 'day',
+  LIGHT_STATE_TWILIGHT: 'twilight',
+  LIGHT_STATE_NIGHT: 'night',
 };
 
-const APP_PATH = "api/app/org.cflat-inc.dingz";
+const APP_PATH = 'api/app/org.cflat-inc.dingz';
 
 module.exports = class Device extends Homey.Device {
+
   static get DINGZ() {
     return DINGZ;
   }
 
   async onInit(options = {}) {
     super.onInit();
-    this.debug("onInit()");
+    this.debug('onInit()');
 
-    this.http = new Http({ baseURL: this.getBaseURL() }, this._logLinePrefix());
-
-    this.driver = this.getDriver();
     this.data = this.getData();
+    this.http = new Http(this.homey, { baseURL: this.getBaseURL() }, this._logLinePrefix());
 
-    this.setUnavailable(Homey.__("connecting")).catch((err) => {
-      this.error(`setUnavailable() > ${err}`);
-    });
+    this.setUnavailable(this.homey.__('connecting'))
+      .catch((err) => {
+        this.error(`setUnavailable() > ${err}`);
+      });
 
     this.ready(() => this.deviceReady());
   }
 
   deviceReady() {
-    this.debug("deviceReady()");
+    this.debug('deviceReady()');
     this.setAvailable()
       .then(this.updateSettingLabels())
       .catch((err) => this.error(`setAvailable() > ${err}`));
   }
 
   getBaseURL() {
-    return `http://${this.getStoreValue("address")}/api/v1/`;
+    return `http://${this.getStoreValue('address')}/api/v1/`;
   }
 
   onDiscoveryAddressChanged(discoveryResult) {
     this.debug(`onDiscoveryAddressChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
-    this.setStoreValue("address", discoveryResult.address)
+    this.setStoreValue('address', discoveryResult.address)
       .then(this.http.setBaseURL(this.getBaseURL()))
       .then(this.updateSettingLabels())
       .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
@@ -83,20 +83,21 @@ module.exports = class Device extends Homey.Device {
 
   onDiscoveryLastSeenChanged(discoveryResult) {
     this.debug(`onDiscoveryLastSeenChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
-    this.setAvailable().catch((err) => {
-      this.error(`setAvailable() > ${err}`);
-    });
+    this.setAvailable()
+      .catch((err) => {
+        this.error(`setAvailable() > ${err}`);
+      });
   }
 
   onAdded() {
     super.onAdded();
     this.updateSettingLabels();
-    this.log(`Device added`);
+    this.log('Device added');
   }
 
   onDeleted() {
     super.onDeleted();
-    this.log(`Device deleted`);
+    this.log('Device deleted');
   }
 
   onRenamed(name) {
@@ -109,12 +110,11 @@ module.exports = class Device extends Homey.Device {
 
     this.getDeviceData(url)
       .then(async (dingzActions) => {
-        const localAddress = await Homey.ManagerCloud.getLocalAddress();
         return dingzActions.url
-          .split("||")
+          .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
-          .concat([`get://${localAddress.split(":")[0]}/${APP_PATH}/${action}`])
-          .join("||");
+          .concat([`get://${this.homey.app.homeyAddress}/${APP_PATH}/${action}`])
+          .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
       .then(() => this.debug(`subscribeDingzAction() "${action}" subscribed`))
@@ -132,9 +132,9 @@ module.exports = class Device extends Homey.Device {
     this.getDeviceData(url)
       .then((dingzActions) => {
         return dingzActions.url
-          .split("||")
+          .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
-          .join("||");
+          .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
       .then(() => this.debug(`unsubscribeDingzAction() "${action}" unsubscribed`))
@@ -166,7 +166,7 @@ module.exports = class Device extends Homey.Device {
       });
   }
 
-  getDeviceValues(url = "**unknown**") {
+  getDeviceValues(url = '**unknown**') {
     this.debug(`getDeviceValues() - '${url}'`);
     return this.getDeviceData(url);
   }
@@ -184,7 +184,7 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => {
         this.error(`getDeviceData() - '${url}' > ${err}`);
         if (err.response.status === 404) {
-          this.setUnavailable(Homey.__("device.error", { code: err.response.status }));
+          this.setUnavailable(this.homey.__('device.error', { code: err.response.status }));
         }
         return Promise.reject(new Error(`Get device data failed (${err.response.status})`));
       });
@@ -194,7 +194,7 @@ module.exports = class Device extends Homey.Device {
     return this.http
       .post(url, value)
       .then((data) => {
-        this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ""}`);
+        this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ''}`);
         this.setAvailable().catch((err) => {
           this.error(`setAvailable() > ${err}`);
         });
@@ -203,16 +203,16 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => {
         this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
         if (err.response.status === 404) {
-          this.setUnavailable(Homey.__("device.error", { code: err.response.status }));
+          this.setUnavailable(this.homey.__('device.error', { code: err.response.status }));
         }
         return Promise.reject(new Error(`Set device data failed (${err.response.status})`));
       });
   }
 
   async updateSettingLabels() {
-    this.debug("updateSettingLabels()");
+    this.debug('updateSettingLabels()');
     const labelName = this.getName();
-    const labelAddress = this.getStoreValue("address");
+    const labelAddress = this.getStoreValue('address');
     const labelDeviceId = this.data.deviceId.replace(/^./, (str) => str.toUpperCase());
     await this.setSettings({ labelName, labelAddress, labelDeviceId });
   }
@@ -224,24 +224,25 @@ module.exports = class Device extends Homey.Device {
   }
 
   notify(msg) {
-    // new Homey.Notification({ excerpt: `**${this.getName()}** ${msg}` }).register();
+    // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
     this.log(`[notify] ${msg}`);
   }
 
   // Homey-App Loggers
   log(msg) {
-    Homey.app.log(`${this._logLinePrefix()} > ${msg}`);
+    this.homey.app.log(`${this._logLinePrefix()} > ${msg}`);
   }
 
   error(msg) {
-    Homey.app.error(`${this._logLinePrefix()} > ${msg}`);
+    this.homey.app.error(`${this._logLinePrefix()} > ${msg}`);
   }
 
   debug(msg) {
-    Homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
+    this.homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
   }
 
   _logLinePrefix() {
     return `${this.constructor.name}::${this.getName()}`;
   }
+
 };

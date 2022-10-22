@@ -1,0 +1,18 @@
+{
+  "name": {
+    "en": "Blind"
+  },
+  "class": "blinds",
+  "capabilities": [
+    "windowcoverings_set",
+    "windowcoverings_tilt_set"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "icon": "../../blind/assets/icon.svg",
+  "images": {
+    "large": "drivers/dingz/assets/images/large.png",
+    "small": "drivers/dingz/assets/images/small.png"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "name": "dingz Switch",
+  "class": "other",
+  "capabilities": [
+    "alarm_motion",
+    "measure_temperature",
+    "measure_luminance",
+    "light_state",
+    "dingz_buttons"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "images": {
+    "large": "drivers/dingz/assets/images/large.png",
+    "small": "drivers/dingz/assets/images/small.png"
+  },
+  "discovery": "dingz",
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
+        "next": "dingzWebUI"
+      }
+    },
+    {
+      "id": "dingzWebUI",
+      "navigation": {
+        "next": "configuration"
+      }
+    },
+    {
+      "id": "configuration",
+      "navigation": {
+        "prev": "dingzWebUI",
+        "next": "create_devices"
+      }
+    },
+    {
+      "id": "create_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "About me"
+      },
+      "hint": {
+        "en": "Read only"
+      },
+      "children": [
+        {
+          "id": "labelName",
+          "type": "label",
+          "label": {
+            "en": "Name"
+          },
+          "value": "-"
+        },
+        {
+          "id": "labelDeviceId",
+          "type": "label",
+          "label": {
+            "en": "Device"
+          },
+          "value": "-"
+        },
+        {
+          "id": "labelAddress",
+          "type": "label",
+          "label": {
+            "en": "IP Address"
+          },
+          "value": "-"
+        },
+        {
+          "id": "labelSubDevices",
+          "type": "textarea",
+          "label": {
+            "en": "SubDevices"
+          },
+          "value": "-",
+          "hint": {
+            "en": ""
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "dingz Switch"
+      },
+      "hint": {
+        "en": "Read only"
+      },
+      "children": [
+        {
+          "id": "labelDingzStatus",
+          "type": "label",
+          "label": {
+            "en": "Status"
+          },
+          "value": "-"
+        },
+        {
+          "id": "labelFirmware",
+          "type": "label",
+          "label": {
+            "en": "Firmware"
+          },
+          "value": "-"
+        },
+        {
+          "id": "labelModel",
+          "type": "label",
+          "label": {
+            "en": "Model"
+          },
+          "value": "-"
+        }
+      ]
+    }
+  ]
+}

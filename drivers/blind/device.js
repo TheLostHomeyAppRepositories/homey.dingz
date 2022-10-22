@@ -1,20 +1,20 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const ShadeDevice = require("../shade/device");
+const ShadeDevice = require('../shade/device');
 
 module.exports = class BlindDevice extends ShadeDevice {
+
   onInit(options = {}) {
     super.onInit(options);
 
     // Register capability change events
-    this.registerCapabilityListener("windowcoverings_tilt_set", this.onCapabilityWindowCoveringsTiltSet.bind(this));
+    this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowCoveringsTiltSet.bind(this));
 
-    this.debug("device has been inited");
+    this.debug('device has been inited');
   }
 
   async onCapabilityWindowCoveringsTiltSet(value, opts) {
-    const current = this.getCapabilityValue("windowcoverings_tilt_set");
+    const current = this.getCapabilityValue('windowcoverings_tilt_set');
     if (current === value) return Promise.resolve();
 
     this.debug(`onCapabilityWindowCoveringsTiltSet() - ${current} > ${value}`);
@@ -25,8 +25,8 @@ module.exports = class BlindDevice extends ShadeDevice {
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${blind}&lamella=${lamella}`)
       .then(this.waitForPosition())
       .then(() => {
-        const val = this.getCapabilityValue("windowcoverings_tilt_set") * 100;
-        this.notify(Homey.__("device.windowCoveringsTiltSet", { value: val }));
+        const val = this.getCapabilityValue('windowcoverings_tilt_set') * 100;
+        this.notify(this.homey.__('device.windowCoveringsTiltSet', { value: val }));
       })
       .catch((err) => this.error(`onCapabilityWindowCoveringsTiltSet() > ${err}`));
   }
@@ -35,7 +35,7 @@ module.exports = class BlindDevice extends ShadeDevice {
     return super
       .getDeviceValues(url)
       .then((data) => {
-        this.setCapabilityValue("windowcoverings_tilt_set", (100 - data.target.lamella) / 100);
+        this.setCapabilityValue('windowcoverings_tilt_set', (100 - data.target.lamella) / 100);
         return data;
       })
       .catch((err) => {
@@ -43,4 +43,5 @@ module.exports = class BlindDevice extends ShadeDevice {
         this.showWarning(err.message);
       });
   }
+
 };

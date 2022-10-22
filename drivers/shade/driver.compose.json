@@ -1,0 +1,17 @@
+{
+  "name": {
+    "en": "Shade"
+  },
+  "class": "sunshade",
+  "capabilities": [
+    "windowcoverings_set"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "icon": "../../shade/assets/icon.svg",
+  "images": {
+    "large": "drivers/dingz/assets/images/large.png",
+    "small": "drivers/dingz/assets/images/small.png"
+  }
+}

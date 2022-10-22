@@ -1,38 +1,34 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const { HomeyAPI } = require("athom-api");
-
-const { DINGZ } = require("../device");
-const Device = require("../device");
+const { DINGZ } = require('../device');
+const Device = require('../device');
 
 module.exports = class DingzDevice extends Device {
+
   async onInit(options = {}) {
     super.onInit(options);
 
-    this.api = await HomeyAPI.forCurrentHomey();
-    this.deviceApi = this.api.devices;
+    this.subscribeDingzAction('dingzGenAction', 'action/generic/generic/');
 
-    this.subscribeDingzAction("dingzGenAction", "action/generic/generic/");
-    Homey.on("dingzGenAction", (params) => {
+    this.homey.on('dingzGenAction', (params) => {
       if (this.isActionForDevice(params)) {
         this.debug(`dingzActionEvent: dingzGenAction > ${JSON.stringify(params)}`);
         switch (params.index) {
           case DINGZ.PIR:
-            Homey.emit("dingzPirGenAction", params);
+            this.homey.emit('dingzPirGenAction', params);
             break;
           case DINGZ.BTN1:
           case DINGZ.BTN2:
           case DINGZ.BTN3:
           case DINGZ.BTN4:
-            Homey.emit("dingzButtonGenAction", params);
+            this.homey.emit('dingzButtonGenAction', params);
             break;
           default:
         }
       }
     });
 
-    Homey.on("dingzButtonGenAction", (params) => {
+    this.homey.on('dingzButtonGenAction', (params) => {
       if (this.isActionForDevice(params)) {
         this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
         switch (params.action) {
@@ -46,7 +42,7 @@ module.exports = class DingzDevice extends Device {
       }
     });
 
-    Homey.on("dingzPirGenAction", (params) => {
+    this.homey.on('dingzPirGenAction', (params) => {
       if (this.isActionForDevice(params)) {
         this.debug(`dingzActionEvent: dingzPirGenAction > ${JSON.stringify(params)}`);
         switch (params.action) {
@@ -66,13 +62,13 @@ module.exports = class DingzDevice extends Device {
       }
     });
 
-    Homey.on("unload", async () => {
-      this.debug(`homeyEvent: unload`);
+    this.homey.on('unload', async () => {
+      this.debug('homeyEvent: unload');
       clearInterval(this.dingzSensorsInterval);
-      await this.unsubscribeDingzAction("dingzGenAction", "action/generic/generic/");
+      await this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
     });
 
-    this.debug("device has been inited");
+    this.debug('device has been inited');
   }
 
   async deviceReady() {
@@ -88,29 +84,29 @@ module.exports = class DingzDevice extends Device {
   onDeleted() {
     super.onDeleted();
 
-    this.unsubscribeDingzAction("dingzPirGenAction", `action/pir/generic`);
+    this.unsubscribeDingzAction('dingzPirGenAction', 'action/pir/generic');
 
     // Not working, see: https://github.com/athombv/homey-apps-sdk-issues/issues/123
     // this.getSubDevices().forEach((device) => {
     //   this.debug("onDeleted() - delete mySub-Devices");
-    //   this.deviceApi.deleteDevice({ id: device.id }).catch((error) => {
+    //   this.homeyAPI.devices.deleteDevice({ id: device.id }).catch((error) => {
     //     this.error(`deleteSubDevice - '${device.name}' > ${error}`);
     //   });
     // });
   }
 
   async getSubDevices() {
-    this.debug("getSubDevices()");
+    this.debug('getSubDevices()');
     // (device) => device.data.mac === this.data.mac && device.id !== this.id
-    return Object.values(await this.deviceApi.getDevices()).filter(
-      (device) => device.data.mac === this.data.mac && device.data.deviceId !== "dingz"
+    return Object.values(await this.homey.app.api.devices.getDevices()).filter(
+      (device) => device.data.mac === this.data.mac && device.data.deviceId !== 'dingz',
     );
   }
 
   async getDingzDevice() {
-    return this.getDeviceData(`device`)
+    return this.getDeviceData('device')
       .then((data) => {
-        this.debug("getDingzDevice()");
+        this.debug('getDingzDevice()');
         return data[this.data.mac];
       })
       .catch((err) => {
@@ -119,7 +115,7 @@ module.exports = class DingzDevice extends Device {
   }
 
   async initDingzSensors() {
-    this.debug("initDingzSensors()");
+    this.debug('initDingzSensors()');
     this.getDingzSensors();
     this.dingzSensorsInterval = setInterval(() => {
       this.getDingzSensors();
@@ -127,57 +123,57 @@ module.exports = class DingzDevice extends Device {
   }
 
   async getDingzSensors() {
-    this.debug("getDingzSensors()");
-    return this.getDeviceData(`sensors`)
+    this.debug('getDingzSensors()');
+    return this.getDeviceData('sensors')
       .then((data) => {
-        this.setCapabilityValue("measure_luminance", data.brightness);
-        this.setCapabilityValue("measure_temperature", Math.round(data.room_temperature * 10) / 10);
+        this.setCapabilityValue('measure_luminance', data.brightness);
+        this.setCapabilityValue('measure_temperature', Math.round(data.room_temperature * 10) / 10);
         this.setLightState(data.light_state);
-        data.power_outputs.forEach((elm, output) => Homey.emit("measurePowerChanged", { output, value: elm.value }));
+        data.power_outputs.forEach((elm, output) => this.homey.emit('measurePowerChanged', { output, value: elm.value }));
       })
       .catch((err) => this.error(`getDingzSensors() - ${err}`));
   }
 
   async setLightState(state) {
-    if (state !== this.getCapabilityValue("light_state")) {
+    if (state !== this.getCapabilityValue('light_state')) {
       this.debug(`setLightState() > ${state}`);
-      this.setCapabilityValue("light_state", state)
-        .then(this.driver.lightStateTrigger(this, {}, { lightState: state }))
+      this.setCapabilityValue('light_state', state)
+        .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
         .catch((err) => this.error(`setLightState() - ${err}`));
     }
   }
 
   async initMotionDetector(dingzDevice) {
-    this.debug("initMotionDetector()");
+    this.debug('initMotionDetector()');
     if (dingzDevice.has_pir) {
-      if (!this.hasCapability("alarm_motion")) {
-        this.addCapability("alarm_motion")
-          .then(this.debug("initMotionDetector() - alarm_motion added"))
+      if (!this.hasCapability('alarm_motion')) {
+        this.addCapability('alarm_motion')
+          .then(this.debug('initMotionDetector() - alarm_motion added'))
           .catch((err) => this.error(`initMotionDetector() - ${err}`));
       }
-      this.setDeviceData("action/pir/generic/feedback/enable")
-        .then(this.debug("initMotionDetector() - enable PIR generic feedback"))
+      this.setDeviceData('action/pir/generic/feedback/enable')
+        .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
         .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
     } else {
-      if (this.hasCapability("alarm_motion")) {
-        this.removeCapability("alarm_motion")
-          .then(this.debug("initMotionDetector() - alarm_motion removed"))
+      if (this.hasCapability('alarm_motion')) {
+        this.removeCapability('alarm_motion')
+          .then(this.debug('initMotionDetector() - alarm_motion removed'))
           .catch((err) => this.error(`initMotionDetector() - ${err}`));
       }
-      this.setDeviceData("action/pir/generic/feedback/disable")
-        .then(this.debug("initMotionDetector() - disable PIR generic feedback"))
+      this.setDeviceData('action/pir/generic/feedback/disable')
+        .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
         .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
     }
   }
 
   async setMotionDetector(motion) {
     this.debug(`setMotionDetector() > ${motion}`);
-    this.setCapabilityValue("alarm_motion", motion);
+    this.setCapabilityValue('alarm_motion', motion);
   }
 
   dingzButtonPressed(params) {
     this.debug(`dingzButtonPressed() > ${JSON.stringify(params)}`);
-    this.driver.dingzButtonPressedTrigger(this, {}, params);
+    this.driver.triggerDingzButtonPressedFlow(this, {}, params);
   }
 
   convertMotionMode(mode) {
@@ -194,13 +190,12 @@ module.exports = class DingzDevice extends Device {
   }
 
   onDingzButtonAutocomplete() {
-    return this.getDeviceData(`button_config`).then((buttonConf) =>
-      buttonConf.buttons.map((button, idx) => {
+    return this.getDeviceData('button_config')
+      .then((buttonConf) => buttonConf.buttons.map((button, idx) => {
         const id = (idx + 1).toString();
-        const name = button.name === "" ? `${id}` : `${button.name} (${id})`;
+        const name = button.name === '' ? `${id}` : `${button.name} (${id})`;
         return { id, name };
-      })
-    );
+      }));
   }
 
   async updateSettingLabels() {
@@ -208,7 +203,7 @@ module.exports = class DingzDevice extends Device {
 
     const labelSubDevices = (await this.getSubDevices())
       .map((device) => `${device.name} (${device.zoneName})`)
-      .join("\r\n");
+      .join('\r\n');
 
     await this.setSettings({ labelSubDevices });
   }
@@ -229,4 +224,5 @@ module.exports = class DingzDevice extends Device {
   onDiscoveryLastSeenChanged(discoveryResult) {
     // When the device is offline, try to reconnect here
   }
+
 };

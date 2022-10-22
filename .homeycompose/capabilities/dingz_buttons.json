@@ -1,0 +1,8 @@
+{
+  "type": "boolean",
+  "title": "Button",
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "getable": false,
+  "setable": false
+}
