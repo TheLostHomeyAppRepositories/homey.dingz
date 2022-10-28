@@ -9,8 +9,6 @@ module.exports = class BlindDevice extends ShadeDevice {
 
     // Register capability change events
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowCoveringsTiltSet.bind(this));
-
-    this.debug('device has been inited');
   }
 
   async onCapabilityWindowCoveringsTiltSet(value, opts) {

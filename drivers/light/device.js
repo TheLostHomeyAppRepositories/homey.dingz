@@ -9,8 +9,6 @@ module.exports = class LightDevice extends SwitchDevice {
     super.onInit(options);
 
     this.registerMultipleCapabilityListener(['dim', 'ramp'], this.onCapabilityDim.bind(this));
-
-    this.debug('device has been inited');
   }
 
   async onCapabilityDim(valueObj, opts) {

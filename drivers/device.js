@@ -51,22 +51,23 @@ module.exports = class Device extends Homey.Device {
     super.onInit();
     this.debug('onInit()');
 
+    this.setUnavailable(this.homey.__('connecting'));
+
     this.data = this.getData();
     this.http = new Http(this.homey, { baseURL: this.getBaseURL() }, this._logLinePrefix());
-
-    this.setUnavailable(this.homey.__('connecting'))
-      .catch((err) => {
-        this.error(`setUnavailable() > ${err}`);
-      });
-
-    this.ready(() => this.deviceReady());
   }
 
-  deviceReady() {
-    this.debug('deviceReady()');
-    this.setAvailable()
-      .then(this.updateSettingLabels())
-      .catch((err) => this.error(`setAvailable() > ${err}`));
+  ready() {
+    return Promise.resolve(this.deviceReady());
+  }
+
+  async deviceReady() {
+    try {
+      await this.setAvailable();
+      // .catch((err) => this.error(`setAvailable() > ${err}`));
+      await this.getDeviceValues();
+      this.log('Device ready');
+    } catch {}
   }
 
   getBaseURL() {

@@ -67,8 +67,6 @@ module.exports = class DingzDevice extends Device {
       clearInterval(this.dingzSensorsInterval);
       await this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
     });
-
-    this.debug('device has been inited');
   }
 
   async deviceReady() {
@@ -76,8 +74,9 @@ module.exports = class DingzDevice extends Device {
       super.deviceReady();
 
       const dingzDevice = await this.getDingzDevice();
-      await this.initDingzSensors();
       await this.initMotionDetector(dingzDevice);
+      await this.initDingzSensors();
+      this.updateSettingLabels();
     } catch {}
   }
 

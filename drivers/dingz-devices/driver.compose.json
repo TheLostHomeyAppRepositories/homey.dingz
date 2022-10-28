@@ -1,0 +1,47 @@
+{
+  "name": {
+    "en": "dingz Switch Devices"
+  },
+  "class": "other",
+  "capabilities": [
+    "onoff"
+  ],
+  "images": {
+    "small": "/drivers/dingz/assets/images/small.png",
+    "large": "/drivers/dingz/assets/images/large.png"
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
+        "next": "1_switch_webUI"
+      }
+    },
+    {
+      "id": "1_switch_webUI",
+      "navigation": {
+        "next": "2_list_devices"
+      }
+    },
+    {
+      "id": "2_list_devices",
+      "navigation": {
+        "prev": "1_switch_webUI",
+        "next": "3_add_devices"
+      }
+    },
+    {
+      "id": "3_add_devices"
+    }
+  ]
+}

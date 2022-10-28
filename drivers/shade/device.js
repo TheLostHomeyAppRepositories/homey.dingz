@@ -24,15 +24,6 @@ module.exports = class ShadeDevice extends Device {
         }
       }
     });
-
-    this.debug('device has been inited');
-  }
-
-  async deviceReady() {
-    try {
-      await super.deviceReady();
-      await this.getDeviceValues();
-    } catch {}
   }
 
   waitForPosition() {

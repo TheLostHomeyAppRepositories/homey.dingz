@@ -31,15 +31,6 @@ module.exports = class SwitchDevice extends Device {
         this.setCapabilityValue('measure_power', Math.round(params.value * 10) / 10);
       }
     });
-
-    this.debug('device has been inited');
-  }
-
-  async deviceReady() {
-    try {
-      await super.deviceReady();
-      await this.getDeviceValues();
-    } catch {}
   }
 
   async onCapabilityOnOff(value, opts) {

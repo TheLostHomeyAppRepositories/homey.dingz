@@ -20,28 +20,13 @@
     {
       "id": "list_devices",
       "template": "list_devices",
-      "options": {
-        "singular": true
-      },
       "navigation": {
-        "next": "dingzWebUI"
+        "next": "add_devices"
       }
     },
     {
-      "id": "dingzWebUI",
-      "navigation": {
-        "next": "configuration"
-      }
-    },
-    {
-      "id": "configuration",
-      "navigation": {
-        "prev": "dingzWebUI",
-        "next": "create_devices"
-      }
-    },
-    {
-      "id": "create_devices"
+      "id": "add_devices",
+      "template": "add_devices"
     }
   ],
   "settings": [

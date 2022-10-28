@@ -41,8 +41,6 @@ module.exports = class DingzDriver extends Driver {
     this._windowcoveringsTiltSetAction = this.homey.flow.getActionCard('windowcoverings_tilt_set');
     this._windowcoveringsTiltSetAction
       .registerRunListener((args, state) => args.device.onCapabilityWindowCoveringsTiltSet(args.value, {}));
-
-    this.debug('driver has been inited');
   }
 
   onMapDeviceClass(device) {
@@ -84,16 +82,19 @@ module.exports = class DingzDriver extends Driver {
         .filter((discoveryResult) => !this.getDevices().some((device) => device.data.id === discoveryResult.id))
         .map((discoveryResult) => {
           this.debug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
-          const roomName = !discoveryResult.txt.room ? '' : discoveryResult.txt.room;
-          const dingzName = discoveryResult.txt.name || discoveryResult.name;
+          const roomName = (!discoveryResult.txt.room ? '' : discoveryResult.txt.room).trim();
+          const dingzName = (discoveryResult.txt.name || discoveryResult.name).trim();
           return {
             name: !roomName ? dingzName : `${roomName} - ${dingzName}`,
             data: {
               id: discoveryResult.id,
               mac: discoveryResult.txt.mac,
-              address: discoveryResult.address,
+              deviceId: 'dingz', // TempFix v1.4x
               roomName,
               dingzName,
+            },
+            store: {
+              address: discoveryResult.address,
             },
           };
         })

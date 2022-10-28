@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<script type="text/javascript">
+  Homey.setTitle("Edit dingz Switch settings...");
+
+  // Workaround - see: https://web.dev/what-is-mixed-content/:
+  // Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
+  //   document.getElementById("dingzWebUI").src = `https://${dingzConfig.address}/`;
+  // });
+
+  $("#open_dingzWebUI").click( () => {
+    Homey.showLoadingOverlay();
+    Homey.emit("getDingzSwitch", null, (error, dingzSwitch) => {
+      Homey.popup(`http://${dingzSwitch.data.address}/`);
+      Homey.hideLoadingOverlay();
+    });
+  });
+</script>
+
+<style type="text/css">
+  .form-group {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .iframe {
+    width: 100%;
+    border: none;
+  }
+  .node {
+    text-align: center;
+  }
+  .messages {
+    display: none;
+    padding-top: 10px;
+  }
+  .dingz-error,
+  .dingz-processing {
+    display: none;
+  }
+  .buttons {
+    text-align: center;
+    padding-top: 14px;
+  }
+  .button {
+    background-color: #00c139 !important;
+    color: #ffffff !important;
+    display: block;
+    min-width: 100%;
+    margin-bottom: 8px !important;
+  }
+</style>
+
+<div class="dingz-pairing">
+  <div class="form-group">
+     <br /><br />
+    <!-- <iframe id="dingzWebUI" class="iframe"></iframe> -->
+    <div class="node">
+      <span>To check or edit the naming or configuration of the keys, outputs or other elements of the dingz Switch, please open the dingz web interface.</span>
+    </div>
+     <br /><br />
+    <div class="form-group buttons">
+      <button id="open_dingzWebUI" class="button" data-i18n="pair.next">Open WebUI</button>
+    </div>
+     <br /><br /><br />
+    <div class="node">
+      <h2><strong>Please note:</strong></h2>
+      <span>When adding or removing an input, thermostat, light output or blind motor, all devices on the dingz Switch must be removed and reloaded via the Homey dingz app.</span>
+    </div>
+  </div>
+</div>

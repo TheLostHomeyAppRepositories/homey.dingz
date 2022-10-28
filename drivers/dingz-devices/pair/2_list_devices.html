@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<script type="text/javascript">
+  Homey.setTitle("Configuration for dingz Switch...");
+  Homey.showLoadingOverlay();
+
+  $(() => {
+    Homey.emit("getDingzSwitch", null, (error, dingzSwitch) => {
+      if (error) {
+        Homey.hideLoadingOverlay();
+        Homey.alert(error);
+      } else {
+        Homey.hideLoadingOverlay();
+        document.getElementById("name").value = dingzSwitch.name;
+
+        Homey.emit("getDingzDevice", null, (error, dingzDevices) => {
+          if (error) {
+            Homey.hideLoadingOverlay();
+            Homey.alert(error);
+          } else {
+            Homey.hideLoadingOverlay();
+            document.getElementById("devicesTab").innerHTML = getDeviceRows(dingzDevices);
+          }
+        });
+      }
+    });
+
+    function getDeviceRows(devices) {
+      let rows = '<thead><tr><th scope="col">Name</th><th scope="col">Device-ID</th></tr></thead>';
+      rows += "<tbody>";
+      devices.forEach((elm) => {
+        rows += `<tr><td>${elm.name}</td><td>${elm.deviceId}</td></tr>`;
+      });
+      rows += "</tbody>";
+      return rows;
+    }
+  });
+</script>
+
+<style type="text/css">
+  .form-group {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th:nth-child(1) {
+    width: 70%;
+  }
+  thead th:nth-child(2) {
+    width: 30%;
+  }
+  tbody tr:first-child {
+    border-top: none;
+  }
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<div class="dingz-pairing">
+  <div class="form-group">
+    <form class="form-group">
+      <fieldset>
+        <legend>Dingz Switch</legend>
+        <label for="room" data-i18n="pair.room">Zone</label>
+        <input type="text" id="zone" />
+        <label for="name" data-i18n="pair.name">Name</label>
+        <input type="text" id="name" />
+      </fieldset>
+      <fieldset>
+        <legend>Dingz Devices</legend>
+        <table id="devicesTab"></table>
+      </fieldset>
+    </form>
+  </div>
+</div>
