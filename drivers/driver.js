@@ -9,7 +9,9 @@ module.exports = class Driver extends Homey.Driver {
   }
 
   ready() {
-    return Promise.resolve(this.driverReady());
+    return new Promise((resolve, reject) => {
+      this.driverReady();
+    });
   }
 
   driverReady() {

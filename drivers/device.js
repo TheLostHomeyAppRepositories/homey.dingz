@@ -58,16 +58,16 @@ module.exports = class Device extends Homey.Device {
   }
 
   ready() {
-    return Promise.resolve(this.deviceReady());
+    return new Promise((resolve, reject) => {
+      this.deviceReady();
+    });
   }
 
   async deviceReady() {
-    try {
-      await this.setAvailable();
-      // .catch((err) => this.error(`setAvailable() > ${err}`));
-      await this.getDeviceValues();
-      this.log('Device ready');
-    } catch {}
+    this.setAvailable()
+      .then(this.getDeviceValues())
+      .then(this.log('Device ready'))
+      .catch((err) => this.error(`deviceReady() > ${err}`));
   }
 
   getBaseURL() {
