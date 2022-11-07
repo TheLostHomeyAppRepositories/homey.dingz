@@ -11,6 +11,18 @@ module.exports = class BlindDevice extends ShadeDevice {
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowCoveringsTiltSet.bind(this));
   }
 
+  async getDeviceValues(url) {
+    return super.getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue('windowcoverings_tilt_set', (100 - data.target.lamella) / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
+  }
+
   async onCapabilityWindowCoveringsTiltSet(value, opts) {
     const current = this.getCapabilityValue('windowcoverings_tilt_set');
     if (current === value) return Promise.resolve();
@@ -22,24 +34,7 @@ module.exports = class BlindDevice extends ShadeDevice {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${blind}&lamella=${lamella}`)
       .then(this.waitForPosition())
-      .then(() => {
-        const val = this.getCapabilityValue('windowcoverings_tilt_set') * 100;
-        this.notify(this.homey.__('device.windowCoveringsTiltSet', { value: val }));
-      })
       .catch((err) => this.error(`onCapabilityWindowCoveringsTiltSet() > ${err}`));
-  }
-
-  async getDeviceValues(url) {
-    return super
-      .getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('windowcoverings_tilt_set', (100 - data.target.lamella) / 100);
-        return data;
-      })
-      .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
-      });
   }
 
 };

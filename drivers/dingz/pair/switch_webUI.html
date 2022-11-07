@@ -8,10 +8,10 @@
   //   document.getElementById("dingzWebUI").src = `https://${dingzConfig.address}/`;
   // });
 
-  $("#open_dingzWebUI").click(function () {
+  $("#open_dingzWebUI").click( () => {
     Homey.showLoadingOverlay();
-    Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
-      Homey.popup(`http://${dingzConfig.address}/`);
+    Homey.emit("getDingzSwitch", null, (error, dingzSwitch) => {
+      Homey.popup(`http://${dingzSwitch.store.address}/`);
       Homey.hideLoadingOverlay();
     });
   });
@@ -60,12 +60,8 @@
     </div>
      <br /><br />
     <div class="form-group buttons">
-      <button id="open_dingzWebUI" class="button" data-i18n="pair.next">Open dingz WebUI</button>
+      <button id="open_dingzWebUI" class="button" data-i18n="pair.next">Open WebUI</button>
     </div>
      <br /><br /><br />
-    <div class="node">
-      <h2><strong>Please note:</strong></h2>
-      <span>When adding or removing an input, thermostat, light output or blind motor, all devices on the dingz Switch must be removed and reloaded via the Homey dingz app.</span>
-    </div>
   </div>
 </div>

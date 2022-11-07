@@ -43,6 +43,18 @@ module.exports = class ShadeDevice extends Device {
     });
   }
 
+  async getDeviceValues(url = `shade/${this.data.relativeIdx}`) {
+    return super.getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue('windowcoverings_set', (100 - data.target.blind) / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
+  }
+
   async onCapabilityWindowCoveringsSet(value, opts) {
     const current = this.getCapabilityValue('windowcoverings_set');
     if (current === value) return Promise.resolve();
@@ -54,24 +66,7 @@ module.exports = class ShadeDevice extends Device {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
-      .then(() => {
-        const val = this.getCapabilityValue('windowcoverings_set') * 100;
-        this.notify(this.homey.__('device.windowCoveringsSet', { value: val }));
-      })
       .catch((err) => this.error(`onCapabilityWindowCoveringsSet() > ${err}`));
-  }
-
-  async getDeviceValues(url = `shade/${this.data.relativeIdx}`) {
-    return super
-      .getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('windowcoverings_set', (100 - data.target.blind) / 100);
-        return data;
-      })
-      .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
-      });
   }
 
 };

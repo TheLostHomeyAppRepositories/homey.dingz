@@ -47,7 +47,7 @@
   ],
   "api": {
     "dingzGenActionAPI": {
-      "description": "dingz-device generic action",
+      "description": "dingz generic action",
       "method": "get",
       "path": "/dingzGenAction",
       "public": true
@@ -55,14 +55,6 @@
   },
   "drivers": [
     {
-      "name": {
-        "en": "Blind"
-      },
-      "class": "blinds",
-      "capabilities": [
-        "windowcoverings_set",
-        "windowcoverings_tilt_set"
-      ],
       "connectivity": [
         "lan"
       ],
@@ -71,10 +63,26 @@
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
+      "name": {
+        "en": "Blind"
+      },
+      "class": "blinds",
+      "capabilities": [
+        "windowcoverings_set",
+        "windowcoverings_tilt_set"
+      ],
       "id": "blind"
     },
     {
-      "name": "dingz Switch",
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "./assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": "dingz",
       "class": "other",
       "capabilities": [
         "alarm_motion",
@@ -83,19 +91,22 @@
         "light_state",
         "dingz_buttons"
       ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "large": "drivers/dingz/assets/images/large.png",
-        "small": "drivers/dingz/assets/images/small.png"
-      },
       "discovery": "dingz",
       "pair": [
         {
           "id": "list_devices",
           "template": "list_devices",
+          "options": {
+            "singular": true
+          },
           "navigation": {
+            "next": "switch_webUI"
+          }
+        },
+        {
+          "id": "switch_webUI",
+          "navigation": {
+            "prev": "list_devices",
             "next": "add_devices"
           }
         },
@@ -104,6 +115,7 @@
           "template": "add_devices"
         }
       ],
+      "id": "dingz",
       "settings": [
         {
           "type": "group",
@@ -186,26 +198,26 @@
             }
           ]
         }
-      ],
-      "id": "dingz"
+      ]
     },
     {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "./assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
       "name": {
-        "en": "dingz Switch Devices"
+        "en": "dingz Devices"
       },
       "class": "other",
       "capabilities": [
         "onoff"
       ],
-      "images": {
-        "small": "/drivers/dingz/assets/images/small.png",
-        "large": "/drivers/dingz/assets/images/large.png"
-      },
       "platforms": [
         "local"
-      ],
-      "connectivity": [
-        "lan"
       ],
       "pair": [
         {
@@ -235,9 +247,17 @@
           "id": "3_add_devices"
         }
       ],
-      "id": "dingz-devices"
+      "id": "dingz-device"
     },
     {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../led/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
       "name": {
         "en": "FrontLED"
       },
@@ -254,17 +274,17 @@
           "setOnDim": false
         }
       },
+      "id": "led"
+    },
+    {
       "connectivity": [
         "lan"
       ],
-      "icon": "../../led/assets/icon.svg",
+      "icon": "../../light/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
-      "id": "led"
-    },
-    {
       "name": {
         "en": "Light"
       },
@@ -280,24 +300,9 @@
           "setOnDim": false
         }
       },
-      "connectivity": [
-        "lan"
-      ],
-      "icon": "../../light/assets/icon.svg",
-      "images": {
-        "large": "drivers/dingz/assets/images/large.png",
-        "small": "drivers/dingz/assets/images/small.png"
-      },
       "id": "light"
     },
     {
-      "name": {
-        "en": "Shade"
-      },
-      "class": "sunshade",
-      "capabilities": [
-        "windowcoverings_set"
-      ],
       "connectivity": [
         "lan"
       ],
@@ -306,17 +311,16 @@
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
+      "name": {
+        "en": "Shade"
+      },
+      "class": "sunshade",
+      "capabilities": [
+        "windowcoverings_set"
+      ],
       "id": "shade"
     },
     {
-      "name": {
-        "en": "Switch"
-      },
-      "class": "socket",
-      "capabilities": [
-        "onoff",
-        "measure_power"
-      ],
       "connectivity": [
         "lan"
       ],
@@ -325,6 +329,14 @@
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
+      "name": {
+        "en": "Switch"
+      },
+      "class": "socket",
+      "capabilities": [
+        "onoff",
+        "measure_power"
+      ],
       "id": "switch"
     }
   ],

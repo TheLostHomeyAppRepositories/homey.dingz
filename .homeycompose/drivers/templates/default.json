@@ -1,0 +1,10 @@
+{
+  "connectivity": [
+    "lan"
+  ],
+  "icon": "./assets/icon.svg",
+  "images": {
+    "large": "drivers/dingz/assets/images/large.png",
+    "small": "drivers/dingz/assets/images/small.png"
+  }
+}

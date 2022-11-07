@@ -1,20 +1,13 @@
 {
   "name": {
-    "en": "dingz Switch Devices"
+    "en": "dingz Devices"
   },
   "class": "other",
   "capabilities": [
     "onoff"
   ],
-  "images": {
-    "small": "/drivers/dingz/assets/images/small.png",
-    "large": "/drivers/dingz/assets/images/large.png"
-  },
   "platforms": [
     "local"
-  ],
-  "connectivity": [
-    "lan"
   ],
   "pair": [
     {
@@ -43,5 +36,8 @@
     {
       "id": "3_add_devices"
     }
+  ],
+  "$extends": [
+    "default"
   ]
 }

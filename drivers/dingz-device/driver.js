@@ -1,10 +1,8 @@
 'use strict';
 
-const Http = require('../../lib/http');
-
 // const { DINGZ } = require('../device');
-
 const Driver = require('../driver');
+
 const LedDevice = require('../led/device');
 const SwitchDevice = require('../switch/device');
 const LightDevice = require('../light/device');
@@ -13,27 +11,21 @@ const BlindDevice = require('../blind/device');
 
 module.exports = class DevicesDriver extends Driver {
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     super.onInit(options);
-    this.http = new Http(this.homey);
   }
 
   onMapDeviceClass(device) {
     switch (device.getData().deviceId) {
       case 'led':
-        // this.debug(`onMapDeviceClass - LedDevice`);
         return LedDevice;
       case 'switch':
-        // this.debug(`onMapDeviceClass - SwitchDevice`);
         return SwitchDevice;
       case 'light':
-        // this.debug(`onMapDeviceClass - LightDevice`);
         return LightDevice;
       case 'shade':
-        // this.debug(`onMapDeviceClass - ShadeDevice`);
         return ShadeDevice;
       case 'blind':
-        // this.debug(`onMapDeviceClass - BlindDevice`);
         return BlindDevice;
       default:
         this.error(`onMapDeviceClass - unknown deviceId: ${device.getData().deviceId}`);
@@ -47,7 +39,7 @@ module.exports = class DevicesDriver extends Driver {
 
     session.setHandler('list_devices', async () => {
       return Object.values(await this.homey.app.api.devices.getDevices())
-        // .filter((device) => device.driverId === 'dingz')     >> dingz-fw: 1.4x
+        // .filter((device) => device.driverId === 'dingz')     >> fw: 1.4x
         .filter((device) => device.data.deviceId === 'dingz')
         .map((device) => {
           // this.debug(`onPair() - list_devices > device: ${JSON.stringify(device)}`);
@@ -77,11 +69,11 @@ module.exports = class DevicesDriver extends Driver {
 
     session.setHandler('getDingzDevice', async () => {
       try {
-        const device = Object.values(await this.http.get(`http://${dingzSwitch.data.address}/api/v1/device`))[0];
+        const device = Object.values(await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/device`))[0];
         const dip = device.dip_config;
 
         // Dimmer-Devices
-        let { dimmers } = await this.http.get(`http://${dingzSwitch.data.address}/api/v1/dimmer_config`);
+        let { dimmers } = await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/dimmer_config`);
         dimmers = dimmers.map((elm, idx) => {
           const name = `${dingzSwitch.data.name} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`;
           return {
@@ -93,7 +85,7 @@ module.exports = class DevicesDriver extends Driver {
         });
 
         // Blind-Devices
-        let { blinds } = await this.http.get(`http://${dingzSwitch.data.address}/api/v1/blind_config`);
+        let { blinds } = await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/blind_config`);
         blinds = blinds.map((elm, idx) => {
           const name = `${dingzSwitch.data.name} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`;
           return {
@@ -116,23 +108,25 @@ module.exports = class DevicesDriver extends Driver {
     });
 
     session.setHandler('getDeviceManifests', async () => {
+      // const homeyDevices = Object.values(await this.homey.app.api.devices.getDevices());
       return dingzDevices
         .filter((device) => device.deviceId !== '[none]')
+        // .filter((device) => !homeyDevices.some((homeyDevice) => homeyDevice.id === device.id))
         .map((device) => {
           const deviceManifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.deviceId);
           if (deviceManifest === undefined) {
-            return Error(`Device manifest (${device.deviceId}) not found`);
+            throw Error(`Device manifest (${device.deviceId}) not found`);
           }
           const manifest = { ...deviceManifest };
           manifest.name = device.name;
           manifest['data'] = manifest.data || {};
           manifest.data['id'] = device.id;
           manifest.data['deviceId'] = device.deviceId;
-          manifest.data['mac'] = device.mac;
+          manifest.data['mac'] = dingzSwitch.data.mac;
           manifest.data['relativeIdx'] = device.relativeIdx || '';
           manifest.data['absoluteIdx'] = device.absoluteIdx || '';
           manifest['store'] = manifest.store || {};
-          manifest.store['address'] = device.address;
+          manifest.store['address'] = dingzSwitch.data.address;
           // FIX: ... error
           manifest['settings'] = {};
 

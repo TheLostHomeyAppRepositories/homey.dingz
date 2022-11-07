@@ -3,6 +3,7 @@
 const { DINGZ } = require('../device');
 const Device = require('../device');
 
+const APP_PATH = 'api/app/org.cflat-inc.dingzX';
 module.exports = class DingzDevice extends Device {
 
   async onInit(options = {}) {
@@ -35,7 +36,7 @@ module.exports = class DingzDevice extends Device {
           case DINGZ.SHORT_PRESS:
           case DINGZ.DOUBLE_PRESS:
           case DINGZ.LONG_PRESS:
-            this.dingzButtonPressed(params);
+            this.driver.triggerDingzButtonPressedFlow(this, {}, params);
             break;
           default:
         }
@@ -70,36 +71,86 @@ module.exports = class DingzDevice extends Device {
   }
 
   async deviceReady() {
-    try {
-      super.deviceReady();
-
-      const dingzDevice = await this.getDingzDevice();
-      await this.initMotionDetector(dingzDevice);
-      await this.initDingzSensors();
-      this.updateSettingLabels();
-    } catch {}
+    super.deviceReady()
+      .then(() => this.initMotionDetector())
+      .then(() => this.initDingzSensors());
   }
 
+  // Homey Lifecycle
   onDeleted() {
     super.onDeleted();
-
-    this.unsubscribeDingzAction('dingzPirGenAction', 'action/pir/generic');
-
-    // Not working, see: https://github.com/athombv/homey-apps-sdk-issues/issues/123
-    // this.getSubDevices().forEach((device) => {
-    //   this.debug("onDeleted() - delete mySub-Devices");
-    //   this.homeyAPI.devices.deleteDevice({ id: device.id }).catch((error) => {
-    //     this.error(`deleteSubDevice - '${device.name}' > ${error}`);
-    //   });
-    // });
+    clearInterval(this.dingzSensorsInterval);
+    this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
   }
 
-  async getSubDevices() {
-    this.debug('getSubDevices()');
-    // (device) => device.data.mac === this.data.mac && device.id !== this.id
-    return Object.values(await this.homey.app.api.devices.getDevices()).filter(
-      (device) => device.data.mac === this.data.mac && device.data.deviceId !== 'dingz',
-    );
+  // Homey Discovery
+  onDiscoveryResult(discoveryResult) {
+    return discoveryResult.id === this.data.id;
+  }
+
+  onDiscoveryAvailable(discoveryResult) {
+    this.log('onDiscoveryAvailable');
+  }
+
+  onDiscoveryAddressChanged(discoveryResult) {
+    this.log(`onDiscoveryAddressChanged to: ${discoveryResult.address}`);
+
+    this.setStoreValue('address', discoveryResult.address)
+      .then(this.updateSettingLabels())
+      .then(this.homey.emit('addressChanged', discoveryResult))
+      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
+  }
+
+  onDiscoveryLastSeenChanged(discoveryResult) {
+    this.debug('onDiscoveryLastSeenChanged');
+    this.setAvailable()
+      .catch((err) => this.error(`setAvailable() > ${err}`));
+  }
+
+  // Dingz action
+  async subscribeDingzAction(action, url) {
+    this.debug(`subscribeDingzAction() - ${action} > ${url}`);
+
+    this.getDeviceData(url)
+      .then(async (dingzActions) => {
+        return dingzActions.url
+          .split('||')
+          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
+          .concat([`get://${this.homey.app.homeyAddress}/${APP_PATH}/${action}`])
+          .join('||');
+      })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`subscribeDingzAction() - ${action} subscribed`))
+      .catch((err) => {
+        this.error(`subscribeDingzAction() > ${err}`);
+        this.setUnavailable(err).catch((err) => {
+          this.error(`setUnavailable() > ${err}`);
+        });
+      });
+  }
+
+  async unsubscribeDingzAction(action, url) {
+    this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
+
+    this.getDeviceData(url)
+      .then((dingzActions) => {
+        return dingzActions.url
+          .split('||')
+          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
+          .join('||');
+      })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`unsubscribeDingzAction() - ${action} unsubscribed`))
+      .catch((err) => {
+        this.error(`unsubscribeDingzAction() > ${err}`);
+        this.setUnavailable(err).catch((err) => {
+          this.error(`setUnavailable() > ${err}`);
+        });
+      });
+  }
+
+  async getDeviceValues(url = 'led/get') {
+    // return super.getDeviceValues(url) // > FW: 1.4x
   }
 
   async getDingzDevice() {
@@ -111,6 +162,31 @@ module.exports = class DingzDevice extends Device {
       .catch((err) => {
         this.error(`getDingzDevice() > ${err}`);
       });
+  }
+
+  async initMotionDetector() {
+    this.debug('initMotionDetector()');
+    const dingzDevice = this.getDingzDevice();
+
+    if (dingzDevice.has_pir) {
+      if (!this.hasCapability('alarm_motion')) {
+        this.addCapability('alarm_motion')
+          .then(this.debug('initMotionDetector() - alarm_motion added'))
+          .catch((err) => this.error(`initMotionDetector() - ${err}`));
+      }
+      this.setDeviceData('action/pir/generic/feedback/enable')
+        .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
+        .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
+    } else {
+      if (this.hasCapability('alarm_motion')) {
+        this.removeCapability('alarm_motion')
+          .then(this.debug('initMotionDetector() - alarm_motion removed'))
+          .catch((err) => this.error(`initMotionDetector() - ${err}`));
+      }
+      this.setDeviceData('action/pir/generic/feedback/disable')
+        .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
+        .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
+    }
   }
 
   async initDingzSensors() {
@@ -133,6 +209,11 @@ module.exports = class DingzDevice extends Device {
       .catch((err) => this.error(`getDingzSensors() - ${err}`));
   }
 
+  async setMotionDetector(motion) {
+    this.debug(`setMotionDetector() > ${motion}`);
+    this.setCapabilityValue('alarm_motion', motion);
+  }
+
   async setLightState(state) {
     if (state !== this.getCapabilityValue('light_state')) {
       this.debug(`setLightState() > ${state}`);
@@ -140,39 +221,6 @@ module.exports = class DingzDevice extends Device {
         .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
         .catch((err) => this.error(`setLightState() - ${err}`));
     }
-  }
-
-  async initMotionDetector(dingzDevice) {
-    this.debug('initMotionDetector()');
-    if (dingzDevice.has_pir) {
-      if (!this.hasCapability('alarm_motion')) {
-        this.addCapability('alarm_motion')
-          .then(this.debug('initMotionDetector() - alarm_motion added'))
-          .catch((err) => this.error(`initMotionDetector() - ${err}`));
-      }
-      this.setDeviceData('action/pir/generic/feedback/enable')
-        .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
-        .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
-    } else {
-      if (this.hasCapability('alarm_motion')) {
-        this.removeCapability('alarm_motion')
-          .then(this.debug('initMotionDetector() - alarm_motion removed'))
-          .catch((err) => this.error(`initMotionDetector() - ${err}`));
-      }
-      this.setDeviceData('action/pir/generic/feedback/disable')
-        .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
-        .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
-    }
-  }
-
-  async setMotionDetector(motion) {
-    this.debug(`setMotionDetector() > ${motion}`);
-    this.setCapabilityValue('alarm_motion', motion);
-  }
-
-  dingzButtonPressed(params) {
-    this.debug(`dingzButtonPressed() > ${JSON.stringify(params)}`);
-    this.driver.triggerDingzButtonPressedFlow(this, {}, params);
   }
 
   convertMotionMode(mode) {
@@ -200,28 +248,14 @@ module.exports = class DingzDevice extends Device {
   async updateSettingLabels() {
     super.updateSettingLabels();
 
-    const labelSubDevices = (await this.getSubDevices())
+    const labelSubDevices = Object.values(await this.homey.app.api.devices.getDevices()).filter(
+      // (device) => device.data.mac === this.data.mac && device.id !== this.id
+      (device) => device.data.mac === this.data.mac && device.data.deviceId !== 'dingz',
+    )
       .map((device) => `${device.name} (${device.zoneName})`)
       .join('\r\n');
 
     await this.setSettings({ labelSubDevices });
-  }
-
-  // Homey Discovery
-  onDiscoveryResult(discoveryResult) {
-    return discoveryResult.id === this.data.id;
-  }
-
-  async onDiscoveryAvailable(discoveryResult) {
-    // await this.createSubDevices();
-  }
-
-  onDiscoveryAddressChanged(discoveryResult) {
-    // Update your connection details here, reconnect when the device is offline
-  }
-
-  onDiscoveryLastSeenChanged(discoveryResult) {
-    // When the device is offline, try to reconnect here
   }
 
 };

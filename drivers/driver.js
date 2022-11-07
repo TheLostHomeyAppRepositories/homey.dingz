@@ -1,17 +1,17 @@
 'use strict';
 
 const Homey = require('homey');
+const HttpAPI = require('../lib/httpAPI');
 
 module.exports = class Driver extends Homey.Driver {
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     this.debug('onInit()');
-  }
 
-  ready() {
-    return new Promise((resolve, reject) => {
-      this.driverReady();
-    });
+    this.ready()
+      .then(() => this.driverReady());
+
+    this.httpAPI = new HttpAPI(this.homey, this._logLinePrefix());
   }
 
   driverReady() {
@@ -20,19 +20,19 @@ module.exports = class Driver extends Homey.Driver {
 
   // Homey-App Loggers
   log(msg) {
-    this.homey.app.log(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.log(`${this._logLinePrefix()} > ${msg}`);
   }
 
   error(msg) {
-    this.homey.app.error(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.error(`${this._logLinePrefix()} > ${msg}`);
   }
 
   debug(msg) {
-    this.homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+    this.homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
   }
 
   _logLinePrefix() {
-    return `${this.constructor.name} >`;
+    return `${this.constructor.name}`;
   }
 
 };

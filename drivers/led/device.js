@@ -5,9 +5,6 @@ const querystring = require('querystring');
 const { DINGZ } = require('../device');
 const Device = require('../device');
 
-const GET_URL = 'led/get';
-const SET_URL = 'led/set';
-
 module.exports = class LedDevice extends Device {
 
   onInit(options = {}) {
@@ -18,8 +15,19 @@ module.exports = class LedDevice extends Device {
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
   }
 
-  handleDeviceAction(params) {
-    // nop
+  async getDeviceValues(url = 'led/get') {
+    return super.getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue('onoff', data.on);
+        this.setCapabilityValue('light_hue', Math.round((1 / 360) * parseInt(data.hsv.split(';')[0], 10) * 100) / 100);
+        this.setCapabilityValue('light_saturation', parseInt(data.hsv.split(';')[1], 10) / 100);
+        this.setCapabilityValue('dim', parseInt(data.hsv.split(';')[2], 10) / 100);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
   }
 
   async onCapabilityOnOff(value, opts) {
@@ -31,12 +39,8 @@ module.exports = class LedDevice extends Device {
 
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
 
-    return this.setDeviceData(SET_URL, { action, ramp })
-      .then(await this.getDeviceValues())
-      .then(() => {
-        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
-        this.notify(this.homey.__('device.stateSet', { value: val }));
-      })
+    return this.setDeviceData('led/set', { action, ramp })
+      .then(this.getDeviceValues())
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
@@ -52,14 +56,10 @@ module.exports = class LedDevice extends Device {
 
     this.debug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
 
-    return this.setDeviceData(SET_URL, {
+    return this.setDeviceData('led/set', {
       action: 'on', ramp, mode: 'hsv', color,
     })
-      .then(await this.getDeviceValues())
-      .then(() => {
-        const val = Math.round(this.getCapabilityValue('dim') * 100);
-        this.notify(this.homey.__('device.dimSet', { value: val }));
-      })
+      .then(this.getDeviceValues())
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 
@@ -79,35 +79,11 @@ module.exports = class LedDevice extends Device {
     this.debug(`onCapabilityLightHue() light_hue - ${curHue} > ${valHue} ramp: ${ramp}`);
     this.debug(`onCapabilityLightHue() light_saturation - ${curSaturation} > ${valSaturation}`);
 
-    return this.setDeviceData(SET_URL, {
+    return this.setDeviceData('led/set', {
       action: 'on', ramp, mode: 'hsv', color,
     })
-      .then(await this.getDeviceValues())
-      .then(() => {
-        const val = Math.round(this.getCapabilityValue('light_hue') * 360);
-        this.notify(this.homey.__('device.lightHueSet', { value: val }));
-      })
-      .then(() => {
-        const val = Math.round(this.getCapabilityValue('light_saturation') * 100);
-        this.notify(this.homey.__('device.lightSaturationSet', { value: val }));
-      })
+      .then(this.getDeviceValues())
       .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
-  }
-
-  async getDeviceValues(url = GET_URL) {
-    return super
-      .getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('onoff', data.on);
-        this.setCapabilityValue('light_hue', Math.round((1 / 360) * parseInt(data.hsv.split(';')[0], 10) * 100) / 100);
-        this.setCapabilityValue('light_saturation', parseInt(data.hsv.split(';')[1], 10) / 100);
-        this.setCapabilityValue('dim', parseInt(data.hsv.split(';')[2], 10) / 100);
-        return data;
-      })
-      .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
-      });
   }
 
   setDeviceData(url, data) {

@@ -33,6 +33,18 @@ module.exports = class SwitchDevice extends Device {
     });
   }
 
+  async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
+    return super.getDeviceValues(url)
+      .then(async (data) => {
+        await this.setCapabilityValue('onoff', data.on);
+        return data;
+      })
+      .catch((err) => {
+        this.error(`getDeviceValues() > ${err}`);
+        this.showWarning(err.message);
+      });
+  }
+
   async onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve();
@@ -43,25 +55,8 @@ module.exports = class SwitchDevice extends Device {
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
-      .then(await this.getDeviceValues())
-      .then(() => {
-        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
-        this.notify(this.homey.__('device.stateSet', { value: val }));
-      })
+      .then(this.getDeviceValues())
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
-  }
-
-  async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
-    return super
-      .getDeviceValues(url)
-      .then(async (data) => {
-        await this.setCapabilityValue('onoff', data.on);
-        return data;
-      })
-      .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
-      });
   }
 
 };

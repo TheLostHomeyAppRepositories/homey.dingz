@@ -10,6 +10,7 @@
         Homey.alert(error);
       } else {
         Homey.hideLoadingOverlay();
+        document.getElementById("zone").value = dingzSwitch.data.zone;
         document.getElementById("name").value = dingzSwitch.name;
 
         Homey.emit("getDingzDevice", null, (error, dingzDevices) => {
@@ -66,7 +67,7 @@
     <form class="form-group">
       <fieldset>
         <legend>Dingz Switch</legend>
-        <label for="room" data-i18n="pair.room">Zone</label>
+        <label for="zone" data-i18n="pair.zone">Zone</label>
         <input type="text" id="zone" />
         <label for="name" data-i18n="pair.name">Name</label>
         <input type="text" id="name" />

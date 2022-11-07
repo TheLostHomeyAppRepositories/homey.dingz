@@ -46,7 +46,7 @@
   ],
   "api": {
     "dingzGenActionAPI": {
-      "description": "dingz-device generic action",
+      "description": "dingz generic action",
       "method": "get",
       "path": "/dingzGenAction",
       "public": true
