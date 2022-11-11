@@ -2,7 +2,9 @@
   "name": {
     "en": "Light"
   },
+  "$extends": "default",
   "class": "light",
+  "icon": "../../light/assets/icon.svg",
   "capabilities": [
     "onoff",
     "dim",
@@ -13,9 +15,5 @@
     "onoff": {
       "setOnDim": false
     }
-  },
-  "icon": "../../light/assets/icon.svg",
-  "$extends": [
-    "default"
-  ]
+  }
 }

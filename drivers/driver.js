@@ -1,6 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
+
 const HttpAPI = require('../lib/httpAPI');
 
 module.exports = class Driver extends Homey.Driver {

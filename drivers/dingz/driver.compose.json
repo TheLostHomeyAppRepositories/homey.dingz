@@ -1,38 +1,13 @@
 {
   "name": "dingz",
+  "$extends": "default",
   "class": "other",
+  "icon": "../../dingz/assets/icon.svg",
   "capabilities": [
     "alarm_motion",
     "measure_temperature",
     "measure_luminance",
     "light_state",
     "dingz_buttons"
-  ],
-  "discovery": "dingz",
-  "pair": [
-    {
-      "id": "list_devices",
-      "template": "list_devices",
-      "options": {
-        "singular": true
-      },
-      "navigation": {
-        "next": "switch_webUI"
-      }
-    },
-    {
-      "id": "switch_webUI",
-      "navigation": {
-        "prev": "list_devices",
-        "next": "add_devices"
-      }
-    },
-    {
-      "id": "add_devices",
-      "template": "add_devices"
-    }
-  ],
-  "$extends": [
-    "default"
   ]
 }

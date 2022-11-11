@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
 <script type="text/javascript">
-  Homey.setTitle("Edit dingz Switch settings...");
+  Homey.setTitle("Edit dingzSwitch settings...");
 
   // Workaround - see: https://web.dev/what-is-mixed-content/:
-  // Homey.emit("getDingzConfig", null, (error, dingzConfig) => {
-  //   document.getElementById("dingzWebUI").src = `https://${dingzConfig.address}/`;
+  // Homey.emit("getDingzSwitch", null, (error, dingzSwitch) => {
+  //   document.getElementById("dingzWebUI").src = `https://${dingzSwitch.data.address}/`;
   // });
 
   $("#open_dingzWebUI").click( () => {
     Homey.showLoadingOverlay();
     Homey.emit("getDingzSwitch", null, (error, dingzSwitch) => {
-      Homey.popup(`http://${dingzSwitch.store.address}/`);
+      Homey.popup(`http://${dingzSwitch.data.address}/`);
       Homey.hideLoadingOverlay();
     });
   });
@@ -63,5 +63,9 @@
       <button id="open_dingzWebUI" class="button" data-i18n="pair.next">Open WebUI</button>
     </div>
      <br /><br /><br />
+    <!-- <div class="node">
+      <h2><strong>Please note:</strong></h2>
+      <span>When adding or removing an input, thermostat, light output or blind motor, all devices on the dingz Switch must be removed and reloaded via the Homey dingz app.</span>
+    </div> -->
   </div>
 </div>

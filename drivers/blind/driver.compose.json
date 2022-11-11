@@ -2,13 +2,11 @@
   "name": {
     "en": "Blind"
   },
+  "$extends": "default",
   "class": "blinds",
+  "icon": "../../blind/assets/icon.svg",
   "capabilities": [
     "windowcoverings_set",
     "windowcoverings_tilt_set"
-  ],
-  "icon": "../../blind/assets/icon.svg",
-  "$extends": [
-    "default"
   ]
 }

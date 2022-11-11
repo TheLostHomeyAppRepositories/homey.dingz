@@ -2,12 +2,10 @@
   "name": {
     "en": "Shade"
   },
+  "$extends": "default",
   "class": "sunshade",
+  "icon": "../../shade/assets/icon.svg",
   "capabilities": [
     "windowcoverings_set"
-  ],
-  "icon": "../../shade/assets/icon.svg",
-  "$extends": [
-    "default"
   ]
 }

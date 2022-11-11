@@ -1,0 +1,42 @@
+{
+  "name": "dingzSwitch",
+  "$extends": "default",
+  "class": "other",
+  "platforms": [
+    "local"
+  ],
+  "capabilities": [
+    "onoff"
+  ],
+  "discovery": "dingz",
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
+        "next": "switch_webUI"
+      }
+    },
+    {
+      "id": "switch_webUI",
+      "navigation": {
+        "next": "list_dingz"
+      }
+    },
+    {
+      "id": "list_dingz",
+      "template": "list_devices",
+      "navigation": {
+        "prev": "switch_webUI",
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

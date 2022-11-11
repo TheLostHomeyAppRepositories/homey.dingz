@@ -2,13 +2,11 @@
   "name": {
     "en": "Switch"
   },
+  "$extends": "default",
   "class": "socket",
+  "icon": "../../switch/assets/icon.svg",
   "capabilities": [
     "onoff",
     "measure_power"
-  ],
-  "icon": "../../switch/assets/icon.svg",
-  "$extends": [
-    "default"
   ]
 }

@@ -77,7 +77,7 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "./assets/icon.svg",
+      "icon": "../../dingz/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
@@ -90,30 +90,6 @@
         "measure_luminance",
         "light_state",
         "dingz_buttons"
-      ],
-      "discovery": "dingz",
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "options": {
-            "singular": true
-          },
-          "navigation": {
-            "next": "switch_webUI"
-          }
-        },
-        {
-          "id": "switch_webUI",
-          "navigation": {
-            "prev": "list_devices",
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
       ],
       "id": "dingz",
       "settings": [
@@ -209,16 +185,15 @@
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
-      "name": {
-        "en": "dingz Devices"
-      },
+      "name": "dingzSwitch",
       "class": "other",
-      "capabilities": [
-        "onoff"
-      ],
       "platforms": [
         "local"
       ],
+      "capabilities": [
+        "onoff"
+      ],
+      "discovery": "dingz",
       "pair": [
         {
           "id": "list_devices",
@@ -227,27 +202,29 @@
             "singular": true
           },
           "navigation": {
-            "next": "1_switch_webUI"
+            "next": "switch_webUI"
           }
         },
         {
-          "id": "1_switch_webUI",
+          "id": "switch_webUI",
           "navigation": {
-            "next": "2_list_devices"
+            "next": "list_dingz"
           }
         },
         {
-          "id": "2_list_devices",
+          "id": "list_dingz",
+          "template": "list_devices",
           "navigation": {
-            "prev": "1_switch_webUI",
-            "next": "3_add_devices"
+            "prev": "switch_webUI",
+            "next": "add_devices"
           }
         },
         {
-          "id": "3_add_devices"
+          "id": "add_devices",
+          "template": "add_devices"
         }
       ],
-      "id": "dingz-device"
+      "id": "dingzSwitch"
     },
     {
       "connectivity": [

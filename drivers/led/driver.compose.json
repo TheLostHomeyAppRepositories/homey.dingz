@@ -2,7 +2,9 @@
   "name": {
     "en": "FrontLED"
   },
+  "$extends": "default",
   "class": "light",
+  "icon": "../../led/assets/icon.svg",
   "capabilities": [
     "onoff",
     "dim",
@@ -14,9 +16,5 @@
     "onoff": {
       "setOnDim": false
     }
-  },
-  "icon": "../../led/assets/icon.svg",
-  "$extends": [
-    "default"
-  ]
+  }
 }

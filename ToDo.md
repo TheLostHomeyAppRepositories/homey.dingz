@@ -1,13 +1,23 @@
 # ToDo
 
+## ?Iolo?
+
+- Relase FW v1.45
+- https ?
+- MessageBus
+- Dimmer/Blind Devices > 1TDevice 2TDevice ?
+- dingz converter 0-10V > Arbeit ?
+
 ## Allgemein
 
 - Set current Zone > Dingz-Room
 - Set current Device Name > Dingz-Name
 
-- Change to note-fetch
+## Homey v8.1.0
 
-## v.1.4x
+- use <https://apps.developer.homey.app/advanced/custom-views/html-and-css-styling>
+
+## dingzSwitch v.1.4x
 
 - Implement MessageBus
 - Add dingz Carusell
