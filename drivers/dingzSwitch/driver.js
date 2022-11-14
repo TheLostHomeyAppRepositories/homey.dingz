@@ -1,6 +1,7 @@
 'use strict';
 
 const { DINGZ } = require('../../lib/dingzAPI');
+const HttpAPI = require('../../lib/httpAPI');
 
 const Driver = require('../driver');
 
@@ -106,6 +107,7 @@ module.exports = class DingzSwitchDriver extends Driver {
           id: discoveryResult.id,
           mac: discoveryResult.txt.mac,
           address: discoveryResult.address,
+          lastSeen: discoveryResult.lastSeen,
           room,
         },
       };
@@ -115,13 +117,15 @@ module.exports = class DingzSwitchDriver extends Driver {
 
   async _handelDingzDevices(dingzSwitch) {
     try {
+      const httpAPI = new HttpAPI(this.homey, dingzSwitch.data.address, this._logLinePrefix());
+
       let dingzDevices;
 
-      const device = Object.values(await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/device`))[0];
+      const device = Object.values(await httpAPI.get('device'))[0];
       const dip = device.dip_config;
 
       // Dimmer-Devices
-      let { dimmers } = await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/dimmer_config`);
+      let { dimmers } = await httpAPI.get('dimmer_config');
       dimmers = dimmers.map((elm, idx) => {
         return {
           id: `${dingzSwitch.data.id}:dimmer:${idx}`,
@@ -132,7 +136,7 @@ module.exports = class DingzSwitchDriver extends Driver {
       });
 
       // Blind-Devices
-      let { blinds } = await this.httpAPI.get(`http://${dingzSwitch.data.address}/api/v1/blind_config`);
+      let { blinds } = await httpAPI.get('blind_config');
       blinds = blinds.map((elm, idx) => {
         return {
           id: `${dingzSwitch.data.id}:blind:${idx}`,
@@ -168,6 +172,9 @@ module.exports = class DingzSwitchDriver extends Driver {
           manifest.data['absoluteIdx'] = device.absoluteIdx || '';
           manifest['store'] = manifest.store || {};
           manifest.store['address'] = dingzSwitch.data.address;
+          manifest['settings'] = manifest.settings || {};
+          manifest.settings['address'] = dingzSwitch.data.address;
+          manifest.settings['lastSeen'] = this.localDateTimeFormater().format(new Date(dingzSwitch.data.lastSeen));
 
           // this.debug(`onPair() - _handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
           return manifest;
@@ -254,6 +261,15 @@ module.exports = class DingzSwitchDriver extends Driver {
       default:
         return `[${action}]`;
     }
+  }
+
+  // Helper
+  localDateTimeFormater() {
+    return new Intl.DateTimeFormat('de-CH', {
+      dateStyle: 'short',
+      timeStyle: 'medium',
+      timeZone: this.homey.clock.getTimezone(),
+    });
   }
 
 };

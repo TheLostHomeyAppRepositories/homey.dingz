@@ -1,48 +1,18 @@
 'use strict';
 
 const Homey = require('homey');
+
+const { DINGZ } = require('../lib/dingzAPI');
 const HttpAPI = require('../lib/httpAPI');
-
-const DINGZ = {
-  // default
-  RAMP_DEFAULT: '1',
-  // params > index
-  BTN1: '1',
-  BTN2: '2',
-  BTN3: '3',
-  BTN4: '4',
-  PIR: '5',
-  INPUT: '6',
-  // params > action
-  SHORT_PRESS: '1',
-  DOUBLE_PRESS: '2',
-  LONG_PRESS: '3',
-  PRESS: '8',
-  RELEASE: '9',
-
-  BTN_1CLIC: '1',
-  BTN_2CLICS: '2',
-  // ? BTN_3CLICS: "3",
-  BTN_4CLICS: '4',
-  BTN_5CLICS: '5',
-  BTN_PRESS: '8',
-  BTN_RELEASE: '9',
-  // Motion
-  MOTION_START: '8',
-  MOTION_STOP: '9',
-  MOTION_NIGHT: '14',
-  MOTION_TWILIGHT: '15',
-  MOTION_DAY: '16',
-  // Light state
-  LIGHT_STATE_DAY: 'day',
-  LIGHT_STATE_TWILIGHT: 'twilight',
-  LIGHT_STATE_NIGHT: 'night',
-};
 
 module.exports = class Device extends Homey.Device {
 
   static get DINGZ() {
     return DINGZ;
+  }
+
+  get data() {
+    return this.getData();
   }
 
   async onInit(options = {}) {
@@ -53,34 +23,21 @@ module.exports = class Device extends Homey.Device {
 
     this.setUnavailable(this.homey.__('connecting'));
 
-    this.data = this.getData();
-    this.httpAPI = new HttpAPI(this.homey, this._logLinePrefix());
-
-    this.currentAddress = this.getStoreValue('address');
-    this.homey.on('addressChanged', (discoveryResult) => {
-      if (this.isActionForDevice(discoveryResult.data)) {
-        this.currentAddress = discoveryResult.address;
-        this.setStoreValue('address', discoveryResult.address).catch(this.error);
-      }
-    });
+    this.httpAPI = new HttpAPI(this.homey, this.getStoreValue('address'), this._logLinePrefix());
   }
 
   deviceReady() {
     return Promise.resolve()
       .then(this.log('Device ready'))
       .then(this.setAvailable())
+      .then(this.setDingzSwitchSettings())
       .then(this.getDeviceValues())
       .catch((err) => this.error(`deviceReady() > ${err}`));
-  }
-
-  getBaseURL() {
-    return `http://${this.currentAddress}/api/v1/`;
   }
 
   // Homey Lifecycle
   onAdded() {
     super.onAdded();
-    this.updateSettingLabels();
     this.log('Device added');
   }
 
@@ -90,15 +47,33 @@ module.exports = class Device extends Homey.Device {
   }
 
   onRenamed(name) {
-    this.debug(`onRenamed() name: ${name}`);
-    this.updateSettingLabels();
+    this.debug(`onRenamed() to: ${name}`);
   }
 
   // Homey Discovery
-  onDiscoveryLastSeenChanged(discoveryResult) {
-    this.debug(`onDiscoveryLastSeenChanged() discoveryResult: ${JSON.stringify(discoveryResult)}`);
+  onDiscoveryResult(discoveryResult) {
+    // this.debug(`onDiscoveryResult() > ${JSON.stringify(discoveryResult)}`);
+    return discoveryResult.mac === this.data.mac;
+  }
+
+  onDiscoveryAvailable(discoveryResult) {
+    this.debug('onDiscoveryAvailable()');
     this.setAvailable()
-      .catch((err) => this.error(`setAvailable() > ${err}`));
+      .catch((err) => this.error(`onDiscoveryAvailable() > ${err}`));
+  }
+
+  onDiscoveryAddressChanged(discoveryResult) {
+    this.log(`dingzSwitch changed to: ${discoveryResult.address}`);
+    this.setStoreValue('address', discoveryResult.address)
+      .then(this.httpAPI.setAddress(discoveryResult.address))
+      .then(this.setSettings({ address: discoveryResult.address }))
+      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
+  }
+
+  onDiscoveryLastSeenChanged(discoveryResult) {
+    this.debug('onDiscoveryLastSeenChanged()');
+    this.setSettings({ lastSeen: this.driver.localDateTimeFormater().format(new Date(discoveryResult.lastSeen)) })
+      .catch((err) => this.error(`onDiscoveryLastSeenChanged() > ${err}`));
   }
 
   // Dingz action
@@ -113,7 +88,7 @@ module.exports = class Device extends Homey.Device {
   }
 
   getDeviceData(url) {
-    return this.httpAPI.get(`${this.getBaseURL()}/${url}`)
+    return this.httpAPI.get(url)
       .then((json) => {
         this.debug(`getDeviceData() - '${url}' > ${JSON.stringify(json)}`);
         this.setAvailable()
@@ -130,7 +105,7 @@ module.exports = class Device extends Homey.Device {
   }
 
   setDeviceData(url, value) {
-    return this.httpAPI.post(`${this.getBaseURL()}/${url}`, value)
+    return this.httpAPI.post(url, value)
       .then((json) => {
         this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ''}`);
         this.setAvailable()
@@ -161,13 +136,17 @@ module.exports = class Device extends Homey.Device {
       });
   }
 
-  //
-  async updateSettingLabels() {
-    this.debug('updateSettingLabels()');
-    const labelName = this.getName();
-    const labelAddress = this.currentAddress;
-    const labelDeviceId = this.data.deviceId.replace(/^./, (str) => str.toUpperCase());
-    await this.setSettings({ labelName, labelAddress, labelDeviceId });
+  async setDingzSwitchSettings() {
+    this.debug('setDingzSwitchSettings()');
+    await this.getDeviceData('device')
+      .then((data) => this.setSettings({
+        mac: Object.keys(data)[0],
+        dip: Object.values(data)[0].dip_config.toString(),
+        firmware: Object.values(data)[0].fw_version.toString(),
+        frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
+        baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
+      }))
+      .catch((err) => this.error(`setDingzSwitchSettings() > ${err}`));
   }
 
   showWarning(message) {

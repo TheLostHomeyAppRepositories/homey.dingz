@@ -83,30 +83,6 @@ module.exports = class DingzDevice extends Device {
     this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
   }
 
-  // Homey Discovery
-  onDiscoveryResult(discoveryResult) {
-    return discoveryResult.id === this.data.id;
-  }
-
-  onDiscoveryAvailable(discoveryResult) {
-    this.log('onDiscoveryAvailable');
-  }
-
-  onDiscoveryAddressChanged(discoveryResult) {
-    this.log(`onDiscoveryAddressChanged to: ${discoveryResult.address}`);
-
-    this.setStoreValue('address', discoveryResult.address)
-      .then(this.updateSettingLabels())
-      .then(this.homey.emit('addressChanged', discoveryResult))
-      .catch((err) => this.error(`onDiscoveryAddressChanged() > ${err}`));
-  }
-
-  onDiscoveryLastSeenChanged(discoveryResult) {
-    this.debug('onDiscoveryLastSeenChanged');
-    this.setAvailable()
-      .catch((err) => this.error(`setAvailable() > ${err}`));
-  }
-
   // Dingz action
   async subscribeDingzAction(action, url) {
     this.debug(`subscribeDingzAction() - ${action} > ${url}`);
@@ -243,19 +219,6 @@ module.exports = class DingzDevice extends Device {
         const name = button.name === '' ? `${id}` : `${button.name} (${id})`;
         return { id, name };
       }));
-  }
-
-  async updateSettingLabels() {
-    super.updateSettingLabels();
-
-    const labelSubDevices = Object.values(await this.homey.app.api.devices.getDevices()).filter(
-      // (device) => device.data.mac === this.data.mac && device.id !== this.id
-      (device) => device.data.mac === this.data.mac && device.data.deviceId !== 'dingz',
-    )
-      .map((device) => `${device.name} (${device.zoneName})`)
-      .join('\r\n');
-
-    await this.setSettings({ labelSubDevices });
   }
 
 };

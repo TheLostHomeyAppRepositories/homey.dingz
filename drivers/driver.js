@@ -2,8 +2,6 @@
 
 const Homey = require('homey');
 
-const HttpAPI = require('../lib/httpAPI');
-
 module.exports = class Driver extends Homey.Driver {
 
   async onInit(options = {}) {
@@ -11,8 +9,6 @@ module.exports = class Driver extends Homey.Driver {
 
     this.ready()
       .then(() => this.driverReady());
-
-    this.httpAPI = new HttpAPI(this.homey, this._logLinePrefix());
   }
 
   driverReady() {

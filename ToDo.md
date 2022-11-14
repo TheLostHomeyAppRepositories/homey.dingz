@@ -3,10 +3,8 @@
 ## ?Iolo?
 
 - Relase FW v1.45
-- https ?
-- MessageBus
+- MessageBus/Broadcast >> Action
 - Dimmer/Blind Devices > 1TDevice 2TDevice ?
-- dingz converter 0-10V > Arbeit ?
 
 ## Allgemein
 
