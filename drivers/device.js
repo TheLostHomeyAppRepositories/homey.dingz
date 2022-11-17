@@ -61,8 +61,8 @@ module.exports = class Device extends Homey.Device {
 
   onDeleted() {
     super.onDeleted();
+    // Only for Test
     if (process.env.DEBUG === '1') {
-      // Only for Test
       this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     }
     this.log('Device deleted');

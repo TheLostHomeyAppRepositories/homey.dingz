@@ -239,14 +239,14 @@ module.exports = class DingzSwitchDriver extends Driver {
   triggerDingzButtonPressedFlow(device, tokens, state) {
     this.__flowTriggerDingzButtonPressed
       .trigger(device, tokens, state)
-      .then(this.log(`${device.getName()} dingzButton ${state.index} was '${this._getActionLabel(state.action)}' pressed`))
+      .then(device.log(`dingzButton ${state.index} was '${this._getActionLabel(state.action)}' pressed`))
       .catch((err) => this.error(`triggerDingzButtonPressedFlow() > ${err}`));
   }
 
   triggerLightStateChangedFlow(device, tokens, state) {
     this.__flowTriggerLightStateChanged
       .trigger(device, tokens, state)
-      .then(this.log(`${device.getName()} light state changed to ${state.lightState}`))
+      .then(device.log(`light state changed to ${state.lightState}`))
       .catch((err) => this.error(`triggerLightStateChangedFlow() > ${err}`));
   }
 
