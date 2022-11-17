@@ -1,8 +1,8 @@
 'use strict';
 
-const { DINGZ } = require('../../lib/dingzAPI');
 const HttpAPI = require('../../lib/httpAPI');
 
+const { DINGZ } = require('../../lib/dingzAPI');
 const Driver = require('../driver');
 
 const DingzDevice = require('../dingz/device');

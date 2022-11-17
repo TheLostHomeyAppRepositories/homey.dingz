@@ -45,10 +45,10 @@
     "local"
   ],
   "api": {
-    "dingzGenActionAPI": {
-      "description": "dingz generic action",
+    "dingzBroadcastAPI": {
+      "description": "dingzBroadcastMessage API",
       "method": "get",
-      "path": "/dingzGenAction",
+      "path": "/dingzBroadcast",
       "public": true
     }
   }

@@ -1,143 +1,59 @@
 'use strict';
 
-const { DINGZ } = require('../device');
+const { DINGZ } = require('../../lib/dingzAPI');
 const Device = require('../device');
 
-const APP_PATH = 'api/app/org.cflat-inc.dingzX';
 module.exports = class DingzDevice extends Device {
 
   async onInit(options = {}) {
     super.onInit(options);
+  }
 
-    this.subscribeDingzAction('dingzGenAction', 'action/generic/generic/');
+  initDingzBroadcast() {
+    this.debug('initDingzBroadcast()');
 
-    this.homey.on('dingzGenAction', (params) => {
-      if (this.isActionForDevice(params)) {
-        this.debug(`dingzActionEvent: dingzGenAction > ${JSON.stringify(params)}`);
-        switch (params.index) {
-          case DINGZ.PIR:
-            this.homey.emit('dingzPirGenAction', params);
-            break;
-          case DINGZ.BTN1:
-          case DINGZ.BTN2:
-          case DINGZ.BTN3:
-          case DINGZ.BTN4:
-            this.homey.emit('dingzButtonGenAction', params);
-            break;
-          default:
-        }
+    this.subscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+
+    this.homey.on(`dingzPirChanged-${this.data.mac}`, (params) => {
+      this.debug(`dingzBroadcast: dingzPirChanged > ${JSON.stringify(params)}`);
+      switch (params.action) {
+        case DINGZ.MOTION_START:
+          this.setMotionDetector(true);
+          break;
+        case DINGZ.MOTION_STOP:
+          this.setMotionDetector(false);
+          break;
+        case DINGZ.MOTION_DAY:
+        case DINGZ.MOTION_TWILIGHT:
+        case DINGZ.MOTION_NIGHT:
+          this.setLightState(this.convertMotionMode(params.action));
+          break;
+        default:
       }
     });
 
-    this.homey.on('dingzButtonGenAction', (params) => {
-      if (this.isActionForDevice(params)) {
-        this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
-        switch (params.action) {
-          case DINGZ.SHORT_PRESS:
-          case DINGZ.DOUBLE_PRESS:
-          case DINGZ.LONG_PRESS:
-            this.driver.triggerDingzButtonPressedFlow(this, {}, params);
-            break;
-          default:
-        }
-      }
-    });
-
-    this.homey.on('dingzPirGenAction', (params) => {
-      if (this.isActionForDevice(params)) {
-        this.debug(`dingzActionEvent: dingzPirGenAction > ${JSON.stringify(params)}`);
-        switch (params.action) {
-          case DINGZ.MOTION_START:
-            this.setMotionDetector(true);
-            break;
-          case DINGZ.MOTION_STOP:
-            this.setMotionDetector(false);
-            break;
-          case DINGZ.MOTION_DAY:
-          case DINGZ.MOTION_TWILIGHT:
-          case DINGZ.MOTION_NIGHT:
-            this.setLightState(this.convertMotionMode(params.action));
-            break;
-          default:
-        }
+    this.homey.on(`dingzButtonPressed-${this.data.mac}`, (params) => {
+      this.debug(`dingzBroadcast: dingzButtonPressed > ${JSON.stringify(params)}`);
+      switch (params.action) {
+        case DINGZ.SHORT_PRESS:
+        case DINGZ.DOUBLE_PRESS:
+        case DINGZ.LONG_PRESS:
+          this.driver.triggerDingzButtonPressedFlow(this, {}, params);
+          break;
+        default:
       }
     });
 
     this.homey.on('unload', async () => {
       this.debug('homeyEvent: unload');
-      clearInterval(this.dingzSensorsInterval);
-      await this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
+      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
     });
   }
 
-  async deviceReady() {
-    super.deviceReady()
-      .then(() => this.initMotionDetector())
-      .then(() => this.initDingzSensors());
-  }
-
-  // Homey Lifecycle
-  onDeleted() {
-    super.onDeleted();
-    clearInterval(this.dingzSensorsInterval);
-    this.unsubscribeDingzAction('dingzGenAction', 'action/generic/generic/');
-  }
-
-  // Dingz action
-  async subscribeDingzAction(action, url) {
-    this.debug(`subscribeDingzAction() - ${action} > ${url}`);
-
-    this.getDeviceData(url)
-      .then(async (dingzActions) => {
-        return dingzActions.url
-          .split('||')
-          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
-          .concat([`get://${this.homey.app.homeyAddress}/${APP_PATH}/${action}`])
-          .join('||');
-      })
-      .then((dingzActions) => this.setDeviceData(url, dingzActions))
-      .then(() => this.debug(`subscribeDingzAction() - ${action} subscribed`))
-      .catch((err) => {
-        this.error(`subscribeDingzAction() > ${err}`);
-        this.setUnavailable(err).catch((err) => {
-          this.error(`setUnavailable() > ${err}`);
-        });
-      });
-  }
-
-  async unsubscribeDingzAction(action, url) {
-    this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
-
-    this.getDeviceData(url)
-      .then((dingzActions) => {
-        return dingzActions.url
-          .split('||')
-          .filter((elm) => elm.length !== 0 && !elm.includes(APP_PATH))
-          .join('||');
-      })
-      .then((dingzActions) => this.setDeviceData(url, dingzActions))
-      .then(() => this.debug(`unsubscribeDingzAction() - ${action} unsubscribed`))
-      .catch((err) => {
-        this.error(`unsubscribeDingzAction() > ${err}`);
-        this.setUnavailable(err).catch((err) => {
-          this.error(`setUnavailable() > ${err}`);
-        });
-      });
-  }
-
-  async getDeviceValues(url = 'led/get') {
-    // return super.getDeviceValues(url) // > FW: 1.4x
-  }
-
-  async getDingzDevice() {
-    return this.getDeviceData('device')
-      .then((data) => {
-        this.debug('getDingzDevice()');
-        return data[this.data.mac];
-      })
-      .catch((err) => {
-        this.error(`getDingzDevice() > ${err}`);
-      });
+  async initDevice() {
+    super.initDevice()
+      .then(this.initMotionDetector())
+      .then(this.initDingzSensors());
   }
 
   async initMotionDetector() {
@@ -165,17 +81,38 @@ module.exports = class DingzDevice extends Device {
     }
   }
 
-  async initDingzSensors() {
+  initDingzSensors() {
     this.debug('initDingzSensors()');
-    this.getDingzSensors();
+    this.getDeviceValues();
     this.dingzSensorsInterval = setInterval(() => {
-      this.getDingzSensors();
+      this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
+
+    this.homey.on('unload', async () => {
+      this.debug('initDingzSensors() > homeyEvent: unload');
+      clearInterval(this.dingzSensorsInterval);
+    });
   }
 
-  async getDingzSensors() {
-    this.debug('getDingzSensors()');
-    return this.getDeviceData('sensors')
+  // Homey Lifecycle
+  onDeleted() {
+    super.onDeleted();
+    clearInterval(this.dingzSensorsInterval);
+  }
+
+  async getDingzDevice() {
+    return this.getDeviceData('device')
+      .then((data) => {
+        this.debug('getDingzDevice()');
+        return data[this.data.mac];
+      })
+      .catch((err) => {
+        this.error(`getDingzDevice() > ${err}`);
+      });
+  }
+
+  async getDeviceValues(url = 'sensors') {
+    return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('measure_luminance', data.brightness);
         this.setCapabilityValue('measure_temperature', Math.round(data.room_temperature * 10) / 10);
@@ -214,11 +151,15 @@ module.exports = class DingzDevice extends Device {
 
   onDingzButtonAutocomplete() {
     return this.getDeviceData('button_config')
-      .then((buttonConf) => buttonConf.buttons.map((button, idx) => {
-        const id = (idx + 1).toString();
-        const name = button.name === '' ? `${id}` : `${button.name} (${id})`;
-        return { id, name };
-      }));
+      .then((buttonConf) => {
+        return Object.values(buttonConf.buttons)
+          .filter((button) => button.output === null || button.output === 0)
+          .map((button, idx) => {
+            const id = (idx + 1).toString();
+            const name = button.name === '' ? `${id}` : `${button.name} (${id})`;
+            return { id, name };
+          });
+      });
   }
 
 };

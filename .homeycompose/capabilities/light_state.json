@@ -6,6 +6,7 @@
   },
   "uiComponent": "sensor",
   "uiQuickAction": false,
+  "icon": "/assets/light_state.svg",
   "getable": true,
   "setable": false,
   "insights": true,

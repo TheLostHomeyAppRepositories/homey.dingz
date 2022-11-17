@@ -46,10 +46,10 @@
     "local"
   ],
   "api": {
-    "dingzGenActionAPI": {
-      "description": "dingz generic action",
+    "dingzBroadcastAPI": {
+      "description": "dingzBroadcastMessage API",
       "method": "get",
-      "path": "/dingzGenAction",
+      "path": "/dingzBroadcast",
       "public": true
     }
   },
@@ -327,7 +327,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz"
+            "filter": "driver_id=dingzSwitch"
           },
           {
             "name": "button",
@@ -376,7 +376,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz"
+            "filter": "driver_id=dingzSwitch"
           },
           {
             "name": "lightState",
@@ -427,7 +427,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz"
+            "filter": "driver_id=dingzSwitch"
           },
           {
             "name": "lightState",
@@ -478,7 +478,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz"
+            "filter": "driver_id=dingzSwitch"
           },
           {
             "name": "dim",
@@ -520,7 +520,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingz"
+            "filter": "driver_id=dingzSwitch"
           },
           {
             "type": "range",
@@ -553,6 +553,7 @@
       },
       "uiComponent": "sensor",
       "uiQuickAction": false,
+      "icon": "/assets/light_state.svg",
       "getable": true,
       "setable": false,
       "insights": true,

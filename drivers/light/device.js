@@ -1,6 +1,6 @@
 'use strict';
 
-const { DINGZ } = require('../device');
+const { DINGZ } = require('../../lib/dingzAPI');
 const SwitchDevice = require('../switch/device');
 
 module.exports = class LightDevice extends SwitchDevice {

@@ -18,21 +18,39 @@ module.exports = class Device extends Homey.Device {
   async onInit(options = {}) {
     this.debug('onInit()');
 
-    this.ready()
-      .then(() => this.deviceReady());
+    this.app_path = `api/app/${this.homey.manifest.id}`;
+    this.httpAPI = new HttpAPI(this.homey, this.getStoreValue('address'), this._logLinePrefix());
 
     this.setUnavailable(this.homey.__('connecting'));
 
-    this.httpAPI = new HttpAPI(this.homey, this.getStoreValue('address'), this._logLinePrefix());
+    this.ready()
+      .then(this.initDevice())
+      .then(this.setAvailable())
+      .then(this.log('Device ready'));
   }
 
-  deviceReady() {
+  initDevice() {
     return Promise.resolve()
-      .then(this.log('Device ready'))
-      .then(this.setAvailable())
-      .then(this.setDingzSwitchSettings())
       .then(this.getDeviceValues())
-      .catch((err) => this.error(`deviceReady() > ${err}`));
+      .then(this.initDingzBroadcast())
+      .then(this.setDingzSwitchSettings())
+      .catch((err) => this.error(`initDevice() > ${err}`));
+  }
+
+  initDingzBroadcast() {
+    this.debug('initDingzBroadcast()');
+
+    this.subscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+
+    this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
+      this.debug(`dingzBroadcast: dingzRefresh > ${JSON.stringify(params)}`);
+      this.getDeviceValues();
+    });
+
+    this.homey.on('unload', async () => {
+      this.debug('homeyEvent: unload');
+      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+    });
   }
 
   // Homey Lifecycle
@@ -43,11 +61,15 @@ module.exports = class Device extends Homey.Device {
 
   onDeleted() {
     super.onDeleted();
+    if (process.env.DEBUG === '1') {
+      // Only for Test
+      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+    }
     this.log('Device deleted');
   }
 
   onRenamed(name) {
-    this.debug(`onRenamed() to: ${name}`);
+    this.log(`Device renamed to ${name}`);
   }
 
   // Homey Discovery
@@ -76,9 +98,35 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => this.error(`onDiscoveryLastSeenChanged() > ${err}`));
   }
 
-  // Dingz action
-  isActionForDevice(params) {
-    return this.data.mac === params.mac;
+  async subscribeDingzAction(action, url) {
+    this.debug(`subscribeDingzAction() - ${action} > ${url}`);
+
+    this.getDeviceData(url)
+      .then((dingzActions) => {
+        return dingzActions.url
+          .split('||')
+          .filter((elm) => elm.length !== 0 && !elm.includes(this.app_path))
+          .concat([`get://${this.homey.app.homeyAddress}/${this.app_path}/${action}`])
+          .join('||');
+      })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`subscribeDingzAction() - ${action} subscribed`))
+      .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
+  }
+
+  async unsubscribeDingzAction(action, url) {
+    this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
+
+    this.getDeviceData(url)
+      .then((dingzActions) => {
+        return dingzActions.url
+          .split('||')
+          .filter((elm) => elm.length !== 0 && !elm.includes(this.app_path))
+          .join('||');
+      })
+      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then(() => this.debug(`unsubscribeDingzAction() - ${action} unsubscribed`))
+      .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
   }
 
   // Data handling

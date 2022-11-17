@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  async dingzGenActionAPI({ homey, query }) {
-    return homey.app.dingzGenActionAPI(query);
+  async dingzBroadcastAPI({ homey, query }) {
+    return homey.app.dingzBroadcastAPI(query);
   },
 };

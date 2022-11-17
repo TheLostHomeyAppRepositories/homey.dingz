@@ -1,6 +1,6 @@
 'use strict';
 
-const { DINGZ } = require('../device');
+const { DINGZ } = require('../../lib/dingzAPI');
 const Device = require('../device');
 
 module.exports = class SwitchDevice extends Device {
@@ -10,24 +10,9 @@ module.exports = class SwitchDevice extends Device {
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
-    // Temp: Until the dingz-devices event is revised
-    this.homey.on('dingzButtonGenAction', (params) => {
-      if (this.isActionForDevice(params)) {
-        this.debug(`dingzActionEvent: dingzButtonGenAction > ${JSON.stringify(params)}`);
-        switch (params.action) {
-          case DINGZ.SHORT_PRESS:
-          case DINGZ.DOUBLE_PRESS:
-          case DINGZ.LONG_PRESS:
-            this.getDeviceValues();
-            break;
-          default:
-        }
-      }
-    });
-
     this.homey.on('measurePowerChanged', (params) => {
       if (params.output.toString() === this.data.absoluteIdx) {
-        // this.debug(`dingzActionEvent: measurePowerChanged > ${JSON.stringify(params)`);
+        // this.debug(`dingzEvent: measurePowerChanged > ${JSON.stringify(params)`);
         this.setCapabilityValue('measure_power', Math.round(params.value * 10) / 10);
       }
     });

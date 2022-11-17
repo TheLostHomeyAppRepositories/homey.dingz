@@ -6,10 +6,16 @@
 - MessageBus/Broadcast >> Action
 - Dimmer/Blind Devices > 1TDevice 2TDevice ?
 
+- Broadcast/Event
+  - Add Change output/??
+  - Add Change LED
+  - Add Change sensor (Kein polling -> initDingzSensors)
+
+- light_state icon
+
 ## Allgemein
 
-- Set current Zone > Dingz-Room
-- Set current Device Name > Dingz-Name
+- ???
 
 ## Homey v8.1.0
 
@@ -17,12 +23,14 @@
 
 ## dingzSwitch v.1.4x
 
-- Implement MessageBus
-- Add dingz Carusell
 - dingz-Switch add Advanced Virtual Device support
 
-- Refactor updateSettingLabels / label....
-- dingz_buttons brauchts die ?
+- led does not correspond to the dingz-set api
+- Add dingz Carusell
+
+### dingz
+
+- ???
 
 ### LED
 

@@ -2,7 +2,7 @@
 
 const querystring = require('querystring');
 
-const { DINGZ } = require('../device');
+const { DINGZ } = require('../../lib/dingzAPI');
 const Device = require('../device');
 
 module.exports = class LedDevice extends Device {
@@ -87,7 +87,11 @@ module.exports = class LedDevice extends Device {
   }
 
   setDeviceData(url, data) {
-    return super.setDeviceData(url, querystring.stringify(data).split('%3B').join(';'));
+    // Workaround > led does not correspond to the dingz-set api
+    if (url === 'led/set') {
+      data = querystring.stringify(data).split('%3B').join(';');
+    }
+    return super.setDeviceData(url, data);
   }
 
 };
