@@ -32,24 +32,24 @@ module.exports = class Device extends Homey.Device {
   initDevice() {
     return Promise.resolve()
       .then(this.getDeviceValues())
-      .then(this.initDingzBroadcast())
+      .then(this.initDingzSwitchEvent())
       .then(this.setDingzSwitchSettings())
       .catch((err) => this.error(`initDevice() > ${err}`));
   }
 
-  initDingzBroadcast() {
-    this.debug('initDingzBroadcast()');
+  initDingzSwitchEvent() {
+    this.debug('initDingzSwitchEvent()');
 
-    this.subscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
 
     this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
-      this.debug(`dingzBroadcast: dingzRefresh > ${JSON.stringify(params)}`);
+      this.debug(`dingzSwitchEvent: dingzRefresh > ${JSON.stringify(params)}`);
       this.getDeviceValues();
     });
 
     this.homey.on('unload', async () => {
       this.debug('homeyEvent: unload');
-      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+      this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     });
   }
 
@@ -63,7 +63,7 @@ module.exports = class Device extends Homey.Device {
     super.onDeleted();
     if (process.env.DEBUG === '1') {
       // Only for Test
-      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+      this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     }
     this.log('Device deleted');
   }

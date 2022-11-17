@@ -23,9 +23,9 @@ module.exports = class DingzApp extends Homey.App {
     this.debug(`homeyAddress: ${this.homeyAddress}`);
   }
 
-  // Web-API > DingzBroadcast
-  async dingzBroadcastAPI(params) {
-    this.debug(`dingzBroadcastAPI() - ${JSON.stringify(params)}`);
+  // Web-API > DingzSwitchEvent
+  async dingzSwitchEventAPI(params) {
+    this.debug(`dingzSwitchEventAPI() - ${JSON.stringify(params)}`);
     switch (params.index) {
       case DINGZ.PIR:
         this.homey.emit(`dingzPirChanged-${params.mac}`, params);

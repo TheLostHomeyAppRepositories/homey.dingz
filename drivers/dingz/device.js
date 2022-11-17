@@ -9,13 +9,13 @@ module.exports = class DingzDevice extends Device {
     super.onInit(options);
   }
 
-  initDingzBroadcast() {
-    this.debug('initDingzBroadcast()');
+  initDingzSwitchEvent() {
+    this.debug('initDingzSwitchEvent()');
 
-    this.subscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
 
     this.homey.on(`dingzPirChanged-${this.data.mac}`, (params) => {
-      this.debug(`dingzBroadcast: dingzPirChanged > ${JSON.stringify(params)}`);
+      this.debug(`dingzSwitchEvent: dingzPirChanged > ${JSON.stringify(params)}`);
       switch (params.action) {
         case DINGZ.MOTION_START:
           this.setMotionDetector(true);
@@ -33,7 +33,7 @@ module.exports = class DingzDevice extends Device {
     });
 
     this.homey.on(`dingzButtonPressed-${this.data.mac}`, (params) => {
-      this.debug(`dingzBroadcast: dingzButtonPressed > ${JSON.stringify(params)}`);
+      this.debug(`dingzSwitchEvent: dingzButtonPressed > ${JSON.stringify(params)}`);
       switch (params.action) {
         case DINGZ.SHORT_PRESS:
         case DINGZ.DOUBLE_PRESS:
@@ -46,7 +46,7 @@ module.exports = class DingzDevice extends Device {
 
     this.homey.on('unload', async () => {
       this.debug('homeyEvent: unload');
-      this.unsubscribeDingzAction('dingzBroadcast', 'action/generic/generic/');
+      this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     });
   }
 

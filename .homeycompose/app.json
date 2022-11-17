@@ -45,10 +45,10 @@
     "local"
   ],
   "api": {
-    "dingzBroadcastAPI": {
-      "description": "dingzBroadcastMessage API",
+    "dingzSwitchEventAPI": {
+      "description": "dingzSwitchEventMessage API",
       "method": "get",
-      "path": "/dingzBroadcast",
+      "path": "/dingzSwitchEvent",
       "public": true
     }
   }
