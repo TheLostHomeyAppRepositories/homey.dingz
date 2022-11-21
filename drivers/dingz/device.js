@@ -58,7 +58,7 @@ module.exports = class DingzDevice extends Device {
 
   async initMotionDetector() {
     this.debug('initMotionDetector()');
-    const dingzDevice = this.getDingzDevice();
+    const dingzDevice = await this.getDingzDevice();
 
     if (dingzDevice.has_pir) {
       if (!this.hasCapability('alarm_motion')) {

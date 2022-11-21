@@ -13,11 +13,7 @@
 
 - light_state icon
 
-### David
-
-- downgrade > 1.3.30
-- LED Blink
-
+- Blink LED
 
 ## Allgemein
 
@@ -33,13 +29,3 @@
 
 - led does not correspond to the dingz-set api
 - Add dingz Carusell
-
-### dingz
-
-- ???
-
-### LED
-
-- Includet in dingz-Switch
-- Fixe Farben
-- Blink LED
