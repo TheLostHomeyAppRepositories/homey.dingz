@@ -8,6 +8,6 @@
     "measure_temperature",
     "measure_luminance",
     "light_state",
-    "dingz_buttons"
+    "dingz_button"
   ]
 }

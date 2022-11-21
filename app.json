@@ -89,7 +89,7 @@
         "measure_temperature",
         "measure_luminance",
         "light_state",
-        "dingz_buttons"
+        "dingz_button"
       ],
       "id": "dingz"
     },
@@ -230,7 +230,7 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "FrontLED"
+        "en": "dingzLED"
       },
       "class": "light",
       "capabilities": [
@@ -327,7 +327,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingzSwitch"
+            "filter": "driver_id=dingzSwitch&capabilities=dingz_button"
           },
           {
             "name": "button",
@@ -376,7 +376,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingzSwitch"
+            "filter": "driver_id=dingzSwitch&capabilities=light_state"
           },
           {
             "name": "lightState",
@@ -427,7 +427,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingzSwitch"
+            "filter": "driver_id=dingzSwitch&capabilities=light_state"
           },
           {
             "name": "lightState",
@@ -478,7 +478,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingzSwitch"
+            "filter": "driver_id=dingzSwitch&capabilities=ramp"
           },
           {
             "name": "dim",
@@ -520,7 +520,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dingzSwitch"
+            "filter": "driver_id=dingzSwitch&capabilities=windowcoverings_tilt_set"
           },
           {
             "type": "range",
@@ -533,11 +533,67 @@
             "labelDecimals": 0
           }
         ]
+      },
+      {
+        "id": "dingzLedColor_set",
+        "title": {
+          "en": "dingzLED color",
+          "de": "dingzLED Farbe"
+        },
+        "titleFormatted": {
+          "en": "Set a color to [[color]]",
+          "de": "Die Farbe auf [[color]] setzen"
+        },
+        "hint": {
+          "en": "Use this card to set a color of the LED on the dingz front.",
+          "de": "Verwenden Sie diese Karte, um eine Farbe der LED auf der dingz Front zu setzen."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dingzSwitch&capabilities=light_hue,light_saturation"
+          },
+          {
+            "name": "color",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "{'light_hue': '0', 'saturation' : '0'}",
+                "label": {
+                  "en": "White",
+                  "de": "Weiss"
+                }
+              },
+              {
+                "id": "{'light_hue': '0', 'saturation': '1'}",
+                "label": {
+                  "en": "Read",
+                  "de": "Rot"
+                }
+              },
+              {
+                "id": "{'light_hue': '0.25', 'saturation': '1'}",
+                "label": {
+                  "en": "Green",
+                  "de": "Grün"
+                }
+              },
+              {
+                "id": "{'light_hue': '0.53', 'saturation': '1'}",
+                "label": {
+                  "en": "Blue",
+                  "de": "Blau"
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   "capabilities": {
-    "dingz_buttons": {
+    "dingz_button": {
       "type": "boolean",
       "title": "Button",
       "uiComponent": null,

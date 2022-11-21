@@ -86,6 +86,11 @@ module.exports = class LedDevice extends Device {
       .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
   }
 
+  async onCapabilityDingzLedColor(valueObj, options) {
+    this.debug(`onCapabilityDingzLedColor() - color: ${valueObj.color}`);
+    return this.onCapabilityLightHue(JSON.parse(valueObj.color.replace(/'/g, '"')), options);
+  }
+
   setDeviceData(url, data) {
     // Workaround > led does not correspond to the dingz-set api
     if (url === 'led/set') {

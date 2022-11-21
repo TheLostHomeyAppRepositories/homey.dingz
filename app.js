@@ -17,6 +17,7 @@ module.exports = class DingzApp extends Homey.App {
   async onInit() {
     this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
 
+    // SORRY: I need the homey IP address via the homeyAPI and for this reason the permission "homey:manager:api".
     this.api = new HomeyAPIApp({ homey: this.homey });
     this.systemInfo = await this.api.system.getInfo();
     this.homeyAddress = this.systemInfo.wifiAddress.split(':')[0];

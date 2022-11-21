@@ -13,6 +13,12 @@
 
 - light_state icon
 
+### David
+
+- downgrade > 1.3.30
+- LED Blink
+
+
 ## Allgemein
 
 - ???

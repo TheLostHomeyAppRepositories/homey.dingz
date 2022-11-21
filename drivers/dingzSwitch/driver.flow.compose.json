@@ -6,6 +6,7 @@
         "en": "Button is pressed",
         "de": "Taste ist gedrückt"
       },
+      "$filter": "capabilities=dingz_button",
       "titleFormatted": {
         "en": "Button [[button]] is [[action]]",
         "de": "Taste [[button]] ist [[action]]"
@@ -50,6 +51,7 @@
         "en": "Light state changed",
         "de": "Lichtstatus geändert"
       },
+      "$filter": "capabilities=light_state",
       "titleFormatted": {
         "en": "Light state changed to [[lightState]]",
         "de": "Lichtstatus geändert auf [[lightState]]"
@@ -92,6 +94,7 @@
         "en": "Light state is !{{|not}}",
         "de": "Lichtstatus ist !{{|nicht}}"
       },
+      "$filter": "capabilities=light_state",
       "titleFormatted": {
         "en": "Light state is !{{|not}} [[lightState]]",
         "de": "Lichtstatus ist !{{|nicht}} [[lightState]]"
@@ -138,6 +141,7 @@
         "en": "Fade dimmer",
         "de": "Fade dimmer"
       },
+      "$filter": "capabilities=ramp",
       "titleFormatted": {
         "en": "Dim light to [[dim]] in [[ramp]]sec",
         "de": "Licht dimmen auf [[dim]] in [[ramp]]Sek"
@@ -175,6 +179,7 @@
         "en": "Adjust the lamellas",
         "de": "Stellen Sie die Lamellen ein"
       },
+      "$filter": "capabilities=windowcoverings_tilt_set",
       "titleFormatted": {
         "en": "Set the lamella to [[value]]",
         "de": "Stellen Sie die Lamellen auf [[value]]"
@@ -193,6 +198,58 @@
           "label": "%",
           "labelMultiplier": 100,
           "labelDecimals": 0
+        }
+      ]
+    },
+    {
+      "id": "dingzLedColor_set",
+      "title": {
+        "en": "dingzLED color",
+        "de": "dingzLED Farbe"
+      },
+      "$filter": "capabilities=light_hue,light_saturation",
+      "titleFormatted": {
+        "en": "Set a color to [[color]]",
+        "de": "Die Farbe auf [[color]] setzen"
+      },
+      "hint": {
+        "en": "Use this card to set a color of the LED on the dingz front.",
+        "de": "Verwenden Sie diese Karte, um eine Farbe der LED auf der dingz Front zu setzen."
+      },
+      "args": [
+        {
+          "name": "color",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "{'light_hue': '0', 'saturation' : '0'}",
+              "label": {
+                "en": "White",
+                "de": "Weiss"
+              }
+            },
+            {
+              "id": "{'light_hue': '0', 'saturation': '1'}",
+              "label": {
+                "en": "Read",
+                "de": "Rot"
+              }
+            },
+            {
+              "id": "{'light_hue': '0.25', 'saturation': '1'}",
+              "label": {
+                "en": "Green",
+                "de": "Grün"
+              }
+            },
+            {
+              "id": "{'light_hue': '0.53', 'saturation': '1'}",
+              "label": {
+                "en": "Blue",
+                "de": "Blau"
+              }
+            }
+          ]
         }
       ]
     }
