@@ -222,13 +222,6 @@
           "type": "dropdown",
           "values": [
             {
-              "id": "{'light_hue': '0', 'saturation' : '0'}",
-              "label": {
-                "en": "White",
-                "de": "Weiss"
-              }
-            },
-            {
               "id": "{'light_hue': '0', 'saturation': '1'}",
               "label": {
                 "en": "Read",
@@ -247,6 +240,13 @@
               "label": {
                 "en": "Blue",
                 "de": "Blau"
+              }
+            },
+            {
+              "id": "{'light_hue': '0', 'saturation' : '0'}",
+              "label": {
+                "en": "White",
+                "de": "Weiss"
               }
             }
           ]
