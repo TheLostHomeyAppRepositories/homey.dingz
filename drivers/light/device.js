@@ -13,8 +13,8 @@ module.exports = class LightDevice extends SwitchDevice {
 
   async getDeviceValues(url) {
     return super.getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('dim', data.value / 100);
+      .then(async (data) => {
+        await this.setCapabilityValue('dim', data.value / 100);
         return data;
       })
       .catch((err) => {
@@ -35,6 +35,10 @@ module.exports = class LightDevice extends SwitchDevice {
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
       .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const val = Math.round(this.getCapabilityValue('dim') * 100);
+        return this.homey.__('device.dimSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 

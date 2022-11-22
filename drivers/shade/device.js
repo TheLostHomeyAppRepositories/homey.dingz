@@ -50,6 +50,10 @@ module.exports = class ShadeDevice extends Device {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
+      .then(this.notify(() => {
+        const val = this.getCapabilityValue('windowcoverings_set') * 100;
+        return this.homey.__('device.windowCoveringsSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityWindowCoveringsSet() > ${err}`));
   }
 

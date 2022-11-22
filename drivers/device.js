@@ -203,10 +203,13 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => this.error(`showWarning() > ${err}`));
   }
 
-  // notify(msg) {
-  //   // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
-  //   this.log(`[notify] ${msg}`);
-  // }
+  notify(callback) {
+    setTimeout(() => {
+      const msg = callback();
+      // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
+      this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
+    }, 1000);
+  }
 
   // Homey-App Loggers
   log(msg) {

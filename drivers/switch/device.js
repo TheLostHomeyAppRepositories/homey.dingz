@@ -20,8 +20,8 @@ module.exports = class SwitchDevice extends Device {
 
   async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
     return super.getDeviceValues(url)
-      .then(async (data) => {
-        await this.setCapabilityValue('onoff', data.on);
+      .then((data) => {
+        this.setCapabilityValue('onoff', data.on);
         return data;
       })
       .catch((err) => {
@@ -41,6 +41,10 @@ module.exports = class SwitchDevice extends Device {
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
       .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
+        return this.homey.__('device.stateSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 

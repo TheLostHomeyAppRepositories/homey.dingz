@@ -41,6 +41,10 @@ module.exports = class LedDevice extends Device {
 
     return this.setDeviceData('led/set', { action, ramp })
       .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
+        return this.homey.__('device.stateSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
@@ -60,6 +64,10 @@ module.exports = class LedDevice extends Device {
       action: 'on', ramp, mode: 'hsv', color,
     })
       .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const val = Math.round(this.getCapabilityValue('dim') * 100);
+        return this.homey.__('device.dimSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 
@@ -83,6 +91,14 @@ module.exports = class LedDevice extends Device {
       action: 'on', ramp, mode: 'hsv', color,
     })
       .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const val = Math.round(this.getCapabilityValue('light_hue') * 360);
+        return this.homey.__('device.lightHueSet', { value: val });
+      }))
+      .then(this.notify(() => {
+        const val = Math.round(this.getCapabilityValue('light_saturation') * 100);
+        return this.homey.__('device.lightSaturationSet', { value: val });
+      }))
       .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
   }
 
