@@ -23,7 +23,7 @@ module.exports = class ShadeDevice extends Device {
         setTimeout(wait, 2000);
       }());
     }).then(() => {
-      this.log('Device on position');
+      this.error('Device on position');
     });
   }
 

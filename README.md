@@ -50,7 +50,7 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 
 v1.2.0
 
-- Upgrade to SDKv3 (aka Homey Pro (Early 2023) support)
+- Upgrade to SDKv3 (Homey Pro (Early 2023) support)
 - Pairing refactored (more homey style)
 - Preparations for next firmware release
 - Some fixes

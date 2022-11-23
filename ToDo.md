@@ -7,13 +7,13 @@
 - Dimmer/Blind Devices > 1TDevice 2TDevice ?
 
 - Broadcast/Event
-  - Add Change output/??
+  - Add Change output/ausgang
   - Add Change LED
   - Add Change sensor (Kein polling -> initDingzSensors)
 
-- light_state icon
-
 - Blink LED
+
+- light_state icon
 
 ## Allgemein
 
@@ -27,5 +27,4 @@
 
 - dingz-Switch add Advanced Virtual Device support
 
-- led does not correspond to the dingz-set api
 - Add dingz Carusell
