@@ -15,6 +15,8 @@
 
 - light_state icon
 
+- button_config 
+
 ## Allgemein
 
 - ???

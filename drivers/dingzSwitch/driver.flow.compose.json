@@ -4,12 +4,12 @@
       "id": "dingzButton_pressed",
       "title": {
         "en": "Button is pressed",
-        "de": "Taste ist gedrückt"
+        "de": "Taster ist gedrückt"
       },
       "$filter": "capabilities=dingz_button",
       "titleFormatted": {
         "en": "Button [[button]] is [[action]]",
-        "de": "Taste [[button]] ist [[action]]"
+        "de": "Taster [[button]] ist [[action]]"
       },
       "args": [
         {

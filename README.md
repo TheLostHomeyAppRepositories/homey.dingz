@@ -4,14 +4,6 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ---
 
-## Important information for the dingz app upgrade to v1.2.0
-
-- All Dingz devices **must** be deleted and rePaired because the internal structure has changed. The flows can be fixed with the homey app "Flow Checker".
-
-- Now in a homey flow, dingzSwitch buttons that are not assigned to any action can be used as normal homey buttons via the dingz-device.
-
----
-
 ## About
 
 The **dingz Switch** is a device that allows you to easily connect the wired devices to the Homey smart home. Depending on the configuration, it includes switches, dimmers, blinds control and a motion (only plus), brightness and temperature sensor.
@@ -20,7 +12,15 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 
 **Note:**
 
-- **If you have problems after the upgrade, remove and reload all devices.**
+- **If you have problems after the upgrade, remove and repair all devices.**
+
+---
+
+## Important information for the dingz-app upgrade to v1.2.0
+
+- All Dingz devices **must** be deleted and rePaired because the internal structure has changed. The flows can be fixed with the homey app "Flow Checker".
+
+- Now in a homey flow, dingzSwitch buttons that are not assigned to any action can be used as normal homey buttons via the dingz-device.
 
 ---
 
@@ -38,7 +38,6 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 1. Configure device with the Webinterface.
    - Add buttons name
    - Add device name
-   - Add room name
    - Add each button, dimmers, blinds name
    - Configure all dimmers, blinds and shades
    - **Test if device is installed correctly**
@@ -52,7 +51,7 @@ v1.2.0
 
 - Upgrade to SDKv3 (Homey Pro (Early 2023) support)
 - Pairing refactored (more homey style)
-- Preparations for next firmware release
+- Code refactored
 - Some fixes
 
 v1.1.3
