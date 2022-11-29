@@ -19,5 +19,8 @@
   },
   "1.2.0": {
     "en": "Upgrade to SDKv3"
+  },
+  "1.2.1": {
+    "en": "Some fixes"
   }
 }
