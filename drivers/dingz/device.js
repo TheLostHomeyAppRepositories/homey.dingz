@@ -153,12 +153,13 @@ module.exports = class DingzDevice extends Device {
     return this.getDeviceData('button_config')
       .then((buttonConf) => {
         return Object.values(buttonConf.buttons)
-          .filter((button) => button.output === null || button.output === 0)
           .map((button, idx) => {
+            const { output } = button;
             const id = (idx + 1).toString();
-            const name = button.name === '' ? `${id}` : `${button.name} (${id})`;
-            return { id, name };
-          });
+            const name = button.name === '' ? `Taster ${id}` : `Taster ${id} - (${button.name})`;
+            return { id, name, output };
+          })
+          .filter((button) => button.output === null || button.output === 0);
       });
   }
 
