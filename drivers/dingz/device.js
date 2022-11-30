@@ -156,7 +156,7 @@ module.exports = class DingzDevice extends Device {
           .map((button, idx) => {
             const { output } = button;
             const id = (idx + 1).toString();
-            const name = button.name === '' ? `Taster ${id}` : `Taster ${id} - (${button.name})`;
+            const name = button.name === '' ? `${id}` : `${id} - (${button.name})`;
             return { id, name, output };
           })
           .filter((button) => button.output === null || button.output === 0);
