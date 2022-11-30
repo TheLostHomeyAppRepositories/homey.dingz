@@ -27,9 +27,7 @@
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": [
-    "homey:manager:api"
-  ],
+  "permissions": [],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",

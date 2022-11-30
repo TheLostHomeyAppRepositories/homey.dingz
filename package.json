@@ -31,8 +31,7 @@
   },
   "homepage": "https://homey.app/a/org.cflat-inc.dingz",
   "dependencies": {
-    "axios": "^1.2.0",
-    "homey-api": "^1.10.2"
+    "axios": "^1.2.0"
   },
   "engines": {
     "node": ">=12.16.1"

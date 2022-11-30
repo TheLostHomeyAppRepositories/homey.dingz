@@ -100,13 +100,14 @@ module.exports = class Device extends Homey.Device {
 
   async subscribeDingzAction(action, url) {
     this.debug(`subscribeDingzAction() - ${action} > ${url}`);
+    const homeyIpAddr = await this.homey.cloud.getLocalAddress();
 
     this.getDeviceData(url)
       .then((dingzActions) => {
         return dingzActions.url
           .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(this.app_path))
-          .concat([`get://${this.homey.app.homeyAddress}/${this.app_path}/${action}`])
+          .concat([`get://${homeyIpAddr}/${this.app_path}/${action}`])
           .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
