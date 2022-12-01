@@ -4,23 +4,50 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ---
 
+## Attention
+
+I have noticed that several users have installed the test version of the dingz app (v1.2.x with SDKv3) and are now having problems (crashes).
+
+The new version of the app is incompatible with the live version (v1.1.3)
+
+I ask you to install the productive version over the existing test app, so that your dingz connection runs properly again! [App-Link:](https://homey.app/de-ch/app/org.cflat-inc.dingz/dingz/)
+
+---
+
 ## About
 
 The **dingz Switch** is a device that allows you to easily connect the wired devices to the Homey smart home. Depending on the configuration, it includes switches, dimmers, blinds control and a motion (only plus), brightness and temperature sensor.
 
+### Note
+
+- **If you have problems after the upgrade, remove and rePair all devices.**
+- Please use the test version only in exceptional cases, you can load the productive/live version over the test version without any problems (if both versions are the same). *Just do not delete the app*. My crash log thanks you !
+
+### Important note for "Button ... is ..." where-card
+
+Due to a known firmware problem, some of the Dingz buttons in the Flow > where > "Button ... is ..." card are not displayed correctly.
+
+In this case there is the following workaround:
+
+1. Open the dingz Switch WebUI in the browser (the ip-address can be found in the Device Settings-Page)
+1. Go to the Button Page.
+1. Remove **ALL** actions
+1. Save the settings
+1. Assign the actions again
+1. Save the settings again.
+1. done...
+
 ---
 
-**Note:**
+## Information for the dingz-app upgrade to v1.2.x
 
-- **If you have problems after the upgrade, remove and repair all devices.**
+- All Dingz devices **must** be deleted and rePaired because the internal structure has changed. The broken flows can be found with the homey app [Flow Checker](https://homey.app/de-ch/app/com.athom.flowchecker/Flow-Checker/).
 
----
+- The paring session has been refactored and is now more homey style.
 
-## Important information for the dingz-app upgrade to v1.2.0
+- All dings devices are now autonomous and can be deleted and added again individually.
 
-- All Dingz devices **must** be deleted and rePaired because the internal structure has changed. The flows can be fixed with the homey app "Flow Checker".
-
-- Now in a homey flow, dingzSwitch buttons that are not assigned to any action can be used as normal homey buttons via the dingz-device.
+- Now in a homey flow, dingzSwitch buttons that are not assigned to any action can be used as normal homey buttons via the dingz device. (Please see note)
 
 ---
 
@@ -46,6 +73,15 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 ---
 
 ## Changelog
+
+v1.2.2
+
+- README.md adapted
+
+v1.2.1
+
+- Permissions "homey:manager:api" removed
+- Some fixes
 
 v1.2.0
 
@@ -86,8 +122,13 @@ v1.0.0
 ## ToDo
 
 - Add embedded dingz webUI.
+- Implement homey-css
 
 ---
+
+### Tanks
+
+Special thanks to Sadi for the help in testing the new version.
 
 ## Disclaimer
 
@@ -97,4 +138,4 @@ Use at your own risk. I accept no responsibility for any damages caused by using
 
 ## Copyright
 
-Copyright 2021, 2021 cFlat-inc.org
+Copyright 2022, 2022 cFlat-inc.org
