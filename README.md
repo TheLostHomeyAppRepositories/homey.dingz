@@ -23,19 +23,14 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 - **If you have problems after the upgrade, remove and rePair all devices.**
 - Please use the test version only in exceptional cases, you can load the productive/live version over the test version without any problems (if both versions are the same). *Just do not delete the app*. My crash log thanks you !
 
-### Important note for "Button ... is ..." where-card
-
-Due to a known firmware problem, some of the Dingz buttons in the Flow > where > "Button ... is ..." card are not displayed correctly.
-
-In this case there is the following workaround:
-
-1. Open the dingz Switch WebUI in the browser (the ip-address can be found in the Device Settings-Page)
-1. Go to the Button Page.
-1. Remove **ALL** actions
-1. Save the settings
-1. Assign the actions again
-1. Save the settings again.
-1. done...
+- Important for "Button ... is ..." where-card. Due to a known firmware problem, some of the Dingz buttons are not displayed correctly. In this case there is the following workaround:
+   1. Open the dingz Switch webUI in the browser (the ip-address can be found in the Device Settings-Page)
+   1. Go to the Button Page.
+   1. Remove **ALL** actions
+   1. Save the settings
+   1. Assign the actions again
+   1. Save the settings again.
+   1. done...
 
 ---
 
@@ -126,9 +121,11 @@ v1.0.0
 
 ---
 
-### Tanks
+## Thanks
 
 Special thanks to Sadi for the help in testing the new version.
+
+---
 
 ## Disclaimer
 
