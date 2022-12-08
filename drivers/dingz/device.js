@@ -83,14 +83,14 @@ module.exports = class DingzDevice extends Device {
 
   initDingzSensors() {
     this.debug('initDingzSensors()');
-    this.getDeviceValues();
-    this.dingzSensorsInterval = setInterval(() => {
+    this.dingzSensorsInterval = this.homey.setInterval(() => {
+      this.debug('initDingzSensors() > refresh sensor');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
 
     this.homey.on('unload', async () => {
       this.debug('initDingzSensors() > homeyEvent: unload');
-      clearInterval(this.dingzSensorsInterval);
+      this.homey.clearInterval(this.dingzSensorsInterval);
     });
   }
 

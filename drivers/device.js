@@ -100,14 +100,14 @@ module.exports = class Device extends Homey.Device {
 
   async subscribeDingzAction(action, url) {
     this.debug(`subscribeDingzAction() - ${action} > ${url}`);
-    const homeyIpAddr = await this.homey.cloud.getLocalAddress();
+    const localAddress = await this.homey.cloud.getLocalAddress();
 
     this.getDeviceData(url)
       .then((dingzActions) => {
         return dingzActions.url
           .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(this.app_path))
-          .concat([`get://${homeyIpAddr}/${this.app_path}/${action}`])
+          .concat([`get://${localAddress}/${this.app_path}/${action}`])
           .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
@@ -146,10 +146,8 @@ module.exports = class Device extends Homey.Device {
       })
       .catch((err) => {
         this.error(`getDeviceData() - '${url}' > ${err}`);
-        if (err.response.status === 404) {
-          this.setUnavailable(this.homey.__('device.error', { code: err.response.status }));
-        }
-        throw new Error(`Get device data failed (${err.response.status})`);
+        this._handelHttpError(err);
+        throw new Error(`Get device-data failed (${(err.response && err.response.status) || err.code})`);
       });
   }
 
@@ -163,11 +161,25 @@ module.exports = class Device extends Homey.Device {
       })
       .catch((err) => {
         this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
-        if (err.response.status === 404) {
-          this.setUnavailable(this.homey.__('device.error', { code: err.response.status }));
-        }
-        throw new Error(`Set device data failed (${err.response.status})`);
+        this._handelHttpError(err);
+        throw new Error(`Set device data failed (${(err.response && err.response.status) || err.code})`);
       });
+  }
+
+  _handelHttpError(err) {
+    if (err.response) {
+      if (err.response.status === 404) {
+        this.setUnavailable(this.homey.__('device.error', { msg: `Path not found '${err.request.path}'` }));
+      } else {
+        this.setUnavailable(this.homey.__('device.error', { msg: err }));
+      }
+    } else if (err.request) {
+      if (err.code === 'EHOSTUNREACH' || err.code === 'ENETUNREACH') {
+        this.setUnavailable(this.homey.__('device.offline'));
+      } else {
+        this.setUnavailable(this.homey.__('device.error', { msg: err.code }));
+      }
+    }
   }
 
   async setCapabilityValue(capabilityId, value) {
@@ -204,9 +216,9 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => this.error(`showWarning() > ${err}`));
   }
 
-  notify(callback) {
+  notify(msg) {
     setTimeout(() => {
-      const msg = callback();
+      msg = (typeof msg !== 'function') ? msg : msg();
       // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
       this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
     }, 1000);

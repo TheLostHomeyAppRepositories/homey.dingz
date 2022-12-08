@@ -4,7 +4,7 @@
     "intro": "** Still to write **"
   },
   "device": {
-    "error": "device error (__code__)",
+    "error": "device error (__msg__)",
     "buttonAction-1": "short",
     "buttonAction-2": "double",
     "buttonAction-3": "long",
