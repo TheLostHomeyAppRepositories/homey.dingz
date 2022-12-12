@@ -20,7 +20,7 @@ module.exports = class ShadeDevice extends Device {
         if (data.current.blind === data.target.blind && data.current.lamella === data.target.lamella) {
           return resolve();
         }
-        setTimeout(wait, 2000);
+        this.homey.setTimeout(wait, 2000);
       }());
     }).then(() => {
       this.error('Device on position');

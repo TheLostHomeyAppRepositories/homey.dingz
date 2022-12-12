@@ -212,12 +212,12 @@ module.exports = class Device extends Homey.Device {
 
   showWarning(message) {
     return this.setWarning(message)
-      .then(setTimeout(() => this.unsetWarning(), 3000))
+      .then(this.homey.setTimeout(() => this.unsetWarning(), 3000))
       .catch((err) => this.error(`showWarning() > ${err}`));
   }
 
   notify(msg) {
-    setTimeout(() => {
+    this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
       // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
       this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
