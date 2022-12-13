@@ -15,13 +15,13 @@ module.exports = class ShadeDevice extends Device {
       const that = this;
       // IIFE-Expression
       // eslint-disable-next-line consistent-return
-      (async function wait() {
+      ((async function wait() {
         const data = await that.getDeviceValues();
         if (data.current.blind === data.target.blind && data.current.lamella === data.target.lamella) {
           return resolve();
         }
-        this.homey.setTimeout(wait, 2000);
-      }());
+        that.homey.setTimeout(wait, 2000);
+      }()));
     }).then(() => {
       this.error('Device on position');
     });
