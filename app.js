@@ -35,7 +35,15 @@ module.exports = class DingzApp extends Homey.App {
     }
   }
 
-  // Homey-App Loggers
+  notify(msg) {
+    this.homey.setTimeout(() => {
+      msg = (typeof msg !== 'function') ? msg : msg();
+      this.homey.notifications.createNotification({ excerpt: `**dingzApp** - ${msg}` })
+        .catch((err) => this.error(`createNotification() > ${err}`));
+      this.log(`[NOTIFY] ${msg}`);
+    }, 1000);
+  }
+
   log(msg) {
     super.log(msg);
   }

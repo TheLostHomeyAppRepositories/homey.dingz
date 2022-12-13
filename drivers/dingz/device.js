@@ -58,27 +58,33 @@ module.exports = class DingzDevice extends Device {
 
   async initMotionDetector() {
     this.debug('initMotionDetector()');
-    const dingzDevice = await this.getDingzDevice();
 
-    if (dingzDevice.has_pir) {
-      if (!this.hasCapability('alarm_motion')) {
-        this.addCapability('alarm_motion')
-          .then(this.debug('initMotionDetector() - alarm_motion added'))
-          .catch((err) => this.error(`initMotionDetector() - ${err}`));
-      }
-      this.setDeviceData('action/pir/generic/feedback/enable')
-        .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
-        .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
-    } else {
-      if (this.hasCapability('alarm_motion')) {
-        this.removeCapability('alarm_motion')
-          .then(this.debug('initMotionDetector() - alarm_motion removed'))
-          .catch((err) => this.error(`initMotionDetector() - ${err}`));
-      }
-      this.setDeviceData('action/pir/generic/feedback/disable')
-        .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
-        .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
-    }
+    return this.getDeviceData('device')
+      .then((data) => {
+        return data[this.data.mac];
+      })
+      .then((device) => {
+        if (device.has_pir) {
+          if (!this.hasCapability('alarm_motion')) {
+            this.addCapability('alarm_motion')
+              .then(this.debug('initMotionDetector() - alarm_motion added'))
+              .catch((err) => this.error(`initMotionDetector() - ${err}`));
+          }
+          this.setDeviceData('action/pir/generic/feedback/enable')
+            .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
+            .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
+        } else {
+          if (this.hasCapability('alarm_motion')) {
+            this.removeCapability('alarm_motion')
+              .then(this.debug('initMotionDetector() - alarm_motion removed'))
+              .catch((err) => this.error(`initMotionDetector() - ${err}`));
+          }
+          this.setDeviceData('action/pir/generic/feedback/disable')
+            .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
+            .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
+        }
+      })
+      .catch((err) => this.error(`initMotionDetector() > ${err}`));
   }
 
   initDingzSensors() {
@@ -98,17 +104,6 @@ module.exports = class DingzDevice extends Device {
   onDeleted() {
     super.onDeleted();
     clearInterval(this.dingzSensorsInterval);
-  }
-
-  async getDingzDevice() {
-    return this.getDeviceData('device')
-      .then((data) => {
-        this.debug('getDingzDevice()');
-        return data[this.data.mac];
-      })
-      .catch((err) => {
-        this.error(`getDingzDevice() > ${err}`);
-      });
   }
 
   async getDeviceValues(url = 'sensors') {
@@ -131,7 +126,15 @@ module.exports = class DingzDevice extends Device {
     if (state !== this.getCapabilityValue('light_state')) {
       this.debug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)
-        .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
+      // .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
+        .then(() => {
+          // >> Temp fix until users have finally reimported the devices
+          if (typeof this.driver.triggerLightStateChangedFlow === 'function') {
+            this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state });
+          } else {
+            // this.homey.app.notify('FatalError: ALL dingz devices must be deleted and rePaired. see forum...');
+          }
+        })
         .catch((err) => this.error(`setLightState() - ${err}`));
     }
   }

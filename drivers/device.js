@@ -147,7 +147,7 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => {
         this.error(`getDeviceData() - '${url}' > ${err}`);
         this._handelHttpError(err);
-        throw new Error(`Get device-data failed (${(err.response && err.response.status) || err.code})`);
+        throw Error('Get device-data failed');
       });
   }
 
@@ -162,7 +162,7 @@ module.exports = class Device extends Homey.Device {
       .catch((err) => {
         this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
         this._handelHttpError(err);
-        throw new Error(`Set device data failed (${(err.response && err.response.status) || err.code})`);
+        throw Error('Set device data failed');
       });
   }
 
@@ -219,12 +219,12 @@ module.exports = class Device extends Homey.Device {
   notify(msg) {
     this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
-      // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
+      // this.homey.notifications.createNotification({ excerpt: `**dingzApp** - ${msg}` })
+      //   .catch((err) => this.error(`createNotification() > ${err}`));
       this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
     }, 1000);
   }
 
-  // Homey-App Loggers
   log(msg) {
     this.homey.app.log(`${this._logLinePrefix()} > ${msg}`);
   }
