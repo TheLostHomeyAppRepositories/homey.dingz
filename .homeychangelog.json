@@ -31,5 +31,8 @@
   },
   "1.2.4": {
     "en": "Bugfixes"
+  },
+  "1.2.5": {
+    "en": "DeviceWarning added"
   }
 }
