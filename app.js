@@ -14,6 +14,7 @@ module.exports = class DingzApp extends Homey.App {
 
   async onInit() {
     this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
+    this.onceDay = null;
   }
 
   // Web-API > DingzSwitchEvent
@@ -32,6 +33,14 @@ module.exports = class DingzApp extends Homey.App {
         this.homey.emit(`dingzRefresh-${params.mac}`, params);
         break;
       default:
+    }
+  }
+
+  notifyDeviceWarning() {
+    // Only once a day
+    if (this.onceDay !== new Date().toLocaleDateString()) {
+      this.onceDay = new Date().toLocaleDateString();
+      this.notify('**WARNING:** Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
     }
   }
 

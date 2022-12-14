@@ -132,7 +132,7 @@ module.exports = class DingzDevice extends Device {
           if (typeof this.driver.triggerLightStateChangedFlow === 'function') {
             this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state });
           } else {
-            // this.homey.app.notify('FatalError: ALL dingz devices must be deleted and rePaired. see forum...');
+            this.homey.app.notifyDeviceWarning();
           }
         })
         .catch((err) => this.error(`setLightState() - ${err}`));
