@@ -1,19 +1,13 @@
 'use strict';
 
-const Homey = require('homey');
+const MyHomey = require('my-homey');
+
 const { DINGZ } = require('./lib/dingzAPI');
 
-/* eslint-disable */
-if (process.env.DEBUG === '1') {
-  require('inspector').open(9229, '0.0.0.0', false);
-  // require('inspector').open(9229, '0.0.0.0', true);
-}
-/* eslint-enable */
-
-module.exports = class DingzApp extends Homey.App {
+module.exports = class DingzApp extends MyHomey.App {
 
   async onInit() {
-    this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
+    super.onInit();
     this.onceDay = null;
   }
 
@@ -41,30 +35,6 @@ module.exports = class DingzApp extends Homey.App {
     if (this.onceDay !== new Date().toLocaleDateString()) {
       this.onceDay = new Date().toLocaleDateString();
       this.notify('**WARNING:** Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
-    }
-  }
-
-  notify(msg) {
-    this.homey.setTimeout(() => {
-      msg = (typeof msg !== 'function') ? msg : msg();
-      this.homey.notifications.createNotification({ excerpt: `**dingzApp** - ${msg}` })
-        .catch((err) => this.error(`createNotification() > ${err}`));
-      this.log(`[NOTIFY] ${msg}`);
-    }, 1000);
-  }
-
-  log(msg) {
-    super.log(msg);
-  }
-
-  error(msg) {
-    super.error(`${msg}`);
-  }
-
-  debug(msg) {
-    // Show the debug message only in debug mode.
-    if (process.env.DEBUG === '1') {
-      super.log(`[DEBUG] ${msg}`);
     }
   }
 

@@ -1,11 +1,11 @@
 'use strict';
 
-const Homey = require('homey');
+const MyHomey = require('my-homey');
 
 const { DINGZ } = require('../lib/dingzAPI');
 const HttpAPI = require('../lib/httpAPI');
 
-module.exports = class Device extends Homey.Device {
+module.exports = class Device extends MyHomey.Device {
 
   static get DINGZ() {
     return DINGZ;
@@ -16,6 +16,8 @@ module.exports = class Device extends Homey.Device {
   }
 
   async onInit(options = {}) {
+    super.onInit(options);
+
     this.debug('onInit()');
 
     this.app_path = `api/app/${this.homey.manifest.id}`;
@@ -26,7 +28,7 @@ module.exports = class Device extends Homey.Device {
     this.ready()
       .then(this.initDevice())
       .then(this.setAvailable())
-      .then(this.log('Device ready'));
+      .then(this.info('Device ready'));
   }
 
   initDevice() {
@@ -56,7 +58,7 @@ module.exports = class Device extends Homey.Device {
   // Homey Lifecycle
   onAdded() {
     super.onAdded();
-    this.log('Device added');
+    this.info('Device added');
   }
 
   onDeleted() {
@@ -65,11 +67,11 @@ module.exports = class Device extends Homey.Device {
     // if (process.env.DEBUG === '1') {
     //   this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     // }
-    this.log('Device deleted');
+    this.info('Device deleted');
   }
 
   onRenamed(name) {
-    this.log(`Device renamed to ${name}`);
+    this.info(`Device renamed to ${name}`);
   }
 
   // Homey Discovery
@@ -85,7 +87,7 @@ module.exports = class Device extends Homey.Device {
   }
 
   onDiscoveryAddressChanged(discoveryResult) {
-    this.log(`dingzSwitch changed to: ${discoveryResult.address}`);
+    this.info(`dingzSwitch changed to: ${discoveryResult.address}`);
     this.setStoreValue('address', discoveryResult.address)
       .then(this.httpAPI.setAddress(discoveryResult.address))
       .then(this.setSettings({ address: discoveryResult.address }))
@@ -208,37 +210,6 @@ module.exports = class Device extends Homey.Device {
         baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
       }))
       .catch((err) => this.error(`setDingzSwitchSettings() > ${err}`));
-  }
-
-  showWarning(message) {
-    return this.setWarning(message)
-      .then(this.homey.setTimeout(() => this.unsetWarning(), 3000))
-      .catch((err) => this.error(`showWarning() > ${err}`));
-  }
-
-  notify(msg) {
-    this.homey.setTimeout(() => {
-      msg = (typeof msg !== 'function') ? msg : msg();
-      // this.homey.notifications.createNotification({ excerpt: `**dingzApp** - ${msg}` })
-      //   .catch((err) => this.error(`createNotification() > ${err}`));
-      this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
-    }, 1000);
-  }
-
-  log(msg) {
-    this.homey.app.log(`${this._logLinePrefix()} > ${msg}`);
-  }
-
-  error(msg) {
-    this.homey.app.error(`${this._logLinePrefix()} > ${msg}`);
-  }
-
-  debug(msg) {
-    this.homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
-  }
-
-  _logLinePrefix() {
-    return `${this.constructor.name}::${this.getName()}`;
   }
 
 };
