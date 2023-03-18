@@ -1,12 +1,21 @@
 'use strict';
 
-const { DINGZ } = require('../../lib/dingzAPI');
 const Device = require('../device');
+
+const { DINGZ } = require('../../lib/dingzAPI');
 
 module.exports = class DingzDevice extends Device {
 
-  async onInit(options = {}) {
+  #dingzSensorsInterval;
+
+  onInit(options = {}) {
     super.onInit(options);
+  }
+
+  initDevice() {
+    super.initDevice()
+      .then(this.initMotionDetector())
+      .then(this.initDingzSensors());
   }
 
   initDingzSwitchEvent() {
@@ -43,20 +52,9 @@ module.exports = class DingzDevice extends Device {
         default:
       }
     });
-
-    this.homey.on('unload', async () => {
-      this.debug('homeyEvent: unload');
-      this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
-    });
   }
 
-  async initDevice() {
-    super.initDevice()
-      .then(this.initMotionDetector())
-      .then(this.initDingzSensors());
-  }
-
-  async initMotionDetector() {
+  initMotionDetector() {
     this.debug('initMotionDetector()');
 
     return this.getDeviceData('device')
@@ -89,22 +87,25 @@ module.exports = class DingzDevice extends Device {
 
   initDingzSensors() {
     this.debug('initDingzSensors()');
-    this.dingzSensorsInterval = this.homey.setInterval(() => {
+    this.#dingzSensorsInterval = this.homey.setInterval(() => {
       this.debug('initDingzSensors() > refresh sensor');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
-
-    this.homey.on('unload', async () => {
-      this.debug('initDingzSensors() > homeyEvent: unload');
-      this.homey.clearInterval(this.dingzSensorsInterval);
-    });
   }
 
   // Homey Lifecycle
+
   onDeleted() {
     super.onDeleted();
-    clearInterval(this.dingzSensorsInterval);
+    this.homey.clearInterval(this.#dingzSensorsInterval);
   }
+
+  onUnload() {
+    super.onUnload();
+    this.homey.clearInterval(this.#dingzSensorsInterval);
+  }
+
+  // Data handling
 
   async getDeviceValues(url = 'sensors') {
     return super.getDeviceValues(url)
@@ -112,7 +113,9 @@ module.exports = class DingzDevice extends Device {
         this.setCapabilityValue('measure_luminance', data.brightness);
         this.setCapabilityValue('measure_temperature', Math.round(data.room_temperature * 10) / 10);
         this.setLightState(data.light_state);
-        data.power_outputs.forEach((elm, output) => this.homey.emit('measurePowerChanged', { output, value: elm.value }));
+
+        data.power_outputs
+          .forEach((elm, output) => this.homey.emit(`measurePowerChanged-${this.data.mac}`, { output, value: elm.value }));
       })
       .catch((err) => this.error(`getDingzSensors() - ${err}`));
   }

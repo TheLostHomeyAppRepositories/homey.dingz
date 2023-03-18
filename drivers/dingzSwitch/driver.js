@@ -1,8 +1,9 @@
 'use strict';
 
-const HttpAPI = require('../../lib/httpAPI');
+const { HttpAPI } = require('my-homey');
 
 const { DINGZ } = require('../../lib/dingzAPI');
+
 const Driver = require('../driver');
 
 const DingzDevice = require('../dingz/device');
@@ -14,6 +15,13 @@ const BlindDevice = require('../blind/device');
 
 module.exports = class DingzSwitchDriver extends Driver {
 
+  #flowTriggerDingzButtonPressed;
+  #flowTriggerLightStateChanged;
+  #lightStateCondition;
+  #rampAction;
+  #dingzLedColorSetAction;
+  #windowcoveringsTiltSetAction;
+
   static get DINGZ() {
     return DINGZ;
   }
@@ -22,30 +30,30 @@ module.exports = class DingzSwitchDriver extends Driver {
     super.onInit(options);
 
     // Create flow-cards
-    this.__flowTriggerDingzButtonPressed = this.homey.flow.getDeviceTriggerCard('dingzButton_pressed');
-    this.__flowTriggerDingzButtonPressed
+    this.#flowTriggerDingzButtonPressed = this.homey.flow.getDeviceTriggerCard('dingzButton_pressed');
+    this.#flowTriggerDingzButtonPressed
       .registerRunListener((args, state) => args.button.id === state.index && args.action === state.action)
       .getArgument('button')
       .registerAutocompleteListener((query, args) => args.device.onDingzButtonAutocomplete(query, args));
 
-    this.__flowTriggerLightStateChanged = this.homey.flow.getDeviceTriggerCard('lightState_changed');
-    this.__flowTriggerLightStateChanged
+    this.#flowTriggerLightStateChanged = this.homey.flow.getDeviceTriggerCard('lightState_changed');
+    this.#flowTriggerLightStateChanged
       .registerRunListener((args, state) => args.lightState === state.lightState);
 
-    this._lightStateCondition = this.homey.flow.getConditionCard('is_lightState');
-    this._lightStateCondition
+    this.#lightStateCondition = this.homey.flow.getConditionCard('is_lightState');
+    this.#lightStateCondition
       .registerRunListener((args, state) => args.device.getCapabilityValue('light_state') === args.lightState);
 
-    this._rampAction = this.homey.flow.getActionCard('ramp');
-    this._rampAction
+    this.#rampAction = this.homey.flow.getActionCard('ramp');
+    this.#rampAction
       .registerRunListener((args, state) => args.device.onCapabilityDim(args, {}));
 
-    this._dingzLedColorSetAction = this.homey.flow.getActionCard('dingzLedColor_set');
-    this._dingzLedColorSetAction
+    this.#dingzLedColorSetAction = this.homey.flow.getActionCard('dingzLedColor_set');
+    this.#dingzLedColorSetAction
       .registerRunListener((args, state) => args.device.onCapabilityDingzLedColor(args, {}));
 
-    this._windowcoveringsTiltSetAction = this.homey.flow.getActionCard('windowcoverings_tilt_set');
-    this._windowcoveringsTiltSetAction
+    this.#windowcoveringsTiltSetAction = this.homey.flow.getActionCard('windowcoverings_tilt_set');
+    this.#windowcoveringsTiltSetAction
       .registerRunListener((args, state) => args.device.onCapabilityWindowCoveringsTiltSet(args.value, {}));
   }
 
@@ -86,9 +94,9 @@ module.exports = class DingzSwitchDriver extends Driver {
     session.setHandler('list_devices', async () => {
       let result;
       if (selectDingzSwitch) {
-        result = this._handelDingzSwitches(Object.values(discoveryStrategy.getDiscoveryResults()));
+        result = this.#handelDingzSwitches(Object.values(discoveryStrategy.getDiscoveryResults()));
       } else {
-        result = this._handelDingzDevices(dingzSwitch);
+        result = this.#handelDingzDevices(dingzSwitch);
       }
       return result;
     });
@@ -100,7 +108,7 @@ module.exports = class DingzSwitchDriver extends Driver {
     });
   }
 
-  _handelDingzSwitches(discoveryResults) {
+  #handelDingzSwitches(discoveryResults) {
     return discoveryResults.map((discoveryResult) => {
       // this.debug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
       const room = (!discoveryResult.txt.room ? '' : discoveryResult.txt.room).trim();
@@ -119,9 +127,9 @@ module.exports = class DingzSwitchDriver extends Driver {
       .sort((a, b) => (a.name > b.name ? 1 : -1));
   }
 
-  async _handelDingzDevices(dingzSwitch) {
+  async #handelDingzDevices(dingzSwitch) {
     try {
-      const httpAPI = new HttpAPI(this.homey, dingzSwitch.data.address, this._logLinePrefix());
+      const httpAPI = new HttpAPI(this, dingzSwitch.data.address, this._logLinePrefix());
 
       let dingzDevices;
 
@@ -134,7 +142,7 @@ module.exports = class DingzSwitchDriver extends Driver {
         return {
           id: `${dingzSwitch.data.id}:dimmer:${idx}`,
           absoluteIdx: idx.toString(),
-          deviceId: this._getDimmerDeviceId(elm.output),
+          deviceId: this.#getDimmerDeviceId(elm.output),
           name: `${dingzSwitch.name} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`,
         };
       });
@@ -145,12 +153,12 @@ module.exports = class DingzSwitchDriver extends Driver {
         return {
           id: `${dingzSwitch.data.id}:blind:${idx}`,
           absoluteIdx: idx.toString(),
-          deviceId: this._getBlindDeviceId(elm.type),
+          deviceId: this.#getBlindDeviceId(elm.type),
           name: `${dingzSwitch.name} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`,
         };
       });
 
-      dingzDevices = this._setDeviceDipConfig(dip, dimmers, blinds)
+      dingzDevices = this.#setDeviceDipConfig(dip, dimmers, blinds)
         .sort((a, b) => (a.name > b.name ? 1 : -1));
 
       dingzDevices = [
@@ -180,7 +188,7 @@ module.exports = class DingzSwitchDriver extends Driver {
           manifest.settings['address'] = dingzSwitch.data.address;
           manifest.settings['lastSeen'] = this.localDateTimeFormater().format(new Date(dingzSwitch.data.lastSeen));
 
-          // this.debug(`onPair() - _handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
+          // this.debug(`onPair() > #handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
           return manifest;
         });
     } catch (err) {
@@ -189,7 +197,7 @@ module.exports = class DingzSwitchDriver extends Driver {
     }
   }
 
-  _getDimmerDeviceId(type) {
+  #getDimmerDeviceId(type) {
     switch (type) {
       case 'not_connected':
         return '[none]';
@@ -200,7 +208,7 @@ module.exports = class DingzSwitchDriver extends Driver {
     }
   }
 
-  _getBlindDeviceId(type) {
+  #getBlindDeviceId(type) {
     switch (type) {
       case 'lamella_90':
         return 'blind';
@@ -209,7 +217,7 @@ module.exports = class DingzSwitchDriver extends Driver {
     }
   }
 
-  _setDeviceDipConfig(dip, dimmers, blinds) {
+  #setDeviceDipConfig(dip, dimmers, blinds) {
     switch (dip) {
       case 0:
         this.debug('setDeviceDipConfig() > dip_config: [0] 2 SHADES');
@@ -241,20 +249,20 @@ module.exports = class DingzSwitchDriver extends Driver {
   }
 
   triggerDingzButtonPressedFlow(device, tokens, state) {
-    this.__flowTriggerDingzButtonPressed
+    this.#flowTriggerDingzButtonPressed
       .trigger(device, tokens, state)
-      .then(device.log(`dingzButton ${state.index} was '${this._getActionLabel(state.action)}' pressed`))
+      .then(device.info(`dingzButton ${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
       .catch((err) => this.error(`triggerDingzButtonPressedFlow() > ${err}`));
   }
 
   triggerLightStateChangedFlow(device, tokens, state) {
-    this.__flowTriggerLightStateChanged
+    this.#flowTriggerLightStateChanged
       .trigger(device, tokens, state)
-      .then(device.log(`light state changed to ${state.lightState}`))
+      .then(device.info(`light state changed to ${state.lightState}`))
       .catch((err) => this.error(`triggerLightStateChangedFlow() > ${err}`));
   }
 
-  _getActionLabel(action) {
+  #getActionLabel(action) {
     switch (action) {
       case DINGZ.SHORT_PRESS:
         return 'SHORT';

@@ -15,11 +15,11 @@
 
 - light_state icon
 
-- button_config 
+- button_config
 
 ## Allgemein
 
-- ???
+- "power consumption" wird nicht angezeigt
 
 ## Homey v8.1.0
 

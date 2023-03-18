@@ -10,7 +10,7 @@ module.exports = class SwitchDevice extends Device {
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
-    this.homey.on('measurePowerChanged', (params) => {
+    this.homey.on(`measurePowerChanged-${this.data.mac}`, (params) => {
       if (params.output.toString() === this.data.absoluteIdx) {
         // this.debug(`dingzEvent: measurePowerChanged > ${JSON.stringify(params)`);
         this.setCapabilityValue('measure_power', Math.round(params.value * 10) / 10);

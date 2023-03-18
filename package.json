@@ -2,17 +2,23 @@
   "name": "homey.dingz",
   "version": "1.1.3",
   "description": "Control dingz devices",
+  "engines": {
+    "node": ">=12.16.1"
+  },
   "main": "app.js",
   "scripts": {
-    "reloadMyHomey": "npm uninstall github:cgHome/homey.my-homey && npm install github:cgHome/homey.my-homey",
+    "inst:myHomey": "npm install github:cgHome/homey.my-homey",
+    "predebug$": "sudo rm -rf .homeybuild",
     "debug": "homey app run",
+    "debug:remote": "npm run debug -- --remote",
+    "eslint": "eslint --ext .js --ignore-path .gitignore .",
+    "eslint:fix": "npm run eslint -- --fix",
     "start": "npm install && homey app install",
     "build": "homey app build",
     "publish": "homey app publish",
     "postpublish": "git commit --amend --no-edit ./package.json && git push -f origin main",
     "validate": "homey app validate -l publish",
-    "validateTest": "homey app validate",
-    "eslint": "eslint ."
+    "validateTest": "homey app validate"
   },
   "keywords": [
     "Smarthome",
@@ -32,15 +38,12 @@
   },
   "homepage": "https://homey.app/a/org.cflat-inc.dingz",
   "dependencies": {
-    "axios": "^1.3.3",
-    "my-homey": "github:cgHome/homey.my-homey"
-  },
-  "engines": {
-    "node": ">=12.16.1"
+    "my-homey": "github:cgHome/homey.my-homey",
+    "simplelog-api": "github:cghome/homey.simplelog-api"
   },
   "devDependencies": {
-    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.3",
-    "eslint": "^8.34.0",
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.4",
+    "eslint": "^8.36.0",
     "eslint-config-athom": "^3.1.1"
   },
   "directories": {

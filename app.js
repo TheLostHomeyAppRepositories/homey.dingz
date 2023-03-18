@@ -1,14 +1,21 @@
 'use strict';
 
-const MyHomey = require('my-homey');
+const { MyApp } = require('my-homey');
+
+const { SimpleLogApp } = require('simplelog-api');
 
 const { DINGZ } = require('./lib/dingzAPI');
 
-module.exports = class DingzApp extends MyHomey.App {
+module.exports = class DingzApp extends MyApp {
 
   async onInit() {
     super.onInit();
     this.onceDay = null;
+
+    SimpleLogApp.getInstance(this.homey)
+      .addLog('SimpleLogApp Test');
+
+    this.debug('Initialized');
   }
 
   // Web-API > DingzSwitchEvent

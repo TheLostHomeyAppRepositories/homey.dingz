@@ -1,8 +1,8 @@
 'use strict';
 
-const MyHomey = require('my-homey');
+const { MyDriver } = require('my-homey');
 
-module.exports = class Driver extends MyHomey.Driver {
+module.exports = class Driver extends MyDriver {
 
   async onInit(options = {}) {
     super.onInit(options);

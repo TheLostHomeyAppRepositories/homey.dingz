@@ -14,7 +14,7 @@ module.exports = class LightDevice extends SwitchDevice {
   async getDeviceValues(url) {
     return super.getDeviceValues(url)
       .then(async (data) => {
-        await this.setCapabilityValue('dim', data.value / 100);
+        this.setCapabilityValue('dim', data.value / 100);
         return data;
       })
       .catch((err) => {
