@@ -15,7 +15,7 @@
 			]
 		},
 		{
-			"name": "Select SARAH-Dev",
+			"name": "Select Development",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -23,11 +23,11 @@
 			"args": [
 				"select",
 				"-n",
-				"SARAH-Dev"
+				"Development"
 			]
 		},
 		{
-			"name": "Homey:local",
+			"name": "H2016",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -40,11 +40,37 @@
 			"serverReadyAction": {
 				"pattern": "Debugger listening on",
 				"action": "startDebugging",
-				"name": "Homey:local:Attach",
+				"name": "H2016:Attach",
 			}
 		},
 		{
-			"name": "Homey:local:Attach",
+			"name": "H2016:Attach",
+			"type": "node",
+			"request": "attach",
+			"address": "192.168.50.10",
+			"port": 9229,
+			"localRoot": "${workspaceFolder}",
+			"remoteRoot": "/",
+		},
+		{
+			"name": "HP2023:local",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "homey",
+			"args": [
+				"app",
+				"run",
+			],
+			"outputCapture": "std",
+			"serverReadyAction": {
+				"pattern": "Debugger listening on",
+				"action": "startDebugging",
+				"name": "HP2023:local:Attach",
+			}
+		},
+		{
+			"name": "HP2023:local:Attach",
 			"type": "node",
 			"request": "attach",
 			"port": 9229,
@@ -52,7 +78,7 @@
 			"remoteRoot": "/app/",
 		},
 		{
-			"name": "Homey:remote",
+			"name": "HP2023:remote",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -66,18 +92,17 @@
 			"serverReadyAction": {
 				"pattern": "Debugger listening on",
 				"action": "startDebugging",
-				"name": "Homey:remote:Attach",
+				"name": "HP2023:remote:Attach",
 			}
 		},
 		{
-			"name": "Homey:remote:Attach",
+			"name": "HP2023:remote:Attach",
 			"type": "node",
 			"request": "attach",
-			// "address": "192.168.50.10",
 			"address": "192.168.50.11",
 			"port": 9229,
 			"localRoot": "${workspaceFolder}",
-			"remoteRoot": "/",
+			"remoteRoot": "/app/",
 		},
 		{
 			"name": "Attach: chrome",
