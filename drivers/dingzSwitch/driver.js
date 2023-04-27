@@ -72,7 +72,7 @@ module.exports = class DingzSwitchDriver extends Driver {
       case 'blind':
         return BlindDevice;
       default:
-        this.error(`onMapDeviceClass - unknown deviceId: ${device.getData().deviceId}`);
+        this.logError(`onMapDeviceClass - unknown deviceId: ${device.getData().deviceId}`);
         return Error(`Unknown Device-id ${device.getData().deviceId}`);
     }
   }
@@ -103,14 +103,14 @@ module.exports = class DingzSwitchDriver extends Driver {
 
     session.setHandler('list_devices_selection', async (switches) => {
       dingzSwitch = switches[0];
-      this.debug(`onPair() - list_devices_selection > switch: ${JSON.stringify(dingzSwitch)}`);
+      this.logDebug(`onPair() - list_devices_selection > switch: ${JSON.stringify(dingzSwitch)}`);
       return dingzSwitch;
     });
   }
 
   #handelDingzSwitches(discoveryResults) {
     return discoveryResults.map((discoveryResult) => {
-      // this.debug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
+      // this.logDebug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
       const room = (!discoveryResult.txt.room ? '' : discoveryResult.txt.room).trim();
       const name = (discoveryResult.txt.name || discoveryResult.name).trim();
       return {
@@ -129,7 +129,7 @@ module.exports = class DingzSwitchDriver extends Driver {
 
   async #handelDingzDevices(dingzSwitch) {
     try {
-      const httpAPI = new HttpAPI(this, dingzSwitch.data.address, this._logLinePrefix());
+      const httpAPI = new HttpAPI(this, dingzSwitch.data.address, this.constructor.name);
 
       let dingzDevices;
 
@@ -188,11 +188,11 @@ module.exports = class DingzSwitchDriver extends Driver {
           manifest.settings['address'] = dingzSwitch.data.address;
           manifest.settings['lastSeen'] = this.localDateTimeFormater().format(new Date(dingzSwitch.data.lastSeen));
 
-          // this.debug(`onPair() > #handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
+          // this.logDebug(`onPair() > #handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
           return manifest;
         });
     } catch (err) {
-      this.error(`onPair() - list_devices: ${err}`);
+      this.logError(`onPair() - list_devices: ${err}`);
       return err;
     }
   }
@@ -220,24 +220,24 @@ module.exports = class DingzSwitchDriver extends Driver {
   #setDeviceDipConfig(dip, dimmers, blinds) {
     switch (dip) {
       case 0:
-        this.debug('setDeviceDipConfig() > dip_config: [0] 2 SHADES');
+        this.logDebug('setDeviceDipConfig() > dip_config: [0] 2 SHADES');
         blinds[0].relativeIdx = '0';
         blinds[1].relativeIdx = '1';
         return blinds;
       case 1:
-        this.debug('setDeviceDipConfig() > dip_config: [1] 2 DIMMERS and 1 SHADE');
+        this.logDebug('setDeviceDipConfig() > dip_config: [1] 2 DIMMERS and 1 SHADE');
         dimmers[0].relativeIdx = '0';
         dimmers[1].relativeIdx = '1';
         blinds[1].relativeIdx = '0';
         return [dimmers[0], dimmers[1], blinds[1]];
       case 2:
-        this.debug('setDeviceDipConfig() > dip_config: [2] 1 SHADE and 2 DIMMERS');
+        this.logDebug('setDeviceDipConfig() > dip_config: [2] 1 SHADE and 2 DIMMERS');
         blinds[0].relativeIdx = '0';
         dimmers[2].relativeIdx = '0';
         dimmers[3].relativeIdx = '1';
         return [blinds[0], dimmers[2], dimmers[3]];
       case 3:
-        this.debug('setDeviceDipConfig() > dip_config: [3] 4 DIMMERS');
+        this.logDebug('setDeviceDipConfig() > dip_config: [3] 4 DIMMERS');
         dimmers[0].relativeIdx = '0';
         dimmers[1].relativeIdx = '1';
         dimmers[2].relativeIdx = '2';
@@ -251,15 +251,15 @@ module.exports = class DingzSwitchDriver extends Driver {
   triggerDingzButtonPressedFlow(device, tokens, state) {
     this.#flowTriggerDingzButtonPressed
       .trigger(device, tokens, state)
-      .then(device.info(`dingzButton ${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
-      .catch((err) => this.error(`triggerDingzButtonPressedFlow() > ${err}`));
+      .then(device.logInfo(`dingzButton ${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
+      .catch((err) => this.logError(`triggerDingzButtonPressedFlow() > ${err}`));
   }
 
   triggerLightStateChangedFlow(device, tokens, state) {
     this.#flowTriggerLightStateChanged
       .trigger(device, tokens, state)
-      .then(device.info(`light state changed to ${state.lightState}`))
-      .catch((err) => this.error(`triggerLightStateChangedFlow() > ${err}`));
+      .then(device.logInfo(`light state changed to ${state.lightState}`))
+      .catch((err) => this.logError(`triggerLightStateChangedFlow() > ${err}`));
   }
 
   #getActionLabel(action) {

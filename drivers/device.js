@@ -22,7 +22,7 @@ module.exports = class Device extends MyHttpDevice {
     return super.initDevice()
       .then(this.initDingzSwitchEvent())
       .then(this.setDingzSwitchSettings())
-      .catch((err) => this.error(`initDevice() > ${err}`));
+      .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
   // Homey Lifecycle
@@ -32,19 +32,21 @@ module.exports = class Device extends MyHttpDevice {
 
     if (process.env.DEBUG === '1') {
       // Only for dingz Test
-      // this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+      // v1 this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+      // this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/');
     }
   }
 
   // dingzSwitch event
 
   initDingzSwitchEvent() {
-    this.debug('initDingzSwitchEvent()');
+    this.logDebug('initDingzSwitchEvent()');
 
-    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    // v1 this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
 
     this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
-      this.debug(`dingzSwitchEvent: dingzRefresh > ${JSON.stringify(params)}`);
+      this.logDebug(`dingzSwitchEvent: dingzRefresh > ${JSON.stringify(params)}`);
       this.getDeviceValues();
     });
   }
@@ -52,25 +54,25 @@ module.exports = class Device extends MyHttpDevice {
   // dingzSwitch action
 
   async subscribeDingzAction(action, url) {
-    this.debug(`subscribeDingzAction() - ${action} > ${url}`);
+    this.logDebug(`subscribeDingzAction() - ${action} > ${url}`);
 
     const localAddress = await this.homey.cloud.getLocalAddress();
 
     this.getDeviceData(url)
       .then((dingzActions) => {
-        return dingzActions.url
+        return dingzActions.generic
           .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(this.#apiPath))
           .concat([`get://${localAddress}/${this.#apiPath}/${action}`])
           .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
-      .then(() => this.debug(`subscribeDingzAction() - ${action} subscribed`))
-      .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
+      .then(() => this.logDebug(`subscribeDingzAction() - ${action} subscribed`))
+      .catch((err) => this.logError(`subscribeDingzAction() > ${err}`));
   }
 
   async unsubscribeDingzAction(action, url) {
-    this.debug(`unsubscribeDingzAction() - ${action} > ${url}`);
+    this.logDebug(`unsubscribeDingzAction() - ${action} > ${url}`);
 
     this.getDeviceData(url)
       .then((dingzActions) => {
@@ -80,14 +82,14 @@ module.exports = class Device extends MyHttpDevice {
           .join('||');
       })
       .then((dingzActions) => this.setDeviceData(url, dingzActions))
-      .then(() => this.debug(`unsubscribeDingzAction() - ${action} unsubscribed`))
-      .catch((err) => this.error(`subscribeDingzAction() > ${err}`));
+      .then(() => this.logDebug(`unsubscribeDingzAction() - ${action} unsubscribed`))
+      .catch((err) => this.logError(`subscribeDingzAction() > ${err}`));
   }
 
   // Settings-Page
 
   async setDingzSwitchSettings() {
-    this.debug('setDingzSwitchSettings()');
+    this.logDebug('setDingzSwitchSettings()');
     await this.getDeviceData('device')
       .then((data) => this.setSettings({
         mac: Object.keys(data)[0],
@@ -96,7 +98,7 @@ module.exports = class Device extends MyHttpDevice {
         frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
         baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
       }))
-      .catch((err) => this.error(`setDingzSwitchSettings() > ${err}`));
+      .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
   }
 
 };

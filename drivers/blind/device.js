@@ -18,7 +18,7 @@ module.exports = class BlindDevice extends ShadeDevice {
         return data;
       })
       .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
+        this.logError(`getDeviceValues() > ${err}`);
         this.showWarning(err.message);
       });
   }
@@ -27,7 +27,7 @@ module.exports = class BlindDevice extends ShadeDevice {
     const current = this.getCapabilityValue('windowcoverings_tilt_set');
     if (current === value) return Promise.resolve();
 
-    this.debug(`onCapabilityWindowCoveringsTiltSet() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityWindowCoveringsTiltSet() - ${current} > ${value}`);
     const deviceData = await this.getDeviceData(`shade/${this.data.relativeIdx}`);
     const { blind } = deviceData.target;
     const lamella = Math.round(100 - value * 100);
@@ -38,7 +38,7 @@ module.exports = class BlindDevice extends ShadeDevice {
         const val = this.getCapabilityValue('windowcoverings_tilt_set') * 100;
         return this.homey.__('device.windowCoveringsTiltSet', { value: val });
       }))
-      .catch((err) => this.error(`onCapabilityWindowCoveringsTiltSet() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityWindowCoveringsTiltSet() > ${err}`));
   }
 
 };

@@ -18,7 +18,7 @@ module.exports = class LightDevice extends SwitchDevice {
         return data;
       })
       .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
+        this.logError(`getDeviceValues() > ${err}`);
         this.showWarning(err.message);
       });
   }
@@ -31,7 +31,7 @@ module.exports = class LightDevice extends SwitchDevice {
     const dim = Math.round(value * 100);
     const ramp = (valueObj.ramp || DINGZ.RAMP_DEFAULT) * 10;
 
-    this.debug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
+    this.logDebug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
       .then(this.getDeviceValues())
@@ -39,7 +39,7 @@ module.exports = class LightDevice extends SwitchDevice {
         const val = Math.round(this.getCapabilityValue('dim') * 100);
         return this.homey.__('device.dimSet', { value: val });
       }))
-      .catch((err) => this.error(`onCapabilityDim() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityDim() > ${err}`));
   }
 
 };

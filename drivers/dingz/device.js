@@ -19,12 +19,13 @@ module.exports = class DingzDevice extends Device {
   }
 
   initDingzSwitchEvent() {
-    this.debug('initDingzSwitchEvent()');
+    this.logDebug('initDingzSwitchEvent()');
 
-    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    // v1 this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
 
     this.homey.on(`dingzPirChanged-${this.data.mac}`, (params) => {
-      this.debug(`dingzSwitchEvent: dingzPirChanged > ${JSON.stringify(params)}`);
+      this.logDebug(`dingzSwitchEvent: dingzPirChanged > ${JSON.stringify(params)}`);
       switch (params.action) {
         case DINGZ.MOTION_START:
           this.setMotionDetector(true);
@@ -42,7 +43,7 @@ module.exports = class DingzDevice extends Device {
     });
 
     this.homey.on(`dingzButtonPressed-${this.data.mac}`, (params) => {
-      this.debug(`dingzSwitchEvent: dingzButtonPressed > ${JSON.stringify(params)}`);
+      this.logDebug(`dingzSwitchEvent: dingzButtonPressed > ${JSON.stringify(params)}`);
       switch (params.action) {
         case DINGZ.SHORT_PRESS:
         case DINGZ.DOUBLE_PRESS:
@@ -55,7 +56,7 @@ module.exports = class DingzDevice extends Device {
   }
 
   initMotionDetector() {
-    this.debug('initMotionDetector()');
+    this.logDebug('initMotionDetector()');
 
     return this.getDeviceData('device')
       .then((data) => {
@@ -65,30 +66,30 @@ module.exports = class DingzDevice extends Device {
         if (device.has_pir) {
           if (!this.hasCapability('alarm_motion')) {
             this.addCapability('alarm_motion')
-              .then(this.debug('initMotionDetector() - alarm_motion added'))
-              .catch((err) => this.error(`initMotionDetector() - ${err}`));
+              .then(this.logDebug('initMotionDetector() - alarm_motion added'))
+              .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
           this.setDeviceData('action/pir/generic/feedback/enable')
-            .then(this.debug('initMotionDetector() - enable PIR generic feedback'))
-            .catch((err) => this.error(`initMotionDetector() - enable > ${err}`));
+            .then(this.logDebug('initMotionDetector() - enable PIR generic feedback'))
+            .catch((err) => this.logError(`initMotionDetector() - enable > ${err}`));
         } else {
           if (this.hasCapability('alarm_motion')) {
             this.removeCapability('alarm_motion')
-              .then(this.debug('initMotionDetector() - alarm_motion removed'))
-              .catch((err) => this.error(`initMotionDetector() - ${err}`));
+              .then(this.logDebug('initMotionDetector() - alarm_motion removed'))
+              .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
           this.setDeviceData('action/pir/generic/feedback/disable')
-            .then(this.debug('initMotionDetector() - disable PIR generic feedback'))
-            .catch((err) => this.error(`initMotionDetector() - disable > ${err}`));
+            .then(this.logDebug('initMotionDetector() - disable PIR generic feedback'))
+            .catch((err) => this.logError(`initMotionDetector() - disable > ${err}`));
         }
       })
-      .catch((err) => this.error(`initMotionDetector() > ${err}`));
+      .catch((err) => this.logError(`initMotionDetector() > ${err}`));
   }
 
   initDingzSensors() {
-    this.debug('initDingzSensors()');
+    this.logDebug('initDingzSensors()');
     this.#dingzSensorsInterval = this.homey.setInterval(() => {
-      this.debug('initDingzSensors() > refresh sensor');
+      this.logDebug('initDingzSensors() > refresh sensor');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
   }
@@ -117,17 +118,17 @@ module.exports = class DingzDevice extends Device {
         data.power_outputs
           .forEach((elm, output) => this.homey.emit(`measurePowerChanged-${this.data.mac}`, { output, value: elm.value }));
       })
-      .catch((err) => this.error(`getDingzSensors() - ${err}`));
+      .catch((err) => this.logError(`getDingzSensors() - ${err}`));
   }
 
   async setMotionDetector(motion) {
-    this.debug(`setMotionDetector() > ${motion}`);
+    this.logDebug(`setMotionDetector() > ${motion}`);
     this.setCapabilityValue('alarm_motion', motion);
   }
 
   async setLightState(state) {
     if (state !== this.getCapabilityValue('light_state')) {
-      this.debug(`setLightState() > ${state}`);
+      this.logDebug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)
       // .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
         .then(() => {
@@ -138,7 +139,7 @@ module.exports = class DingzDevice extends Device {
             this.homey.app.notifyDeviceWarning();
           }
         })
-        .catch((err) => this.error(`setLightState() - ${err}`));
+        .catch((err) => this.logError(`setLightState() - ${err}`));
     }
   }
 

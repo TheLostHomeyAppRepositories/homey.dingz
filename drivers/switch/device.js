@@ -12,7 +12,7 @@ module.exports = class SwitchDevice extends Device {
 
     this.homey.on(`measurePowerChanged-${this.data.mac}`, (params) => {
       if (params.output.toString() === this.data.absoluteIdx) {
-        // this.debug(`dingzEvent: measurePowerChanged > ${JSON.stringify(params)`);
+        // this.logDebug(`dingzEvent: measurePowerChanged > ${JSON.stringify(params)`);
         this.setCapabilityValue('measure_power', Math.round(params.value * 10) / 10);
       }
     });
@@ -25,7 +25,7 @@ module.exports = class SwitchDevice extends Device {
         return data;
       })
       .catch((err) => {
-        this.error(`getDeviceValues() > ${err}`);
+        this.logError(`getDeviceValues() > ${err}`);
         this.showWarning(err.message);
       });
   }
@@ -37,7 +37,7 @@ module.exports = class SwitchDevice extends Device {
     const action = value ? 'on' : 'off';
     const ramp = (this.data.deviceId === 'switch' ? 0 : DINGZ.RAMP_DEFAULT) * 10;
 
-    this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
       .then(this.getDeviceValues())
@@ -45,7 +45,7 @@ module.exports = class SwitchDevice extends Device {
         const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
         return this.homey.__('device.stateSet', { value: val });
       }))
-      .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
   }
 
 };

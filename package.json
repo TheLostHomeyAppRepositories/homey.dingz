@@ -7,7 +7,7 @@
   },
   "main": "app.js",
   "scripts": {
-    "inst:myHomey": "npm install github:cgHome/homey.my-homey",
+    "update:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.my-homey",
     "predebug$": "sudo rm -rf .homeybuild",
     "debug": "homey app run",
     "debug:remote": "npm run debug -- --remote",
@@ -37,17 +37,16 @@
     "url": "https://github.com/cgHome/homey.dingz/issues"
   },
   "homepage": "https://homey.app/a/org.cflat-inc.dingz",
-  "dependencies": {
-    "my-homey": "github:cgHome/homey.my-homey",
-    "simplelog-api": "github:cghome/homey.simplelog-api"
-  },
   "devDependencies": {
-    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.4",
-    "eslint": "^8.36.0",
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.3",
+    "eslint": "^8.38.0",
     "eslint-config-athom": "^3.1.1"
   },
   "directories": {
     "lib": "lib",
     "test": "test"
+  },
+  "dependencies": {
+    "my-homey": "github:cgHome/homey.my-homey"
   }
 }

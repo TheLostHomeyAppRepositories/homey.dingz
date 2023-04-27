@@ -2,8 +2,6 @@
 
 const { MyApp } = require('my-homey');
 
-const { SimpleLogApp } = require('simplelog-api');
-
 const { DINGZ } = require('./lib/dingzAPI');
 
 module.exports = class DingzApp extends MyApp {
@@ -12,15 +10,12 @@ module.exports = class DingzApp extends MyApp {
     super.onInit();
     this.onceDay = null;
 
-    SimpleLogApp.getInstance(this.homey)
-      .addLog('SimpleLogApp Test');
-
-    this.debug('Initialized');
+    this.logDebug('Initialized');
   }
 
   // Web-API > DingzSwitchEvent
   async dingzSwitchEventAPI(params) {
-    this.debug(`dingzSwitchEventAPI() - ${JSON.stringify(params)}`);
+    this.logDebug(`dingzSwitchEventAPI() - ${JSON.stringify(params)}`);
     switch (params.index) {
       case DINGZ.PIR:
         this.homey.emit(`dingzPirChanged-${params.mac}`, params);
