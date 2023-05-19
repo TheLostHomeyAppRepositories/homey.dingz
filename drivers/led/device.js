@@ -3,9 +3,9 @@
 const querystring = require('querystring');
 
 const { DINGZ } = require('../../lib/dingzAPI');
-const Device = require('../device');
+const BaseDevice = require('../device');
 
-module.exports = class LedDevice extends Device {
+module.exports = class LedDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);
@@ -15,7 +15,7 @@ module.exports = class LedDevice extends Device {
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
   }
 
-  async getDeviceValues(url = 'led/get') {
+  getDeviceValues(url = 'led/get') {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('onoff', data.on);
@@ -30,7 +30,7 @@ module.exports = class LedDevice extends Device {
       });
   }
 
-  async onCapabilityOnOff(value, opts) {
+  onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve();
 
@@ -41,14 +41,14 @@ module.exports = class LedDevice extends Device {
 
     return this.setDeviceData('led/set', { action, ramp })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
         return this.homey.__('device.stateSet', { value: val });
       }))
       .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
   }
 
-  async onCapabilityDim(valueObj, opts) {
+  onCapabilityDim(valueObj, opts) {
     const current = this.getCapabilityValue('dim');
     const value = valueObj.dim;
     if (current === value) return Promise.resolve();
@@ -64,14 +64,14 @@ module.exports = class LedDevice extends Device {
       action: 'on', ramp, mode: 'hsv', color,
     })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('dim') * 100);
         return this.homey.__('device.dimSet', { value: val });
       }))
       .catch((err) => this.logError(`onCapabilityDim() > ${err}`));
   }
 
-  async onCapabilityLightHue(valueObj, options) {
+  onCapabilityLightHue(valueObj, options) {
     const curHue = this.getCapabilityValue('light_hue');
     const valHue = valueObj.light_hue || curHue;
     const curSaturation = this.getCapabilityValue('light_saturation');
@@ -91,18 +91,18 @@ module.exports = class LedDevice extends Device {
       action: 'on', ramp, mode: 'hsv', color,
     })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('light_hue') * 360);
         return this.homey.__('device.lightHueSet', { value: val });
       }))
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('light_saturation') * 100);
         return this.homey.__('device.lightSaturationSet', { value: val });
       }))
       .catch((err) => this.logError(`onCapabilityLightHue() > ${err}`));
   }
 
-  async onCapabilityDingzLedColor(valueObj, options) {
+  onCapabilityDingzLedColor(valueObj, options) {
     this.logDebug(`onCapabilityDingzLedColor() - color: ${valueObj.color}`);
     return this.onCapabilityLightHue(JSON.parse(valueObj.color.replace(/'/g, '"')), options);
   }

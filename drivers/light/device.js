@@ -11,7 +11,7 @@ module.exports = class LightDevice extends SwitchDevice {
     this.registerMultipleCapabilityListener(['dim', 'ramp'], this.onCapabilityDim.bind(this));
   }
 
-  async getDeviceValues(url) {
+  getDeviceValues(url) {
     return super.getDeviceValues(url)
       .then(async (data) => {
         this.setCapabilityValue('dim', data.value / 100);
@@ -23,7 +23,7 @@ module.exports = class LightDevice extends SwitchDevice {
       });
   }
 
-  async onCapabilityDim(valueObj, opts) {
+  onCapabilityDim(valueObj, opts) {
     const current = this.getCapabilityValue('dim');
     const value = valueObj.dim;
     if (current === value) return Promise.resolve();
@@ -35,7 +35,7 @@ module.exports = class LightDevice extends SwitchDevice {
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('dim') * 100);
         return this.homey.__('device.dimSet', { value: val });
       }))

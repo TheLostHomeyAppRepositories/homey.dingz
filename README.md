@@ -6,6 +6,8 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ## Attention
 
+**The app is currently **not** HP2023 (v10.x) compatible.....**
+
 I have noticed that several users have installed the test version of the dingz app (v1.2.x with SDKv3) and are now having problems (crashes).
 
 The new version of the app is incompatible with the live version (v1.1.3)

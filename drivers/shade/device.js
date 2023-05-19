@@ -1,8 +1,8 @@
 'use strict';
 
-const Device = require('../device');
+const BaseDevice = require('../device');
 
-module.exports = class ShadeDevice extends Device {
+module.exports = class ShadeDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);
@@ -27,7 +27,7 @@ module.exports = class ShadeDevice extends Device {
     });
   }
 
-  async getDeviceValues(url = `shade/${this.data.relativeIdx}`) {
+  getDeviceValues(url = `shade/${this.data.relativeIdx}`) {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('windowcoverings_set', (100 - data.target.blind) / 100);
@@ -50,7 +50,7 @@ module.exports = class ShadeDevice extends Device {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = this.getCapabilityValue('windowcoverings_set') * 100;
         return this.homey.__('device.windowCoveringsSet', { value: val });
       }))

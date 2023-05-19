@@ -4,7 +4,7 @@ const { MyHttpDevice } = require('my-homey');
 
 const { DINGZ } = require('../lib/dingzAPI');
 
-module.exports = class Device extends MyHttpDevice {
+module.exports = class BaseDevice extends MyHttpDevice {
 
   #apiPath = null;
 
@@ -12,7 +12,7 @@ module.exports = class Device extends MyHttpDevice {
     return DINGZ;
   }
 
-  async onInit(options = {}) {
+  onInit(options = {}) {
     super.onInit(options);
 
     this.#apiPath = `api/app/${this.homey.manifest.id}`;
@@ -32,9 +32,15 @@ module.exports = class Device extends MyHttpDevice {
 
     if (process.env.DEBUG === '1') {
       // Only for dingz Test
-      // v1 this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+      // FW: v1.x this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
       // this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/');
     }
+  }
+
+  // MyHttpDevice
+
+  getBaseURL() {
+    return `http://${this.getStoreValue('address')}/api/v1/`;
   }
 
   // dingzSwitch event
@@ -42,7 +48,7 @@ module.exports = class Device extends MyHttpDevice {
   initDingzSwitchEvent() {
     this.logDebug('initDingzSwitchEvent()');
 
-    // v1 this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    // FW: v1.x this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
 
     this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
@@ -100,5 +106,23 @@ module.exports = class Device extends MyHttpDevice {
       }))
       .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
   }
+
+  // NOTE: simplelog-api on/off
+
+  // logError(msg) {
+  //   if (process.env.DEBUG === '1') {
+  //     this.error(`[ERROR] ${this.getName()} > ${msg}}`);
+  //   } else {
+  //     this.error(msg);
+  //   }
+  // }
+
+  // logInfo(msg) {
+  //   this.log(`[INFO] ${this.getName()} > ${msg}`);
+  // }
+
+  // logDebug(msg) {
+  //   this.log(`[DEBUG] ${this.getName()} > ${msg}`);
+  // }
 
 };

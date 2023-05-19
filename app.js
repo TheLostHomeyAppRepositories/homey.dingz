@@ -6,15 +6,15 @@ const { DINGZ } = require('./lib/dingzAPI');
 
 module.exports = class DingzApp extends MyApp {
 
-  async onInit() {
+  onInit() {
     super.onInit();
     this.onceDay = null;
 
-    this.logDebug('Initialized');
+    this.logInfo(`${this.homey.manifest.name.en} - v${this.homey.manifest.version} is started`);
   }
 
   // Web-API > DingzSwitchEvent
-  async dingzSwitchEventAPI(params) {
+  dingzSwitchEventAPI(params) {
     this.logDebug(`dingzSwitchEventAPI() - ${JSON.stringify(params)}`);
     switch (params.index) {
       case DINGZ.PIR:
@@ -36,8 +36,24 @@ module.exports = class DingzApp extends MyApp {
     // Only once a day
     if (this.onceDay !== new Date().toLocaleDateString()) {
       this.onceDay = new Date().toLocaleDateString();
-      this.notify('**WARNING:** Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
+      this.notifyError('Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
     }
   }
+
+  // NOTE: simplelog-api on/off
+
+  // logError(msg) {
+  //   this.error(`${msg}`);
+  // }
+
+  // logInfo(msg) {
+  //   this.log(`[INFO] ${msg}`);
+  // }
+
+  // logDebug(msg) {
+  //   if (process.env.DEBUG === '1') {
+  //     this.log(`[DEBUG] ${msg}`);
+  //   }
+  // }
 
 };

@@ -11,7 +11,7 @@ module.exports = class BlindDevice extends ShadeDevice {
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowCoveringsTiltSet.bind(this));
   }
 
-  async getDeviceValues(url) {
+  getDeviceValues(url) {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('windowcoverings_tilt_set', (100 - data.target.lamella) / 100);
@@ -34,7 +34,7 @@ module.exports = class BlindDevice extends ShadeDevice {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${blind}&lamella=${lamella}`)
       .then(this.waitForPosition())
-      .then(this.notify(() => {
+      .then(this.logNotice(() => {
         const val = this.getCapabilityValue('windowcoverings_tilt_set') * 100;
         return this.homey.__('device.windowCoveringsTiltSet', { value: val });
       }))

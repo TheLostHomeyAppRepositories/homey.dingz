@@ -4,7 +4,7 @@ const { HttpAPI } = require('my-homey');
 
 const { DINGZ } = require('../../lib/dingzAPI');
 
-const Driver = require('../driver');
+const BaseDriver = require('../driver');
 
 const DingzDevice = require('../dingz/device');
 const LedDevice = require('../led/device');
@@ -13,7 +13,7 @@ const LightDevice = require('../light/device');
 const ShadeDevice = require('../shade/device');
 const BlindDevice = require('../blind/device');
 
-module.exports = class DingzSwitchDriver extends Driver {
+module.exports = class DingzSwitchDriver extends BaseDriver {
 
   #flowTriggerDingzButtonPressed;
   #flowTriggerLightStateChanged;
@@ -26,7 +26,7 @@ module.exports = class DingzSwitchDriver extends Driver {
     return DINGZ;
   }
 
-  async onInit(options = {}) {
+  onInit(options = {}) {
     super.onInit(options);
 
     // Create flow-cards
@@ -129,7 +129,7 @@ module.exports = class DingzSwitchDriver extends Driver {
 
   async #handelDingzDevices(dingzSwitch) {
     try {
-      const httpAPI = new HttpAPI(this, dingzSwitch.data.address, this.constructor.name);
+      const httpAPI = new HttpAPI(this, `http://${dingzSwitch.data.address}/api/v1/`);
 
       let dingzDevices;
 

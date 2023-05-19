@@ -1,10 +1,10 @@
 'use strict';
 
-const Device = require('../device');
+const BaseDevice = require('../device');
 
 const { DINGZ } = require('../../lib/dingzAPI');
 
-module.exports = class DingzDevice extends Device {
+module.exports = class DingzDevice extends BaseDevice {
 
   #dingzSensorsInterval;
 
@@ -21,7 +21,7 @@ module.exports = class DingzDevice extends Device {
   initDingzSwitchEvent() {
     this.logDebug('initDingzSwitchEvent()');
 
-    // v1 this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
+    // FW: v1.x this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
     this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
 
     this.homey.on(`dingzPirChanged-${this.data.mac}`, (params) => {
@@ -69,18 +69,21 @@ module.exports = class DingzDevice extends Device {
               .then(this.logDebug('initMotionDetector() - alarm_motion added'))
               .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
-          this.setDeviceData('action/pir/generic/feedback/enable')
-            .then(this.logDebug('initMotionDetector() - enable PIR generic feedback'))
-            .catch((err) => this.logError(`initMotionDetector() - enable > ${err}`));
+          // FW v1.x
+          // this.setDeviceData('action/pir/generic/feedback/enable')
+          //   .then(this.logDebug('initMotionDetector() - enable PIR generic feedback'))
+          //   .catch((err) => this.logError(`initMotionDetector() - enable > ${err}`));
         } else {
+          // eslint-disable-next-line no-lonely-if
           if (this.hasCapability('alarm_motion')) {
             this.removeCapability('alarm_motion')
               .then(this.logDebug('initMotionDetector() - alarm_motion removed'))
               .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
-          this.setDeviceData('action/pir/generic/feedback/disable')
-            .then(this.logDebug('initMotionDetector() - disable PIR generic feedback'))
-            .catch((err) => this.logError(`initMotionDetector() - disable > ${err}`));
+          // FW v1.x
+          // this.setDeviceData('action/pir/generic/feedback/disable')
+          //   .then(this.logDebug('initMotionDetector() - disable PIR generic feedback'))
+          //   .catch((err) => this.logError(`initMotionDetector() - disable > ${err}`));
         }
       })
       .catch((err) => this.logError(`initMotionDetector() > ${err}`));
@@ -108,7 +111,7 @@ module.exports = class DingzDevice extends Device {
 
   // Data handling
 
-  async getDeviceValues(url = 'sensors') {
+  getDeviceValues(url = 'sensors') {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('measure_luminance', data.brightness);
@@ -121,12 +124,12 @@ module.exports = class DingzDevice extends Device {
       .catch((err) => this.logError(`getDingzSensors() - ${err}`));
   }
 
-  async setMotionDetector(motion) {
+  setMotionDetector(motion) {
     this.logDebug(`setMotionDetector() > ${motion}`);
     this.setCapabilityValue('alarm_motion', motion);
   }
 
-  async setLightState(state) {
+  setLightState(state) {
     if (state !== this.getCapabilityValue('light_state')) {
       this.logDebug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)

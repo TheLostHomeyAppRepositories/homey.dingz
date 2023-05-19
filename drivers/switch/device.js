@@ -1,9 +1,9 @@
 'use strict';
 
 const { DINGZ } = require('../../lib/dingzAPI');
-const Device = require('../device');
+const BaseDevice = require('../device');
 
-module.exports = class SwitchDevice extends Device {
+module.exports = class SwitchDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);
@@ -18,7 +18,7 @@ module.exports = class SwitchDevice extends Device {
     });
   }
 
-  async getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
+  getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('onoff', data.on);
@@ -30,7 +30,7 @@ module.exports = class SwitchDevice extends Device {
       });
   }
 
-  async onCapabilityOnOff(value, opts) {
+  onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve();
 
@@ -41,7 +41,7 @@ module.exports = class SwitchDevice extends Device {
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
         return this.homey.__('device.stateSet', { value: val });
       }))
