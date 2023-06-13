@@ -9,8 +9,6 @@ module.exports = class DingzApp extends MyApp {
   onInit() {
     super.onInit();
     this.onceDay = null;
-
-    this.logDebug('App is started');
   }
 
   // Web-API > DingzSwitchEvent
