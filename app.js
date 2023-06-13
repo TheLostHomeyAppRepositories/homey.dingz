@@ -10,12 +10,12 @@ module.exports = class DingzApp extends MyApp {
     super.onInit();
     this.onceDay = null;
 
-    this.logInfo(`${this.homey.manifest.name.en} - v${this.homey.manifest.version} is started`);
+    this.logDebug('App is started');
   }
 
   // Web-API > DingzSwitchEvent
   dingzSwitchEventAPI(params) {
-    this.logDebug(`dingzSwitchEventAPI() - ${JSON.stringify(params)}`);
+    this.logDebug(`dingzSwitchEventAPI() > params: ${JSON.stringify(params)}`);
     switch (params.index) {
       case DINGZ.PIR:
         this.homey.emit(`dingzPirChanged-${params.mac}`, params);
@@ -24,9 +24,11 @@ module.exports = class DingzApp extends MyApp {
       case DINGZ.BTN2:
       case DINGZ.BTN3:
       case DINGZ.BTN4:
-        this.homey.emit(`dingzButtonPressed-${params.mac}`, params);
-        // Workaround > Until the dingzSwitch sends an (output) refresh message
-        this.homey.emit(`dingzRefresh-${params.mac}`, params);
+        if (params.action <= 3) {
+          this.homey.emit(`dingzButtonPressed-${params.mac}`, params);
+          // Workaround > Until the dingzSwitch sends an (output) refresh message
+          this.homey.emit(`dingzRefresh-${params.mac}`, params);
+        }
         break;
       default:
     }

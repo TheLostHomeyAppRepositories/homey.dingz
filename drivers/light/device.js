@@ -34,8 +34,8 @@ module.exports = class LightDevice extends SwitchDevice {
     this.logDebug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('dim') * 100);
         return this.homey.__('device.dimSet', { value: val });
       }))

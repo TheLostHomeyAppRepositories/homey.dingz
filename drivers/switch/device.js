@@ -40,8 +40,8 @@ module.exports = class SwitchDevice extends BaseDevice {
     this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
         return this.homey.__('device.stateSet', { value: val });
       }))

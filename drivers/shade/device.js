@@ -23,7 +23,7 @@ module.exports = class ShadeDevice extends BaseDevice {
         that.homey.setTimeout(wait, 2000);
       }()));
     }).then(() => {
-      this.logError('Device on position');
+      this.logDebug('Device on position');
     });
   }
 
@@ -50,7 +50,7 @@ module.exports = class ShadeDevice extends BaseDevice {
 
     return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${covering}&lamella=${lamella}`)
       .then(await this.waitForPosition())
-      .then(this.deviceChanged(() => {
+      .then(() => this.deviceChanged(() => {
         const val = this.getCapabilityValue('windowcoverings_set') * 100;
         return this.homey.__('device.windowCoveringsSet', { value: val });
       }))

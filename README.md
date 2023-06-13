@@ -6,13 +6,9 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ## Attention
 
-**The app is currently **not** HP2023 (v10.x) compatible.....**
+**The dingz app v1.3.x requires the new dingzSwitch firmware v.2.0.21.**
 
-I have noticed that several users have installed the test version of the dingz app (v1.2.x with SDKv3) and are now having problems (crashes).
-
-The new version of the app is incompatible with the live version (v1.1.3)
-
-I ask you to install the productive version over the existing test app, so that your dingz connection runs properly again! [App-Link:](https://homey.app/de-ch/app/org.cflat-inc.dingz/dingz/)
+Since the new firmware (v2) brought big internal changes, the app has to be rewritten. Until this is done, only the "old" device types (light, blinds & shade) are supported.
 
 ---
 
@@ -50,8 +46,8 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 
 ## Supported Devices
 
-- dingzSwitch FW: > 1.3.30
-- dingzSwitch plus FW: > 1.3.30
+- dingzSwitch FW: > 2.0.21
+- dingzSwitch plus FW: > 2.0.21
 
 ---
 
@@ -70,6 +66,12 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 ---
 
 ## Changelog
+
+v1.3.0
+
+- Support HP2023
+- Support dingzSwitch > v2.0.21
+- Several internal changes
 
 v1.2.5
 

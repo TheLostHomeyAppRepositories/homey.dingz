@@ -40,8 +40,8 @@ module.exports = class LedDevice extends BaseDevice {
     this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData('led/set', { action, ramp })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
         return this.homey.__('device.stateSet', { value: val });
       }))
@@ -60,11 +60,10 @@ module.exports = class LedDevice extends BaseDevice {
 
     this.logDebug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
 
-    return this.setDeviceData('led/set', {
-      action: 'on', ramp, mode: 'hsv', color,
-    })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+    // eslint-disable-next-line object-curly-newline
+    return this.setDeviceData('led/set', { action: 'on', ramp, mode: 'hsv', color })
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('dim') * 100);
         return this.homey.__('device.dimSet', { value: val });
       }))
@@ -75,7 +74,7 @@ module.exports = class LedDevice extends BaseDevice {
     const curHue = this.getCapabilityValue('light_hue');
     const valHue = valueObj.light_hue || curHue;
     const curSaturation = this.getCapabilityValue('light_saturation');
-    const valSaturation = valueObj.saturation || curSaturation;
+    const valSaturation = valueObj.light_saturation || curSaturation;
     if (!(curHue !== valHue || curSaturation !== valSaturation)) return Promise.resolve(true);
 
     const ramp = valueObj.ramp || DINGZ.RAMP_DEFAULT;
@@ -87,15 +86,14 @@ module.exports = class LedDevice extends BaseDevice {
     this.logDebug(`onCapabilityLightHue() light_hue - ${curHue} > ${valHue} ramp: ${ramp}`);
     this.logDebug(`onCapabilityLightHue() light_saturation - ${curSaturation} > ${valSaturation}`);
 
-    return this.setDeviceData('led/set', {
-      action: 'on', ramp, mode: 'hsv', color,
-    })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+    // eslint-disable-next-line object-curly-newline
+    return this.setDeviceData('led/set', { action: 'on', ramp, mode: 'hsv', color })
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('light_hue') * 360);
         return this.homey.__('device.lightHueSet', { value: val });
       }))
-      .then(this.deviceChanged(() => {
+      .then(() => this.deviceChanged(() => {
         const val = Math.round(this.getCapabilityValue('light_saturation') * 100);
         return this.homey.__('device.lightSaturationSet', { value: val });
       }))

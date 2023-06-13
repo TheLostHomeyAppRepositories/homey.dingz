@@ -12,17 +12,39 @@ module.exports = class DingzDevice extends BaseDevice {
     super.onInit(options);
   }
 
+  // Homey Lifecycle
+
+  onDeleted() {
+    super.onDeleted();
+    this.homey.clearInterval(this.#dingzSensorsInterval);
+  }
+
+  onUnload() {
+    super.onUnload();
+    this.homey.clearInterval(this.#dingzSensorsInterval);
+  }
+
   initDevice() {
-    super.initDevice()
-      .then(this.initMotionDetector())
-      .then(this.initDingzSensors());
+    return super.initDevice()
+      .then(() => this.initMotionDetector())
+      .then(() => this.initDingzSensors());
   }
 
   initDingzSwitchEvent() {
     this.logDebug('initDingzSwitchEvent()');
 
-    // FW: v1.x this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
-    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
+    this.homey.on(`dingzButtonPressed-${this.data.mac}`, (params) => {
+      this.logDebug(`dingzSwitchEvent: dingzButtonPressed > ${JSON.stringify(params)}`);
+      switch (params.action) {
+        case DINGZ.SHORT_PRESS:
+        case DINGZ.DOUBLE_PRESS:
+        case DINGZ.LONG_PRESS:
+          this.driver.triggerDingzButtonPressedFlow(this, {}, params);
+          break;
+        default:
+      }
+    });
+    this.subscribeDingzAction('action/generic', 'dingzSwitchEvent');
 
     this.homey.on(`dingzPirChanged-${this.data.mac}`, (params) => {
       this.logDebug(`dingzSwitchEvent: dingzPirChanged > ${JSON.stringify(params)}`);
@@ -41,49 +63,32 @@ module.exports = class DingzDevice extends BaseDevice {
         default:
       }
     });
-
-    this.homey.on(`dingzButtonPressed-${this.data.mac}`, (params) => {
-      this.logDebug(`dingzSwitchEvent: dingzButtonPressed > ${JSON.stringify(params)}`);
-      switch (params.action) {
-        case DINGZ.SHORT_PRESS:
-        case DINGZ.DOUBLE_PRESS:
-        case DINGZ.LONG_PRESS:
-          this.driver.triggerDingzButtonPressedFlow(this, {}, params);
-          break;
-        default:
-      }
-    });
   }
 
   initMotionDetector() {
     this.logDebug('initMotionDetector()');
 
     return this.getDeviceData('device')
-      .then((data) => {
-        return data[this.data.mac];
-      })
+      .then((data) => Object.values(data)[0])
       .then((device) => {
         if (device.has_pir) {
           if (!this.hasCapability('alarm_motion')) {
             this.addCapability('alarm_motion')
-              .then(this.logDebug('initMotionDetector() - alarm_motion added'))
+              .then(() => this.logDebug('initMotionDetector() - alarm_motion added'))
               .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
-          // FW v1.x
-          // this.setDeviceData('action/pir/generic/feedback/enable')
-          //   .then(this.logDebug('initMotionDetector() - enable PIR generic feedback'))
-          //   .catch((err) => this.logError(`initMotionDetector() - enable > ${err}`));
+          Promise.resolve()
+            .then(() => this.subscribeDingzActionUrl('action/pir1/fall', `dingzSwitchEvent?mac=${this.data.mac}&index=${DINGZ.PIR}&action=${DINGZ.MOTION_STOP}&daytime=fall`))
+            .then(() => this.subscribeDingzActionUrl('action/pir1/day', `dingzSwitchEvent?mac=${this.data.mac}&index=${DINGZ.PIR}&action=${DINGZ.MOTION_START}&daytime=day`))
+            .then(() => this.subscribeDingzActionUrl('action/pir1/night', `dingzSwitchEvent?mac=${this.data.mac}&index=${DINGZ.PIR}&action=${DINGZ.MOTION_START}&daytime=night`))
+            .then(() => this.subscribeDingzActionUrl('action/pir1/twilight', `dingzSwitchEvent?mac=${this.data.mac}&index=${DINGZ.PIR}&action=${DINGZ.MOTION_START}&daytime=twilight`));
         } else {
           // eslint-disable-next-line no-lonely-if
           if (this.hasCapability('alarm_motion')) {
             this.removeCapability('alarm_motion')
-              .then(this.logDebug('initMotionDetector() - alarm_motion removed'))
+              .then(() => this.logDebug('initMotionDetector() - alarm_motion removed'))
               .catch((err) => this.logError(`initMotionDetector() - ${err}`));
           }
-          // FW v1.x
-          // this.setDeviceData('action/pir/generic/feedback/disable')
-          //   .then(this.logDebug('initMotionDetector() - disable PIR generic feedback'))
-          //   .catch((err) => this.logError(`initMotionDetector() - disable > ${err}`));
         }
       })
       .catch((err) => this.logError(`initMotionDetector() > ${err}`));
@@ -95,18 +100,6 @@ module.exports = class DingzDevice extends BaseDevice {
       this.logDebug('initDingzSensors() > refresh sensor');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
-  }
-
-  // Homey Lifecycle
-
-  onDeleted() {
-    super.onDeleted();
-    this.homey.clearInterval(this.#dingzSensorsInterval);
-  }
-
-  onUnload() {
-    super.onUnload();
-    this.homey.clearInterval(this.#dingzSensorsInterval);
   }
 
   // Data handling
@@ -133,7 +126,7 @@ module.exports = class DingzDevice extends BaseDevice {
     if (state !== this.getCapabilityValue('light_state')) {
       this.logDebug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)
-      // .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
+        // .then(() => this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
         .then(() => {
           // >> Temp fix until users have finally reimported the devices
           if (typeof this.driver.triggerLightStateChangedFlow === 'function') {
@@ -164,12 +157,12 @@ module.exports = class DingzDevice extends BaseDevice {
       .then((buttonConf) => {
         return Object.values(buttonConf.buttons)
           .map((button, idx) => {
-            const { output } = button;
             const id = (idx + 1).toString();
             const name = button.name === '' ? `${id}` : `${id} - (${button.name})`;
-            return { id, name, output };
+            const myButton = !(button.mode.local || button.mode.remote || button.button.therm_ctrl); // TODO: ?? Thermostat ??
+            return { id, name, myButton };
           })
-          .filter((button) => button.output === null || button.output === 0);
+          .filter((button) => button.myButton);
       });
   }
 

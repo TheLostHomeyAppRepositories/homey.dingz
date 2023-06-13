@@ -12,29 +12,10 @@ module.exports = class BaseDevice extends MyHttpDevice {
     return DINGZ;
   }
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     super.onInit(options);
 
     this.#apiPath = `api/app/${this.homey.manifest.id}`;
-  }
-
-  initDevice() {
-    return super.initDevice()
-      .then(this.initDingzSwitchEvent())
-      .then(this.setDingzSwitchSettings())
-      .catch((err) => this.logError(`initDevice() > ${err}`));
-  }
-
-  // Homey Lifecycle
-
-  onDeleted() {
-    super.onDeleted();
-
-    if (process.env.DEBUG === '1') {
-      // Only for dingz Test
-      // FW: v1.x this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
-      // this.unsubscribeDingzAction('dingzSwitchEvent', 'action/generic/');
-    }
   }
 
   // MyHttpDevice
@@ -43,60 +24,81 @@ module.exports = class BaseDevice extends MyHttpDevice {
     return `http://${this.getStoreValue('address')}/api/v1/`;
   }
 
+  initDevice() {
+    return super.initDevice()
+      .then(() => this.verifyFirmware())
+      .then(() => this.setDingzSwitchSettings())
+      .then(() => this.initDingzSwitchEvent());
+  }
+
+  verifyFirmware() {
+    this.logDebug('verifyFirmware()');
+
+    return this.getDeviceData('device')
+      .then((data) => Object.values(data)[0])
+      .then((device) => {
+        if (!device.fw_version.startsWith('2.')) {
+          throw Error('dingz firmware v2.x required');
+        }
+      });
+  }
+
   // dingzSwitch event
 
   initDingzSwitchEvent() {
     this.logDebug('initDingzSwitchEvent()');
 
-    // FW: v1.x this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/generic/');
-    this.subscribeDingzAction('dingzSwitchEvent', 'action/generic/');
-
     this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
       this.logDebug(`dingzSwitchEvent: dingzRefresh > ${JSON.stringify(params)}`);
       this.getDeviceValues();
     });
+
+    this.subscribeDingzAction('action/generic/', 'dingzSwitchEvent');
   }
 
-  // dingzSwitch action
+  //  dingzSwitch action
 
   async subscribeDingzAction(action, url) {
-    this.logDebug(`subscribeDingzAction() - ${action} > ${url}`);
+    this.logDebug(`subscribeDingzAction() > ${action}: ${url}`);
 
     const localAddress = await this.homey.cloud.getLocalAddress();
 
-    this.getDeviceData(url)
+    await this.getDeviceData(action)
       .then((dingzActions) => {
-        return dingzActions.generic
+        return dingzActions.generic // <<<
           .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(this.#apiPath))
-          .concat([`get://${localAddress}/${this.#apiPath}/${action}`])
+          .concat([`get://${localAddress}/${this.#apiPath}/${url}`])
           .join('||');
       })
-      .then((dingzActions) => this.setDeviceData(url, dingzActions))
+      .then((dingzActions) => this.setDeviceData(action, dingzActions))
       .then(() => this.logDebug(`subscribeDingzAction() - ${action} subscribed`))
       .catch((err) => this.logError(`subscribeDingzAction() > ${err}`));
   }
 
-  async unsubscribeDingzAction(action, url) {
-    this.logDebug(`unsubscribeDingzAction() - ${action} > ${url}`);
+  async subscribeDingzActionUrl(action, url) {
+    this.logDebug(`subscribeDingzActionUrl() > ${action}: ${url}`);
 
-    this.getDeviceData(url)
+    const localAddress = await this.homey.cloud.getLocalAddress();
+
+    return this.getDeviceData(action)
       .then((dingzActions) => {
-        return dingzActions.url
+        return dingzActions.url // <<<
           .split('||')
           .filter((elm) => elm.length !== 0 && !elm.includes(this.#apiPath))
+          .concat([`get://${localAddress}/${this.#apiPath}/${url}`])
           .join('||');
       })
-      .then((dingzActions) => this.setDeviceData(url, dingzActions))
-      .then(() => this.logDebug(`unsubscribeDingzAction() - ${action} unsubscribed`))
-      .catch((err) => this.logError(`subscribeDingzAction() > ${err}`));
+      .then((dingzActions) => this.setDeviceData(action, dingzActions))
+      .then(() => this.logDebug(`subscribeDingzActionUrl() > action: ${action} subscribed`))
+      .catch((err) => this.logError(`subscribeDingzActionUrl() > ${err}`));
   }
 
   // Settings-Page
 
   async setDingzSwitchSettings() {
     this.logDebug('setDingzSwitchSettings()');
-    await this.getDeviceData('device')
+    return this.getDeviceData('device')
       .then((data) => this.setSettings({
         mac: Object.keys(data)[0],
         dip: Object.values(data)[0].dip_config.toString(),
@@ -106,23 +108,5 @@ module.exports = class BaseDevice extends MyHttpDevice {
       }))
       .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
   }
-
-  // NOTE: simplelog-api on/off
-
-  // logError(msg) {
-  //   if (process.env.DEBUG === '1') {
-  //     this.error(`[ERROR] ${this.getName()} > ${msg}}`);
-  //   } else {
-  //     this.error(msg);
-  //   }
-  // }
-
-  // logInfo(msg) {
-  //   this.log(`[INFO] ${this.getName()} > ${msg}`);
-  // }
-
-  // logDebug(msg) {
-  //   this.log(`[DEBUG] ${this.getName()} > ${msg}`);
-  // }
 
 };

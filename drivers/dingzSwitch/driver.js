@@ -142,7 +142,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return {
           id: `${dingzSwitch.data.id}:dimmer:${idx}`,
           absoluteIdx: idx.toString(),
-          deviceId: this.#getDimmerDeviceId(elm.output),
+          deviceId: this.#getDimmerDeviceId(elm),
           name: `${dingzSwitch.name} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`,
         };
       });
@@ -153,7 +153,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return {
           id: `${dingzSwitch.data.id}:blind:${idx}`,
           absoluteIdx: idx.toString(),
-          deviceId: this.#getBlindDeviceId(elm.type),
+          deviceId: elm.type,
           name: `${dingzSwitch.name} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`,
         };
       });
@@ -197,24 +197,16 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     }
   }
 
-  #getDimmerDeviceId(type) {
-    switch (type) {
-      case 'not_connected':
-        return '[none]';
-      case 'non_dimmable':
+  #getDimmerDeviceId(dimmer) {
+    if (dimmer.active) {
+      if (dimmer.type === 'light') {
+        if (dimmer.light.dimmable) {
+          return 'light';
+        }
         return 'switch';
-      default:
-        return 'light';
+      }
     }
-  }
-
-  #getBlindDeviceId(type) {
-    switch (type) {
-      case 'lamella_90':
-        return 'blind';
-      default:
-        return 'shade';
-    }
+    return '[none]';
   }
 
   #setDeviceDipConfig(dip, dimmers, blinds) {
@@ -251,14 +243,14 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   triggerDingzButtonPressedFlow(device, tokens, state) {
     this.#flowTriggerDingzButtonPressed
       .trigger(device, tokens, state)
-      .then(device.logInfo(`dingzButton ${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
+      .then(() => device.logNotice(`DingzButton-${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
       .catch((err) => this.logError(`triggerDingzButtonPressedFlow() > ${err}`));
   }
 
   triggerLightStateChangedFlow(device, tokens, state) {
     this.#flowTriggerLightStateChanged
       .trigger(device, tokens, state)
-      .then(device.logInfo(`light state changed to ${state.lightState}`))
+      .then(() => device.logNotice(`Light state changed to ${state.lightState}`))
       .catch((err) => this.logError(`triggerLightStateChangedFlow() > ${err}`));
   }
 
