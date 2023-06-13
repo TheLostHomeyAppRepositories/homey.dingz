@@ -40,20 +40,4 @@ module.exports = class DingzApp extends MyApp {
     }
   }
 
-  // NOTE: simplelog-api on/off
-
-  // logError(msg) {
-  //   this.error(`${msg}`);
-  // }
-
-  // logInfo(msg) {
-  //   this.log(`[INFO] ${msg}`);
-  // }
-
-  // logDebug(msg) {
-  //   if (process.env.DEBUG === '1') {
-  //     this.log(`[DEBUG] ${msg}`);
-  //   }
-  // }
-
 };
