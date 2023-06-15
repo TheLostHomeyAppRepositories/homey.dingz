@@ -1,6 +1,6 @@
 {
   "id": "org.cflat-inc.dingz",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -27,7 +27,9 @@
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": ["homey:app:nl.nielsdeklerk.log"],
+  "permissions": [
+    "homey:app:nl.nielsdeklerk.log"
+  ],
   "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
