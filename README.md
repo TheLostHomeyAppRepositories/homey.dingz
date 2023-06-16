@@ -67,6 +67,10 @@ The **dingz Switch** is a device that allows you to easily connect the wired dev
 
 ## Changelog
 
+v1.3.1
+
+- TempFix debug-log
+
 v1.3.0
 
 - Support HP2023
