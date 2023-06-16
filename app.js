@@ -40,4 +40,12 @@ module.exports = class DingzApp extends MyApp {
     }
   }
 
+  // NOTE: simplelog-api on/off
+
+  logDebug(msg) {
+    if (process.env.DEBUG === '1') {
+      super.logDebug(msg);
+    }
+  }
+
 };
