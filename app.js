@@ -170,27 +170,6 @@ module.exports = class DingzApp extends MyApp {
     return config;
   }
 
-  // Web-API > DingzSwitchEvent
-  dingzSwitchEventAPI(params) {
-    this.logDebug(`dingzSwitchEventAPI() > params: ${JSON.stringify(params)}`);
-    switch (params.index) {
-      case DINGZ.PIR:
-        // this.homey.emit(`dingzPirChanged-${params.mac}`, params);
-        break;
-      case DINGZ.BTN1:
-      case DINGZ.BTN2:
-      case DINGZ.BTN3:
-      case DINGZ.BTN4:
-        if (params.action <= 3) {
-          this.homey.emit(`dingzButtonPressed-${params.mac}`, params);
-          // Workaround > Until the dingzSwitch sends an (output) refresh message
-          this.homey.emit(`dingzRefresh-${params.mac}`, params);
-        }
-        break;
-      default:
-    }
-  }
-
   notifyDeviceWarning() {
     // Only once a day
     if (this.onceDay !== new Date().toLocaleDateString()) {

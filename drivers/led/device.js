@@ -52,22 +52,10 @@ module.exports = class LedDevice extends BaseDevice {
   onCapabilityLightHue(valueObj, opts) {
     this.logDebug(`onCapabilityLightHue() > ${JSON.stringify(valueObj)} opts: ${JSON.stringify(opts)}`);
 
-    let hue;
-    let saturation;
-
-    if (typeof valueObj.light_hue !== 'undefined') {
-      hue = valueObj.light_hue;
-    } else {
-      hue = this.getCapabilityValue('light_hue');
-    }
-    if (typeof valueObj.light_saturation !== 'undefined') {
-      saturation = valueObj.light_saturation;
-    } else {
-      saturation = this.getCapabilityValue('light_saturation');
-    }
-
-    // const color = tinycolor.fromRatio({ h: hue, s: saturation, v: this.getCapabilityValue('dim') * 100 }); TODO: ?? Dim
+    const hue = (typeof valueObj.light_hue !== 'undefined') ? valueObj.light_hue : this.getCapabilityValue('light_hue');
+    const saturation = (typeof valueObj.light_saturation !== 'undefined') ? valueObj.light_saturation : this.getCapabilityValue('light_saturation');
     const color = tinycolor.fromRatio({ h: hue, s: saturation, v: 100 });
+    // const color = tinycolor.fromRatio({ h: hue, s: saturation, v: this.getCapabilityValue('dim') * 100 }); TODO: ?? Dim
 
     return this.sendCommand('/led', color.toRgb())
       .then(() => this.triggerCapabilityListener('onoff', true))
