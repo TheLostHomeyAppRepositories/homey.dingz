@@ -1,7 +1,5 @@
 'use strict';
 
-const { HttpAPI } = require('my-homey');
-
 const { DINGZ } = require('../../lib/dingzAPI');
 
 const BaseDriver = require('../driver');
@@ -14,6 +12,9 @@ const ShadeDevice = require('../shade/device');
 const BlindDevice = require('../blind/device');
 
 module.exports = class DingzSwitchDriver extends BaseDriver {
+
+  #orderQueue = [];
+  #dingzSwitchConfig = {};
 
   #flowTriggerDingzButtonPressed;
   #flowTriggerLightStateChanged;
@@ -58,7 +59,9 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   }
 
   onMapDeviceClass(device) {
-    switch (device.getData().deviceId) {
+    // v1 to v2 Compatibility
+    const type = device.getData().type || device.getData().deviceId;
+    switch (type) {
       case 'dingz':
         return DingzDevice;
       case 'led':
@@ -72,8 +75,8 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       case 'blind':
         return BlindDevice;
       default:
-        this.logError(`onMapDeviceClass - unknown deviceId: ${device.getData().deviceId}`);
-        return Error(`Unknown Device-id ${device.getData().deviceId}`);
+        this.logError(`onMapDeviceClass - unknown type: ${type}`);
+        return Error(`Unknown device type ${type}`);
     }
   }
 
@@ -108,6 +111,10 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     });
   }
 
+  async onRepair(session, device) {
+    // nothing
+  }
+
   #handelDingzSwitches(discoveryResults) {
     return discoveryResults.map((discoveryResult) => {
       // this.logDebug(`onPair() - list_devices > discoveryResult: ${JSON.stringify(discoveryResult)}`);
@@ -117,7 +124,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         name,
         data: {
           id: discoveryResult.id,
-          mac: discoveryResult.txt.mac,
+          mac: discoveryResult.txt.mac.toLowerCase(),
           address: discoveryResult.address,
           lastSeen: discoveryResult.lastSeen,
           room,
@@ -128,116 +135,37 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   }
 
   async #handelDingzDevices(dingzSwitch) {
-    try {
-      const httpAPI = new HttpAPI(this, `http://${dingzSwitch.data.address}/api/v1/`);
+    this.logDebug(`#handelDingzDevices() > dingzSwitch: ${JSON.stringify(dingzSwitch)}`);
 
-      let dingzDevices;
+    let devicesConfig = [];
+    await this.homey.app.getDingzSwitchConfig(dingzSwitch.data.address).then((config) => {
+      devicesConfig = [].concat(Object.values(config.dingz), Object.values(config.outputs), Object.values(config.motors));
+    });
 
-      const device = Object.values(await httpAPI.get('device'))[0];
-      const dip = device.dip_config;
-
-      // Dimmer-Devices
-      let { dimmers } = await httpAPI.get('dimmer_config');
-      dimmers = dimmers.map((elm, idx) => {
-        return {
-          id: `${dingzSwitch.data.id}:dimmer:${idx}`,
-          absoluteIdx: idx.toString(),
-          deviceId: this.#getDimmerDeviceId(elm),
-          name: `${dingzSwitch.name} ${`${!elm.name ? `Dimmer-${idx + 1}` : elm.name}`}`,
-        };
-      });
-
-      // Blind-Devices
-      let { blinds } = await httpAPI.get('blind_config');
-      blinds = blinds.map((elm, idx) => {
-        return {
-          id: `${dingzSwitch.data.id}:blind:${idx}`,
-          absoluteIdx: idx.toString(),
-          deviceId: elm.type,
-          name: `${dingzSwitch.name} ${`${!elm.name ? `Blind-${idx + 1}` : elm.name}`}`,
-        };
-      });
-
-      dingzDevices = this.#setDeviceDipConfig(dip, dimmers, blinds)
-        .sort((a, b) => (a.name > b.name ? 1 : -1));
-
-      dingzDevices = [
-        { id: `${dingzSwitch.data.id}:dingz`, deviceId: 'dingz', name: `${dingzSwitch.name} dingz` },
-        { id: `${dingzSwitch.data.id}:led`, deviceId: 'led', name: `${dingzSwitch.name} led` },
-        ...dingzDevices,
-      ];
-
-      return dingzDevices
-        .filter((device) => device.deviceId !== '[none]')
-        .map((device) => {
-          const deviceManifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.deviceId);
-          if (deviceManifest === undefined) {
-            throw Error(`Device manifest (${device.deviceId}) not found`);
-          }
-          const manifest = { ...deviceManifest };
-          manifest.name = device.name;
-          manifest['data'] = manifest.data || {};
-          manifest.data['id'] = device.id;
-          manifest.data['deviceId'] = device.deviceId;
-          manifest.data['mac'] = dingzSwitch.data.mac;
-          manifest.data['relativeIdx'] = device.relativeIdx || '';
-          manifest.data['absoluteIdx'] = device.absoluteIdx || '';
-          manifest['store'] = manifest.store || {};
-          manifest.store['address'] = dingzSwitch.data.address;
-          manifest['settings'] = manifest.settings || {};
-          manifest.settings['address'] = dingzSwitch.data.address;
-          manifest.settings['lastSeen'] = this.localDateTimeFormater().format(new Date(dingzSwitch.data.lastSeen));
-
-          // this.logDebug(`onPair() > #handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
-          return manifest;
-        });
-    } catch (err) {
-      this.logError(`onPair() - list_devices: ${err}`);
-      return err;
-    }
-  }
-
-  #getDimmerDeviceId(dimmer) {
-    if (dimmer.active) {
-      if (dimmer.type === 'light') {
-        if (dimmer.light.dimmable) {
-          return 'light';
+    return devicesConfig
+      .sort((a, b) => (a.name > b.name ? 1 : -1))
+      .map((device) => {
+        const deviceManifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.type);
+        if (deviceManifest === undefined) {
+          throw new Error(`Device manifest (${device.type}) not found`);
         }
-        return 'switch';
-      }
-    }
-    return '[none]';
-  }
 
-  #setDeviceDipConfig(dip, dimmers, blinds) {
-    switch (dip) {
-      case 0:
-        this.logDebug('setDeviceDipConfig() > dip_config: [0] 2 SHADES');
-        blinds[0].relativeIdx = '0';
-        blinds[1].relativeIdx = '1';
-        return blinds;
-      case 1:
-        this.logDebug('setDeviceDipConfig() > dip_config: [1] 2 DIMMERS and 1 SHADE');
-        dimmers[0].relativeIdx = '0';
-        dimmers[1].relativeIdx = '1';
-        blinds[1].relativeIdx = '0';
-        return [dimmers[0], dimmers[1], blinds[1]];
-      case 2:
-        this.logDebug('setDeviceDipConfig() > dip_config: [2] 1 SHADE and 2 DIMMERS');
-        blinds[0].relativeIdx = '0';
-        dimmers[2].relativeIdx = '0';
-        dimmers[3].relativeIdx = '1';
-        return [blinds[0], dimmers[2], dimmers[3]];
-      case 3:
-        this.logDebug('setDeviceDipConfig() > dip_config: [3] 4 DIMMERS');
-        dimmers[0].relativeIdx = '0';
-        dimmers[1].relativeIdx = '1';
-        dimmers[2].relativeIdx = '2';
-        dimmers[3].relativeIdx = '3';
-        return dimmers;
-      default:
-        throw Error(`Unknown dip_config [${dip}]`);
-    }
+        const manifest = { ...deviceManifest };
+        manifest.name = device.name;
+        manifest['data'] = manifest.data || {};
+        manifest.data['id'] = device.id;
+        manifest.data['mac'] = device.mac;
+        manifest.data['model'] = device.model;
+        manifest.data['type'] = device.type;
+        manifest.data['device'] = device.device || '';
+        manifest['store'] = manifest.store || {};
+        manifest.store['address'] = dingzSwitch.data.address;
+
+        // NOTE: Only for Test
+        // this.logDebug(`onPair() > #handelDingzDevices() > manifest: ${JSON.stringify(manifest)}`);
+
+        return manifest;
+      });
   }
 
   triggerDingzButtonPressedFlow(device, tokens, state) {

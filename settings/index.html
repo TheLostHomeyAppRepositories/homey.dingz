@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- The '/homey.js' script must be included in your settings view to work -->
+    <script
+      type="text/javascript"
+      src="/homey.js"
+      data-origin="settings"
+    ></script>
+  </head>
+  <body>
+    <header class="homey-header">
+      <h1 class="homey-title" data-i18n="settings.title">
+        dingzNET settings
+        <!-- This will be filled with the translated string with key 'settings.title'. -->
+      </h1>
+    </header>
+
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">MQTT broker</legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="mqttBroker">IP address or URL</label>
+        <input class="homey-form-input" id="mqttBroker" type="text" placeholder="e.g. localhost or 127.0.0.1" value="localhost" />
+      </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="mqttPort">Port</label>
+        <input class="homey-form-input" id="mqttPort" type="number" placeholder="1883" value=1883 />
+      </div>    
+    </fieldset>
+
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">Authentication</legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="mqttUser">Username</label>
+        <input class="homey-form-input" id="mqttUser" type="text" value="" />
+      </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="mqttPassword">Password</label>
+        <input class="homey-form-input" id="mqttPassword" type="password" value="" />
+      </div>
+    </fieldset>
+
+    <button id="save" class="homey-button-primary-full">Save changes</button>
+
+    <script type="text/javascript">
+      // a method named 'onHomeyReady' must be present in your code
+      function onHomeyReady(Homey) {
+        // Tell Homey we're ready to be displayed
+        Homey.ready();
+
+        var mqttBrokerElement = document.getElementById("mqttBroker");
+        var mqttPortElement = document.getElementById("mqttPort");
+        var mqttUserElement = document.getElementById("mqttUser");
+        var mqttPasswordElement = document.getElementById("mqttPassword");
+        var saveElement = document.getElementById("save");
+
+        Homey.get("mqttBroker", function (err, mqttBroker) {
+          if (err) return Homey.alert(err);
+          mqttBrokerElement.value = mqttBroker;
+        });
+
+        Homey.get("mqttPort", function (err, mqttPort) {
+          if (err) return Homey.alert(err);
+          mqttPortElement.value = mqttPort;
+        });
+
+        Homey.get("mqttUser", function (err, mqttUser) {
+          if (err) return Homey.alert(err);
+          mqttUserElement.value = mqttUser;
+        });
+
+        Homey.get("mqttPassword", function (err, mqttPassword) {
+          if (err) return Homey.alert(err);
+          mqttPasswordElement.value = mqttPassword;
+        });
+
+        saveElement.addEventListener("click", function (e) {
+          Homey.set("mqttBroker", mqttBrokerElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("mqttPort", mqttPortElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("mqttUser", mqttUserElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("mqttPassword", mqttPasswordElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          const mqttUrl = `mqtt://${mqttUserElement.value ==! "" ? `${mqttUserElement.value}:${mqttPasswordElement.value}@` : "" }${mqttBrokerElement.value}:${mqttPortElement.value}`;
+          Homey.on('mqttUrlChanged', mqttUrl)
+        });
+      }
+    </script>
+  </body>
+</html>

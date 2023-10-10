@@ -1,51 +1,43 @@
 'use strict';
 
-const { DINGZ } = require('../../lib/dingzAPI');
 const BaseDevice = require('../device');
 
 module.exports = class SwitchDevice extends BaseDevice {
+
+  TYPE_GROUP = 'outputs';
 
   onInit(options = {}) {
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
-    this.homey.on(`measurePowerChanged-${this.data.mac}`, (params) => {
-      if (params.output.toString() === this.data.absoluteIdx) {
-        // this.logDebug(`dingzEvent: measurePowerChanged > ${JSON.stringify(params)`);
-        this.setCapabilityValue('measure_power', Math.round(params.value * 10) / 10);
-      }
-    });
+    this.registerTopicListener(`/state/light/${this.dataDevice}`, this.onTopicOnOff.bind(this));
+    this.registerTopicListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
-  getDeviceValues(url = `dimmer/${this.data.relativeIdx}`) {
-    return super.getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('onoff', data.on);
-        return data;
-      })
+  onCapabilityOnOff(value, opts) {
+    this.logDebug(`onCapabilityOnOff() > ${value} opts: ${JSON.stringify(opts)}`);
+
+    const turn = value ? 'on' : 'off';
+
+    return this.sendCommand(`/light/${this.dataDevice}`, { turn })
+      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((err) => {
-        this.logError(`getDeviceValues() > ${err}`);
+        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
         this.showWarning(err.message);
       });
   }
 
-  onCapabilityOnOff(value, opts) {
-    const current = this.getCapabilityValue('onoff');
-    if (current === value) return Promise.resolve();
+  onTopicOnOff(topic, data) {
+    this.logDebug(`onTopicOnOff() > ${topic} data: ${JSON.stringify(data)}`);
 
-    const action = value ? 'on' : 'off';
-    const ramp = (this.data.deviceId === 'switch' ? 0 : DINGZ.RAMP_DEFAULT) * 10;
+    this.setCapabilityValue('onoff', data.turn === 'on');
+  }
 
-    this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
+  onTopicPower(topic, data) {
+    this.logDebug(`onTopicPower() > ${topic} data: ${data}`);
 
-    return this.setDeviceData(`dimmer/${this.data.relativeIdx}/${action}/?ramp=${ramp}`)
-      .then(() => this.getDeviceValues())
-      .then(() => this.deviceChanged(() => {
-        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
-        return this.homey.__('device.stateSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
+    this.setCapabilityValue('measure_power', Math.round(data * 10) / 10);
   }
 
 };

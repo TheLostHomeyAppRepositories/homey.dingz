@@ -1,6 +1,6 @@
 {
   "name": {
-    "en": "dingzLED"
+    "en": "Front LED"
   },
   "$extends": "default",
   "class": "light",

@@ -44,6 +44,7 @@
     "test": "test"
   },
   "dependencies": {
+    "tinycolor2": "^1.6.0",
     "my-homey": "github:cgHome/homey.my-homey#master"
   }
 }

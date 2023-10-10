@@ -1,44 +1,55 @@
 'use strict';
 
-const ShadeDevice = require('../shade/device');
+const BaseDevice = require('../device');
 
-module.exports = class BlindDevice extends ShadeDevice {
+module.exports = class BlindDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);
 
-    // Register capability change events
+    this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowCoveringsSet.bind(this));
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowCoveringsTiltSet.bind(this));
+
+    this.registerTopicListener(`/state/motor/${this.dataDevice}`, this.onTopicPosition.bind(this));
   }
 
-  getDeviceValues(url) {
-    return super.getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('windowcoverings_tilt_set', (100 - data.target.lamella) / 100);
-        return data;
-      })
-      .catch((err) => {
-        this.logError(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
+  async onCapabilityWindowCoveringsSet(value, opts) {
+    this.logDebug(`onCapabilityWindowCoveringsSet() - ${this.getCapabilityValue('windowcoverings_set')} > ${value}`);
+
+    const position = value * 100;
+
+    return this.sendCommand(`/motor/${this.dataDevice}`, { position })
+      .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: position })}`))
+      .catch((error) => {
+        this.logError(`onCapabilityWindowCoveringsSet() > sendCommand > ${error}`);
+        this.showWarning(error.message);
+        return Promise.reject(error);
       });
   }
 
   async onCapabilityWindowCoveringsTiltSet(value, opts) {
-    const current = this.getCapabilityValue('windowcoverings_tilt_set');
-    if (current === value) return Promise.resolve();
+    this.logDebug(`onCapabilityWindowCoveringsTiltSet() - ${this.getCapabilityValue('windowcoverings_tilt_set')} > ${value}`);
 
-    this.logDebug(`onCapabilityWindowCoveringsTiltSet() - ${current} > ${value}`);
-    const deviceData = await this.getDeviceData(`shade/${this.data.relativeIdx}`);
-    const { blind } = deviceData.target;
-    const lamella = Math.round(100 - value * 100);
+    const lamella = value * 100;
 
-    return this.setDeviceData(`shade/${this.data.relativeIdx}?blind=${blind}&lamella=${lamella}`)
-      .then(() => this.waitForPosition())
-      .then(() => this.logNotice(() => {
-        const val = this.getCapabilityValue('windowcoverings_tilt_set') * 100;
-        return this.homey.__('device.windowCoveringsTiltSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityWindowCoveringsTiltSet() > ${err}`));
+    return this.sendCommand(`/motor/${this.dataDevice}`, { lamella })
+      .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: lamella })}`))
+      .catch((error) => {
+        this.logError(`onCapabilityWindowCoveringsTiltSet() > sendCommand > ${error}`);
+        this.showWarning(error.message);
+        return Promise.reject(error);
+      });
+  }
+
+  onTopicPosition(topic, data) {
+    this.logDebug(`onTopicPosition() > ${topic} data: ${JSON.stringify(data)}`);
+
+    this.setCapabilityValue('windowcoverings_set', Number((data.position / 100).toFixed(2)));
+    this.setCapabilityValue('windowcoverings_tilt_set', Number((data.lamella / 100).toFixed(2)));
+
+    if (data.position === data.goal) {
+      this.logDebug('Device on position');
+    }
   }
 
 };

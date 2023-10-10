@@ -1,45 +1,83 @@
 'use strict';
 
-const { DINGZ } = require('../../lib/dingzAPI');
-const SwitchDevice = require('../switch/device');
+const BaseDevice = require('../device');
 
-module.exports = class LightDevice extends SwitchDevice {
+const FADETIME = 10;
 
-  onInit(options = {}) {
+module.exports = class LightDevice extends BaseDevice {
+
+  TYPE_GROUP = 'outputs';
+
+  async onInit(options = {}) {
     super.onInit(options);
 
-    this.registerMultipleCapabilityListener(['dim', 'ramp'], this.onCapabilityDim.bind(this));
+    this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
+    this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
+
+    this.registerTopicListener(`/state/light/${this.dataDevice}`, this.onTopicLight.bind(this));
+    this.registerTopicListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
-  getDeviceValues(url) {
-    return super.getDeviceValues(url)
-      .then(async (data) => {
-        this.setCapabilityValue('dim', data.value / 100);
-        return data;
-      })
+  async initDingzConfig() {
+    super.initDingzConfig();
+
+    if (this.dingzConfig.light.dimmable) {
+      if (!this.hasCapability('dim')) {
+        await this.addCapability('dim')
+          .then(() => this.logDebug('initDingzConfig() - dim capability added'))
+          .catch((err) => this.logError(`initDingzConfig() - ${err}`));
+      }
+    } else if (this.hasCapability('dim')) {
+      await this.removeCapability('dim')
+        .then(() => this.logDebug('initDingzConfig() - dim capability removed'))
+        .catch((err) => this.logError(`initDingzConfig() - ${err}`));
+    }
+  }
+
+  onCapabilityOnOff(value, opts) {
+    this.logDebug(`onCapabilityOnOff() > ${value} opts: ${JSON.stringify(opts)}`);
+
+    const turn = value ? 'on' : 'off';
+    // const brightness = turn === 'on' ? 100 : 0;
+    const fadetime = FADETIME;
+
+    return this.sendCommand(`/light/${this.dataDevice}`, { turn, fadetime })
+      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((err) => {
-        this.logError(`getDeviceValues() > ${err}`);
+        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
         this.showWarning(err.message);
       });
   }
 
-  onCapabilityDim(valueObj, opts) {
-    const current = this.getCapabilityValue('dim');
-    const value = valueObj.dim;
-    if (current === value) return Promise.resolve();
+  onCapabilityDim(value, opts) {
+    this.logDebug(`onCapabilityLight() > ${value} opts: ${JSON.stringify(opts)}`);
 
-    const dim = Math.round(value * 100);
-    const ramp = (valueObj.ramp || DINGZ.RAMP_DEFAULT) * 10;
+    const brightness = Math.round(value * 100);
+    // const turn = brightness >= 1 ? 'on' : 'off';
+    const fadetime = FADETIME;
 
-    this.logDebug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
+    return this.sendCommand(`/light/${this.dataDevice}`, { brightness, fadetime })
+      .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
+      .catch((err) => {
+        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
+        this.showWarning(err.message);
+      });
+  }
 
-    return this.setDeviceData(`dimmer/${this.data.relativeIdx}/on/?value=${dim}&ramp=${ramp}`)
-      .then(() => this.getDeviceValues())
-      .then(() => this.deviceChanged(() => {
-        const val = Math.round(this.getCapabilityValue('dim') * 100);
-        return this.homey.__('device.dimSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityDim() > ${err}`));
+  onTopicLight(topic, data) {
+    this.logDebug(`onTopicLight() > ${topic} data: ${JSON.stringify(data)}`);
+
+    this.setCapabilityValue('onoff', data.turn === 'on');
+
+    if (this.hasCapability('dim')) {
+      this.setCapabilityValue('dim', data.brightness / 100);
+    }
+  }
+
+  onTopicPower(topic, data) {
+    this.logDebug(`onTopicPower() > ${topic} data: ${data}`);
+
+    this.setCapabilityValue('measure_power', Math.round(data * 10) / 10);
   }
 
 };

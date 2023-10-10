@@ -1,59 +1,108 @@
 'use strict';
 
-const { MyHttpDevice } = require('my-homey');
+const { HttpAPI } = require('my-homey');
+
+const { MyMqttDevice } = require('my-homey');
 
 const { DINGZ } = require('../lib/dingzAPI');
 
-module.exports = class BaseDevice extends MyHttpDevice {
+module.exports = class BaseDevice extends MyMqttDevice {
 
-  #apiPath = null;
+  #apiPath = '';
+
+  dingzConfig = null;
 
   static get DINGZ() {
     return DINGZ;
   }
 
+  // v1 to v2 Compatibility
+  get dataMac() {
+    return this.data.mac.toLowerCase();
+  }
+
+  get dataModel() {
+    return this.data.model || this.getStoreValue('dataModel');
+  }
+
+  get dataDevice() {
+    return this.data.device || this.data.relativeIdx;
+  }
+
+  get dataType() {
+    return this.data.type || this.data.deviceId;
+  }
+
   async onInit(options = {}) {
     super.onInit(options);
 
-    this.#apiPath = `api/app/${this.homey.manifest.id}`;
-  }
+    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+    await httpAPI.get('services_config')
+      .then(async (config) => {
+        const uri = this.getMqttBrokerUri();
+        if (!config['mqtt'].enable || config['mqtt'].uri !== uri) {
+          await httpAPI.post('services_config', { mqtt: { uri, enable: true } });
+        }
+      })
+      .then(() => this.logDebug('onInit() > dingzSwitch mqtt-service initialized'))
+      .catch((err) => {
+        this.setUnavailable(err.message);
+        this.logError(`onInit() > dingzSwitch error: ${err}`);
+      });
 
-  // MyHttpDevice
+    // NOTE: Convert from v1 to v2 format
+    let v2id = this.data.id.toLowerCase();
+    v2id = v2id.replace(':dimmer:', ':output:');
+    v2id = v2id.replace(':blind:', ':motor:');
 
-  getBaseURL() {
-    return `http://${this.getStoreValue('address')}/api/v1/`;
+    await this.registerTopicListener(`${this.homey.app.rootTopic}/config/${v2id.replaceAll(':', '/')}`, (topic, data) => {
+      this.logDebug(`onTopicConfig() > ${topic} data: ${JSON.stringify(data)}`);
+      this.dingzConfig = data;
+      this.initDingzConfig();
+    });
   }
 
   initDevice() {
-    return super.initDevice()
-      .then(() => this.verifyFirmware())
-      .then(() => this.setDingzSwitchSettings())
-      .then(() => this.initDingzSwitchEvent());
+    return super.initDevice();
   }
 
-  verifyFirmware() {
-    this.logDebug('verifyFirmware()');
+  async initDingzConfig() {
+    this.logDebug('initDingzConfig()');
 
-    return this.getDeviceData('device')
-      .then((data) => Object.values(data)[0])
-      .then((device) => {
-        if (!device.fw_version.startsWith('2.')) {
-          throw Error('dingz firmware v2.x required');
-        }
-      });
+    // v1 to v2 Compatibility (Only ones)
+    if (!this.data.model || this.getStoreValue('dataModel')) {
+      await this.setStoreValue('dataModel', this.dingzConfig.model);
+    }
+
+    this.verifyDevice();
   }
 
-  // dingzSwitch event
+  verifyDevice() {
+    this.logDebug('verifyDevice()');
 
-  initDingzSwitchEvent() {
-    this.logDebug('initDingzSwitchEvent()');
+    if (!this.dingzConfig.firmware.startsWith('2.1')) {
+      throw new Error('dingz firmware v2.1.x required');
+    }
 
-    this.homey.on(`dingzRefresh-${this.data.mac}`, (params) => {
-      this.logDebug(`dingzSwitchEvent: dingzRefresh > ${JSON.stringify(params)}`);
-      this.getDeviceValues();
-    });
+    if (this.dataType !== this.dingzConfig.type) {
+      throw new Error(`dingz output/motor type has changed to ${this.dingzConfig.type}. Remove the device and add it again.`);
+    }
+  }
 
-    this.subscribeDingzAction('action/generic/', 'dingzSwitchEvent');
+  // MqttClient
+
+  getMqttBrokerUri() {
+    return this.homey.app.getMqttBrokerUri();
+  }
+
+  registerTopicListener(topic, callback) {
+    const myTopic = topic.startsWith('/') ? `dingz/${this.dataMac}/${this.dataModel}${topic}` : topic;
+    super.registerTopicListener(myTopic, callback);
+  }
+
+  sendCommand(topic, data) {
+    const myTopic = topic.startsWith('/') ? `dingz/${this.dataMac}/${this.dataModel}/command${topic}` : topic;
+    return super.sendCommand(myTopic, data);
   }
 
   //  dingzSwitch action
@@ -96,18 +145,18 @@ module.exports = class BaseDevice extends MyHttpDevice {
 
   // Settings-Page
 
-  async setDingzSwitchSettings() {
-    this.logDebug('setDingzSwitchSettings()');
-    return this.getDeviceData('device')
-      .then((data) => this.setSettings({
-        mac: Object.keys(data)[0],
-        dip: Object.values(data)[0].dip_config.toString(),
-        firmware: Object.values(data)[0].fw_version.toString(),
-        frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
-        baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
-      }))
-      .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
-  }
+  // async setDingzSwitchSettings() {
+  //   this.logDebug('setDingzSwitchSettings()');
+  //   return this.getDeviceData('device')
+  //     .then((data) => this.setSettings({
+  //       mac: Object.keys(data)[0],
+  //       dip: Object.values(data)[0].dip_config.toString(),
+  //       firmware: Object.values(data)[0].fw_version.toString(),
+  //       frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
+  //       baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
+  //     }))
+  //     .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
+  // }
 
   // NOTE: simplelog-api on/off
 

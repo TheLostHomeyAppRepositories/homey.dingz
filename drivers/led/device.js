@@ -1,8 +1,7 @@
 'use strict';
 
-const querystring = require('querystring');
+const tinycolor = require('tinycolor2');
 
-const { DINGZ } = require('../../lib/dingzAPI');
 const BaseDevice = require('../device');
 
 module.exports = class LedDevice extends BaseDevice {
@@ -11,106 +10,85 @@ module.exports = class LedDevice extends BaseDevice {
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
-    this.registerMultipleCapabilityListener(['dim', 'ramp'], this.onCapabilityDim.bind(this));
+    // this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this)); TODO: Dim ??
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
-  }
 
-  getDeviceValues(url = 'led/get') {
-    return super.getDeviceValues(url)
-      .then((data) => {
-        this.setCapabilityValue('onoff', data.on);
-        this.setCapabilityValue('light_hue', Math.round((1 / 360) * parseInt(data.hsv.split(';')[0], 10) * 100) / 100);
-        this.setCapabilityValue('light_saturation', parseInt(data.hsv.split(';')[1], 10) / 100);
-        this.setCapabilityValue('dim', parseInt(data.hsv.split(';')[2], 10) / 100);
-        return data;
-      })
-      .catch((err) => {
-        this.logError(`getDeviceValues() > ${err}`);
-        this.showWarning(err.message);
-      });
+    this.registerTopicListener('/state/led', this.onTopicLight.bind(this));
   }
 
   onCapabilityOnOff(value, opts) {
-    const current = this.getCapabilityValue('onoff');
-    if (current === value) return Promise.resolve();
+    this.logDebug(`onCapabilityOnOff() > ${value} opts: ${JSON.stringify(opts)}`);
 
-    const action = value ? 'on' : 'off';
-    const ramp = DINGZ.RAMP_DEFAULT * 100;
+    const onValue = value ? 1 : 0;
 
-    this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
-
-    return this.setDeviceData('led/set', { action, ramp })
-      .then(() => this.getDeviceValues())
-      .then(() => this.deviceChanged(() => {
-        const val = this.getCapabilityValue('onoff') ? 'on' : 'off';
-        return this.homey.__('device.stateSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
+    return this.sendCommand('/led', { on: onValue })
+      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: value ? 'On' : 'Off' })}`))
+      .catch((error) => {
+        this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
+        this.showWarning(error.message);
+        return Promise.reject(error);
+      });
   }
 
-  onCapabilityDim(valueObj, opts) {
-    const current = this.getCapabilityValue('dim');
-    const value = valueObj.dim;
-    if (current === value) return Promise.resolve();
+  onCapabilityDim(value, opts) {
+    this.logDebug(`onCapabilityDim() > ${value} opts: ${JSON.stringify(opts)}`);
 
-    const ramp = valueObj.ramp || DINGZ.RAMP_DEFAULT;
-    const hue = this.getCapabilityValue('light_hue');
-    const saturation = this.getCapabilityValue('light_saturation');
-    const color = `${Math.round(hue * 360)};${Math.round(saturation * 100)};${Math.round(value * 100)}`;
-
-    this.logDebug(`onCapabilityDim() - ${current} > ${value} ramp: ${ramp}`);
-
-    // eslint-disable-next-line object-curly-newline
-    return this.setDeviceData('led/set', { action: 'on', ramp, mode: 'hsv', color })
-      .then(() => this.getDeviceValues())
-      .then(() => this.deviceChanged(() => {
-        const val = Math.round(this.getCapabilityValue('dim') * 100);
-        return this.homey.__('device.dimSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityDim() > ${err}`));
-  }
-
-  onCapabilityLightHue(valueObj, options) {
-    const curHue = this.getCapabilityValue('light_hue');
-    const valHue = valueObj.light_hue || curHue;
-    const curSaturation = this.getCapabilityValue('light_saturation');
-    const valSaturation = valueObj.light_saturation || curSaturation;
-    if (!(curHue !== valHue || curSaturation !== valSaturation)) return Promise.resolve(true);
-
-    const ramp = valueObj.ramp || DINGZ.RAMP_DEFAULT;
-    const hue = Math.round(valHue * 360);
-    const saturation = Math.round(valSaturation * 100);
-    const dim = Math.round(this.getCapabilityValue('dim') * 100);
-    const color = `${hue};${saturation};${dim}`;
-
-    this.logDebug(`onCapabilityLightHue() light_hue - ${curHue} > ${valHue} ramp: ${ramp}`);
-    this.logDebug(`onCapabilityLightHue() light_saturation - ${curSaturation} > ${valSaturation}`);
-
-    // eslint-disable-next-line object-curly-newline
-    return this.setDeviceData('led/set', { action: 'on', ramp, mode: 'hsv', color })
-      .then(() => this.getDeviceValues())
-      .then(() => this.deviceChanged(() => {
-        const val = Math.round(this.getCapabilityValue('light_hue') * 360);
-        return this.homey.__('device.lightHueSet', { value: val });
-      }))
-      .then(() => this.deviceChanged(() => {
-        const val = Math.round(this.getCapabilityValue('light_saturation') * 100);
-        return this.homey.__('device.lightSaturationSet', { value: val });
-      }))
-      .catch((err) => this.logError(`onCapabilityLightHue() > ${err}`));
-  }
-
-  onCapabilityDingzLedColor(valueObj, options) {
-    this.logDebug(`onCapabilityDingzLedColor() - color: ${valueObj.color}`);
-    return this.onCapabilityLightHue(JSON.parse(valueObj.color.replace(/'/g, '"')), options);
-  }
-
-  setDeviceData(url, data) {
-    // Workaround > led does not correspond to the dingz-set api
-    if (url === 'led/set') {
-      data = querystring.stringify(data).split('%3B').join(';');
+    const brightness = value * 100;
+    if (brightness < 1 && this.getCapabilityValue('onoff')) {
+      this.triggerCapabilityListener('onoff', false);
+    } else if (brightness > 0 && !this.getCapabilityValue('onoff')) {
+      this.triggerCapabilityListener('onoff', true);
     }
-    return super.setDeviceData(url, data);
+
+    return this.sendCommand('/led', { on: brightness })
+      .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
+      .catch((error) => {
+        this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
+        this.showWarning(error.message);
+        return Promise.reject(error);
+      });
+  }
+
+  onCapabilityLightHue(valueObj, opts) {
+    this.logDebug(`onCapabilityLightHue() > ${JSON.stringify(valueObj)} opts: ${JSON.stringify(opts)}`);
+
+    let hue;
+    let saturation;
+
+    if (typeof valueObj.light_hue !== 'undefined') {
+      hue = valueObj.light_hue;
+    } else {
+      hue = this.getCapabilityValue('light_hue');
+    }
+    if (typeof valueObj.light_saturation !== 'undefined') {
+      saturation = valueObj.light_saturation;
+    } else {
+      saturation = this.getCapabilityValue('light_saturation');
+    }
+
+    // const color = tinycolor.fromRatio({ h: hue, s: saturation, v: this.getCapabilityValue('dim') * 100 }); TODO: ?? Dim
+    const color = tinycolor.fromRatio({ h: hue, s: saturation, v: 100 });
+
+    return this.sendCommand('/led', color.toRgb())
+      .then(() => this.triggerCapabilityListener('onoff', true))
+      .then(() => this.logNotice(`${this.homey.__('device.lightHueSet', { value: color.toHsvString() })}`))
+      .catch((error) => {
+        this.logError(`onCapabilityLightHue() > sendCommand > ${error}`);
+        this.showWarning(error.message);
+        return Promise.reject(error);
+      });
+  }
+
+  onTopicLight(topic, data) {
+    this.logDebug(`onTopicLight() > ${topic} data: ${JSON.stringify(data)}`);
+
+    const color = tinycolor({ r: data.r, g: data.g, b: data.b });
+    const hsv = color.toHsv();
+    const hue = Number((hsv.h / 359).toFixed(2));
+    const saturation = Number(hsv.s.toFixed(2));
+
+    this.setCapabilityValue('light_hue', hue);
+    this.setCapabilityValue('light_saturation', saturation);
   }
 
 };
