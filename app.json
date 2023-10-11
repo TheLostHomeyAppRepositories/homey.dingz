@@ -216,6 +216,24 @@
       "connectivity": [
         "lan"
       ],
+      "icon": "../../smart_light/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": {
+        "en": "Always On"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "smart_light"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../switch/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",

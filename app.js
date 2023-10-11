@@ -16,6 +16,7 @@ module.exports = class DingzApp extends MyApp {
   async onInit() {
     super.onInit();
     this.onceDay = null;
+
     this.rootTopic = 'dingz/dingzNet';
 
     this.#dingzNet = new DingzNet(this);
@@ -53,6 +54,7 @@ module.exports = class DingzApp extends MyApp {
         0: {
           id: `${config.mac}:dingz`,
           mac: config.mac,
+          dip: config.dip_config,
           type: 'dingz',
           name: `${config.name} dingz`,
           model: config.model,
@@ -62,6 +64,7 @@ module.exports = class DingzApp extends MyApp {
         1: {
           id: `${config.mac}:led`,
           mac: config.mac,
+          dip: config.dip_config,
           type: 'led',
           name: `${config.name} led`,
           model: config.model,
@@ -78,6 +81,7 @@ module.exports = class DingzApp extends MyApp {
               ...output,
               id: `${config.mac}:output:${number}`,
               mac: config.mac,
+              dip: config.dip_config,
               type: output.type === 'power_socket' ? 'switch' : output.type,
               name: `${config.name} ${`${!output.name ? `Output-${number + 1}` : output.name}`}`,
               model: config.model,
@@ -96,6 +100,7 @@ module.exports = class DingzApp extends MyApp {
               ...motor,
               id: `${config.mac}:motor:${number}`,
               mac: config.mac,
+              dip: config.dip_config,
               type: motor.type === 'awning' ? 'shade' : motor.type,
               name: `${config.name} ${`${!motor.name ? `Motor-${number + 1}` : motor.name}`}`,
               model: config.model,
@@ -113,6 +118,7 @@ module.exports = class DingzApp extends MyApp {
             [number]: {
               id: `${config.mac}:button:${number}`,
               mac: config.mac,
+              dip: config.dip_config,
               name: `${config.name} ${`${!button.name ? `Button-${number + 1}` : button.name}`}`,
               device: number,
               homeyButton: !(button.mode.local || button.mode.remote || button.therm_ctrl),

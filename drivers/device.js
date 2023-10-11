@@ -25,6 +25,10 @@ module.exports = class BaseDevice extends MyMqttDevice {
     return this.data.model || this.getStoreValue('dataModel');
   }
 
+  get dataDip() {
+    return this.data.dip || this.getStoreValue('dataDip');
+  }
+
   get dataDevice() {
     return this.data.device || this.data.relativeIdx;
   }
@@ -74,6 +78,10 @@ module.exports = class BaseDevice extends MyMqttDevice {
       await this.setStoreValue('dataModel', this.dingzConfig.model);
     }
 
+    if (!this.data.dip || this.getStoreValue('dataDip')) {
+      await this.setStoreValue('dataDip', this.dingzConfig.dip);
+    }
+
     this.verifyDevice();
   }
 
@@ -82,6 +90,10 @@ module.exports = class BaseDevice extends MyMqttDevice {
 
     if (!this.dingzConfig.firmware.startsWith('2.1')) {
       throw new Error('dingz firmware v2.1.x required');
+    }
+
+    if (this.dataDip !== this.dingzConfig.dip) {
+      throw new Error(`dingz dip switch has changed to ${this.dingzConfig.dip}. Remove all devices of the dingz switch and add them again.`);
     }
 
     if (this.dataType !== this.dingzConfig.type) {

@@ -8,6 +8,7 @@ const DingzDevice = require('../dingz/device');
 const LedDevice = require('../led/device');
 const SwitchDevice = require('../switch/device');
 const LightDevice = require('../light/device');
+const SmartlightDevice = require('../smart_light/device');
 const ShadeDevice = require('../shade/device');
 const BlindDevice = require('../blind/device');
 
@@ -70,6 +71,8 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return SwitchDevice;
       case 'light':
         return LightDevice;
+      case 'smart_light':
+        return SmartlightDevice;
       case 'shade':
         return ShadeDevice;
       case 'blind':
@@ -155,6 +158,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         manifest['data'] = manifest.data || {};
         manifest.data['id'] = device.id;
         manifest.data['mac'] = device.mac;
+        manifest.data['dip'] = device.dip;
         manifest.data['model'] = device.model;
         manifest.data['type'] = device.type;
         manifest.data['device'] = device.device || '';

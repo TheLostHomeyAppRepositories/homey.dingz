@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "Always On"
+  },
+  "$extends": "default",
+  "class": "socket",
+  "icon": "../../smart_light/assets/icon.svg",
+  "capabilities": [
+    "measure_power"
+  ]
+}
