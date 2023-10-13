@@ -17,17 +17,26 @@ module.exports = class DingzApp extends MyApp {
     super.onInit();
     this.onceDay = null;
 
+    this.homey.settings.unset('mqtt');
+    if (!this.homey.settings.get('mqtt')) {
+      await this.homey.settings.set('mqtt', JSON.stringify({
+        broker: 'localhost',
+        port: '1883',
+        user: 'mqttUser',
+        password: 'mqttPasswd',
+      }));
+    }
     this.rootTopic = 'dingz/dingzNet';
 
     this.#dingzNet = new DingzNet(this);
-    await this.#dingzNet.initDingzNet(this.getMqttBrokerUri());
+    await this.#dingzNet.initDingzNet(await this.getMqttBrokerUri());
   }
 
-  getMqttBrokerUri() {
-    // TODO: getMqttBrokerUri()
-    // const mqttUrl = `mqtt://${mqttUserElement.value ==! "" ? `${mqttUserElement.value}:${mqttPasswordElement.value}@` : "" }${mqttBrokerElement.value}:${mqttPortElement.value}`;
-    return 'mqtt://mqttUser:mqttPasswd@192.168.50.11:1883'; // HP2023
-    // return 'mqtt://mqttUser:mqttPasswd@192.168.50.15:1883/'; // homeassistant
+  async getMqttBrokerUri() {
+    const mqtt = JSON.parse(this.homey.settings.get('mqtt'));
+    const localAddress = (await this.homey.cloud.getLocalAddress()).split(':')[0];
+
+    return `mqtt://${mqtt.user}:${mqtt.password}@${mqtt.broker === 'localhost' || mqtt.broker === '127.0.0.1' ? localAddress : mqtt.broker}:${mqtt.port}`;
   }
 
   async getDingzSwitchConfig(address) {
