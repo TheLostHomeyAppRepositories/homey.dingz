@@ -8,6 +8,7 @@ const DingzNet = require('./lib/dingzNet');
 module.exports = class DingzApp extends MyApp {
 
   #dingzNet;
+  #onceDay = null;
 
   static get DINGZ() {
     return DINGZ;
@@ -15,7 +16,6 @@ module.exports = class DingzApp extends MyApp {
 
   async onInit() {
     super.onInit();
-    this.onceDay = null;
 
     this.homey.settings.unset('mqtt');
     if (!this.homey.settings.get('mqtt')) {
@@ -187,8 +187,8 @@ module.exports = class DingzApp extends MyApp {
 
   notifyDeviceWarning() {
     // Only once a day
-    if (this.onceDay !== new Date().toLocaleDateString()) {
-      this.onceDay = new Date().toLocaleDateString();
+    if (this.#onceDay !== new Date().toLocaleDateString()) {
+      this.#onceDay = new Date().toLocaleDateString();
       this.notifyError('Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
     }
   }
