@@ -31,7 +31,7 @@ module.exports = class DingzDevice extends BaseDevice {
     if (this.dataModel === 'dz1f-4b' && this.hasCapability('alarm_motion')) {
       await this.removeCapability('alarm_motion')
         .then(() => this.logDebug('initDingzConfig() - alarm_motion capability removed'))
-        .catch((err) => this.logError(`initDingzConfig() - ${err}`));
+        .catch((error) => this.logError(`initDingzConfig() - ${error}`));
     }
   }
 

@@ -170,7 +170,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
   //       frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
   //       baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
   //     }))
-  //     .catch((err) => this.logError(`setDingzSwitchSettings() > ${err}`));
+  //     .catch((error) => this.logError(`setDingzSwitchSettings() > ${error}`));
   // }
 
   // NOTE: simplelog-api on/off

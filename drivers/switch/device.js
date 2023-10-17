@@ -22,9 +22,9 @@ module.exports = class SwitchDevice extends BaseDevice {
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn })
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
-      .catch((err) => {
-        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
-        this.showWarning(err.message);
+      .catch((error) => {
+        this.logError(`onCapabilityLight() > sendCommand > ${error}`);
+        this.showWarning(error.message);
       });
   }
 

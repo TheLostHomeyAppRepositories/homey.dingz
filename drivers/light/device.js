@@ -25,12 +25,12 @@ module.exports = class LightDevice extends BaseDevice {
       if (!this.hasCapability('dim')) {
         await this.addCapability('dim')
           .then(() => this.logDebug('initDingzConfig() - dim capability added'))
-          .catch((err) => this.logError(`initDingzConfig() - ${err}`));
+          .catch((error) => this.logError(`initDingzConfig() - ${error}`));
       }
     } else if (this.hasCapability('dim')) {
       await this.removeCapability('dim')
         .then(() => this.logDebug('initDingzConfig() - dim capability removed'))
-        .catch((err) => this.logError(`initDingzConfig() - ${err}`));
+        .catch((error) => this.logError(`initDingzConfig() - ${error}`));
     }
   }
 
@@ -43,9 +43,9 @@ module.exports = class LightDevice extends BaseDevice {
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
-      .catch((err) => {
-        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
-        this.showWarning(err.message);
+      .catch((error) => {
+        this.logError(`onCapabilityLight() > sendCommand > ${error}`);
+        this.showWarning(error.message);
       });
   }
 
@@ -58,9 +58,9 @@ module.exports = class LightDevice extends BaseDevice {
 
     return this.sendCommand(`/light/${this.dataDevice}`, { brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
-      .catch((err) => {
-        this.logError(`onCapabilityLight() > sendCommand > ${err}`);
-        this.showWarning(err.message);
+      .catch((error) => {
+        this.logError(`onCapabilityLight() > sendCommand > ${error}`);
+        this.showWarning(error.message);
       });
   }
 

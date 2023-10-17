@@ -66,10 +66,10 @@
             user: mqttUserElement.value,
             password: mqttPasswordElement.value,
           }
-          Homey.set('mqtt', JSON.stringify(settings), (err) => {
-            if (err) return Homey.alert(err);            
+          Homey.set('mqtt', JSON.stringify(settings), (error) => {
+            if (error) return Homey.alert(error);            
             Homey.alert('ATTENTION:\nFor the change to take effect, you MUST restart the app', function (err, val) {
-              if (err) return Homey.alert(err);
+              if (error) return Homey.alert(error);
               // if (!val) return;
               // TODO: Restart dingz-app
             })

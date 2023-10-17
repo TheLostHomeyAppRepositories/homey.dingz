@@ -136,9 +136,9 @@ module.exports = class DingzApp extends MyApp {
           };
         });
       });
-    } catch (err) {
-      this.logError(`setDeviceDipConfig() > ${err}`);
-      throw new Error(`dingzSwitch error ${err}`);
+    } catch (error) {
+      this.logError(`setDeviceDipConfig() > ${error}`);
+      throw new Error(`dingzSwitch error ${error}`);
     }
 
     switch (config.dip_config) {

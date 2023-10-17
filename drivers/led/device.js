@@ -75,9 +75,9 @@ module.exports = class LedDevice extends BaseDevice {
     const hue = Number((hsv.h / 359).toFixed(2));
     const saturation = Number(hsv.s.toFixed(2));
 
-    this.setCapabilityValue('dim', 0); // TODO:
     this.setCapabilityValue('light_hue', hue);
     this.setCapabilityValue('light_saturation', saturation);
+    // this.setCapabilityValue('dim', 0); // TODO:
   }
 
 };
