@@ -1,5 +1,7 @@
 'use strict';
 
+const { HttpAPI } = require('my-homey');
+
 const BaseDevice = require('../device');
 
 const { DINGZ } = require('../../lib/dingzAPI');
@@ -8,8 +10,21 @@ module.exports = class DingzDevice extends BaseDevice {
 
   #buttons = {};
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     super.onInit(options);
+
+    // NOTE: Remove v1 actionUrl >> del on next version
+    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+    Promise.resolve()
+      .then(async (data) => {
+        await httpAPI.post('action/pir1/fall/', '');
+        await httpAPI.post('action/pir1/day/', '');
+        await httpAPI.post('action/pir1/night/', '');
+        await httpAPI.post('action/pir1/twilight/', '');
+      })
+      .catch(async (error) => {
+        this.logError(`onInit() > reset actionUrl ${error}`);
+      });
 
     this.registerTopicListener('/sensor/light', this.onTopicLight.bind(this));
     this.registerTopicListener('/sensor/temperature', this.onTopicTemperature.bind(this));

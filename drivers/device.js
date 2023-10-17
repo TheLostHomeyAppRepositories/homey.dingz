@@ -55,6 +55,16 @@ module.exports = class BaseDevice extends MyMqttDevice {
         this.logError(`onInit() > dingzSwitch ${error}`);
       });
 
+    // NOTE: Remove v1 actionUrl >> del on next version
+    await httpAPI.get('action')
+      .then(async (data) => {
+        const urls = data.generic.split('||').filter((elm) => elm.length !== 0 && !elm.includes('/api/app/org.cflat-inc.dingz')).join('||');
+        await httpAPI.post('action/generic/', urls);
+      })
+      .catch(async (error) => {
+        this.logError(`onInit() > reset actionUrl ${error}`);
+      });
+
     // NOTE: Convert from v1 to v2 format
     let v2id = this.data.id.toLowerCase();
     v2id = v2id.replace(':dimmer:', ':output:');
@@ -119,59 +129,6 @@ module.exports = class BaseDevice extends MyMqttDevice {
     const myTopic = topic.startsWith('/') ? `dingz/${this.dataMac}/${this.dataModel}/command${topic}` : topic;
     return super.sendCommand(myTopic, data);
   }
-
-  //  dingzSwitch action
-
-  async subscribeDingzAction(action, url) {
-    this.logDebug(`subscribeDingzAction() > ${action}: ${url}`);
-
-    const localAddress = await this.homey.cloud.getLocalAddress();
-
-    await this.getDeviceData(action)
-      .then((dingzActions) => {
-        return dingzActions.generic // <<<
-          .split('||')
-          .filter((elm) => elm.length !== 0 && !elm.includes(this.#apiPath))
-          .concat([`get://${localAddress}/${this.#apiPath}/${url}`])
-          .join('||');
-      })
-      .then((dingzActions) => this.setDeviceData(action, dingzActions))
-      .then(() => this.logDebug(`subscribeDingzAction() - ${action} subscribed`))
-      .catch((error) => this.logError(`subscribeDingzAction() > ${error}`));
-  }
-
-  async subscribeDingzActionUrl(action, url) {
-    this.logDebug(`subscribeDingzActionUrl() > ${action}: ${url}`);
-
-    const localAddress = await this.homey.cloud.getLocalAddress();
-
-    return this.getDeviceData(action)
-      .then((dingzActions) => {
-        return dingzActions.url // <<<
-          .split('||')
-          .filter((elm) => elm.length !== 0 && !elm.includes(this.#apiPath))
-          .concat([`get://${localAddress}/${this.#apiPath}/${url}`])
-          .join('||');
-      })
-      .then((dingzActions) => this.setDeviceData(action, dingzActions))
-      .then(() => this.logDebug(`subscribeDingzActionUrl() > action: ${action} subscribed`))
-      .catch((error) => this.logError(`subscribeDingzActionUrl() > ${error}`));
-  }
-
-  // Settings-Page
-
-  // async setDingzSwitchSettings() {
-  //   this.logDebug('setDingzSwitchSettings()');
-  //   return this.getDeviceData('device')
-  //     .then((data) => this.setSettings({
-  //       mac: Object.keys(data)[0],
-  //       dip: Object.values(data)[0].dip_config.toString(),
-  //       firmware: Object.values(data)[0].fw_version.toString(),
-  //       frontModel: Object.values(data)[0].front_hw_model.toUpperCase(),
-  //       baseModel: Object.values(data)[0].puck_hw_model.toUpperCase(),
-  //     }))
-  //     .catch((error) => this.logError(`setDingzSwitchSettings() > ${error}`));
-  // }
 
   // NOTE: simplelog-api on/off
 
