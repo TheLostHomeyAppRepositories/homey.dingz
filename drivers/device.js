@@ -52,7 +52,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
       })
       .then(() => this.logDebug('onInit() > dingzSwitch mqtt-service initialized'))
       .catch(async (error) => {
-        await this.setWarning(error.message).catch(this.logError);
+        await this.setWarning(error.message, 'error').catch(this.logError);
         await this.setUnavailable(error.message).catch(this.logError);
         this.logError(`onInit() > dingzSwitch ${error}`);
       });
@@ -82,7 +82,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
     this.initDingzConfig();
 
     this.verifyDevice().catch(async (error) => {
-      await this.setWarning(error.message).catch(this.logError);
+      await this.setWarning(error.message, 'error').catch(this.logError);
       await this.setUnavailable(error.message).catch(this.logError);
       this.logError(`onInit() > verifyDevice ${error}`);
     });
