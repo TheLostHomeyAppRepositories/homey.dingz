@@ -14,9 +14,6 @@ const BlindDevice = require('../blind/device');
 
 module.exports = class DingzSwitchDriver extends BaseDriver {
 
-  #orderQueue = [];
-  #dingzSwitchConfig = {};
-
   #flowTriggerDingzButtonPressed;
   #flowTriggerLightStateChanged;
   #lightStateCondition;
@@ -26,6 +23,10 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
 
   static get DINGZ() {
     return DINGZ;
+  }
+
+  get dingzNet() {
+    return this.homey.app.dingzNet;
   }
 
   onInit(options = {}) {
@@ -141,7 +142,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     this.logDebug(`#handelDingzDevices() > dingzSwitch: ${JSON.stringify(dingzSwitch)}`);
 
     let devicesConfig = [];
-    await this.homey.app.getDingzSwitchConfig(dingzSwitch.data.address).then((config) => {
+    await this.dingzNet.getDingzSwitchConfig(dingzSwitch.data.address).then((config) => {
       devicesConfig = [].concat(Object.values(config.dingz), Object.values(config.outputs), Object.values(config.motors));
     });
 
