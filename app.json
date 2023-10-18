@@ -135,8 +135,14 @@
       ],
       "repair": [
         {
-          "id": "add_devices",
-          "template": "add_devices"
+          "id": "reconfigure_dingzSwitch",
+          "navigation": {
+            "next": "done"
+          }
+        },
+        {
+          "id": "done",
+          "template": "done"
         }
       ],
       "id": "dingzSwitch"

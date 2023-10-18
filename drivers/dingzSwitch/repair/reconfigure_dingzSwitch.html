@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <header class="homey-header">
+        <style>
+            .center {
+                text-align: center;
+            }
+        </style>
+    </header>
+    <br />
+    <button id="open_dingzWebUI" class="homey-button-primary-full">Open dingzSwitch WebUI</button>
+    <br /><br />
+    <div class="center">
+        <span>To check or edit the configuration of the keys, outputs or other elements of the dingz Switch.</span>
+    </div>
+    <br /><br />
+    <button id="reconfigure_dingzNet" class="homey-button-primary-full">Reconfigure dingzNet</button>
+    <br /><br />
+    <div class="center">
+        <span>Send the current dingz Switch configuration to the dingzNet.</span>
+    </div>
+    <script type="text/javascript">
+        Homey.ready();
+        Homey.setTitle("Reconfigure dingzSwitch");
+
+        // Workaround - see: https://web.dev/what-is-mixed-content/:
+        // Homey.emit("getDeviceAddress", null, (error, address) => {
+        //   document.getElementById("dingzWebUI").src = `https://${address}/`;
+        // });
+
+        $("#open_dingzWebUI").click( () => {
+            Homey.showLoadingOverlay();
+            Homey.emit("getDeviceAddress", null, (error, address) => {
+                if(error) return Homey.alert(error, 'error');
+                Homey.popup(`http://${address}/`);
+                Homey.hideLoadingOverlay();
+            });
+        });
+
+        $("#reconfigure_dingzNet").click( () => {
+            Homey.showLoadingOverlay();
+            Homey.emit("reconfigureDingzNet", null, (error, device) => {
+                if(error) return Homey.alert(error, 'error');
+                Homey.alert(`dingzNet reconfigured`, 'info');
+                Homey.hideLoadingOverlay();
+            });
+        });
+    </script>
+</html>

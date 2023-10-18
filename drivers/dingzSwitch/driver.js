@@ -116,7 +116,17 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   }
 
   async onRepair(session, device) {
-    // nothing
+    session.setHandler('getDeviceAddress', () => {
+      return device.getStoreValue('address');
+    });
+
+    session.setHandler('reconfigureDingzNet', () => {
+      return device.dingzNet.publishDeviceConfig(device.getStoreValue('address'));
+    });
+
+    session.setHandler('disconnect', () => {
+      // Cleanup
+    });
   }
 
   #handelDingzSwitches(discoveryResults) {
