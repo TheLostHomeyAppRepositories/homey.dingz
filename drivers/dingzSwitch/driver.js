@@ -4,16 +4,20 @@ const { DINGZ } = require('../../lib/dingzAPI');
 
 const BaseDriver = require('../driver');
 
+// dingz
 const DingzDevice = require('../dingz/device');
 const LedDevice = require('../led/device');
-const SwitchDevice = require('../switch/device');
-const LightDevice = require('../light/device');
+// outputs
 const FanDevice = require('../fan/device');
-const SmartlightDevice = require('../smart_light/device');
 const HeaterDevice = require('../heater/device');
 const IrrigationDevice = require('../irrigation/device');
-const ShadeDevice = require('../shade/device');
+const LightDevice = require('../light/device');
+const PulseDevice = require('../pulse/device');
+const SmartlightDevice = require('../smart_light/device');
+const SwitchDevice = require('../switch/device');
+// motors
 const BlindDevice = require('../blind/device');
+const ShadeDevice = require('../shade/device');
 
 module.exports = class DingzSwitchDriver extends BaseDriver {
 
@@ -67,12 +71,12 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     // v1 to v2 Compatibility
     const type = device.getData().type || device.getData().deviceId;
     switch (type) {
-      // Dingz
+      // dingz
       case 'dingz':
         return DingzDevice;
       case 'led':
         return LedDevice;
-      // Outputs
+      // outputs
       case 'fan':
         return FanDevice; // TODO: Specs ??
       case 'heating_valve':
@@ -81,15 +85,17 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return IrrigationDevice; // TODO: Specs ??
       case 'light':
         return LightDevice;
+      case 'pulse_button':
+        return PulseDevice;
       case 'smart_light':
         return SmartlightDevice;
       case 'switch': // aka "power_socket"
         return SwitchDevice;
-      // Motors
-      case 'shade': // aka "awning"
-        return ShadeDevice;
+      // motors
       case 'blind':
         return BlindDevice;
+      case 'shade': // aka "awning"
+        return ShadeDevice;
       default:
         this.logError(`onMapDeviceClass - unknown type: ${type}`);
         return Error(`Unknown device type ${type}`);
