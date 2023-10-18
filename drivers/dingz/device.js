@@ -34,10 +34,10 @@ module.exports = class DingzDevice extends BaseDevice {
     this.registerTopicListener('/event/button/2', this.onTopicButton.bind(this));
     this.registerTopicListener('/event/button/3', this.onTopicButton.bind(this));
 
-    this.registerTopicListener(`${this.homey.app.rootTopic}/config/${this.dataMac}/button/0`, this.onTopicButtonConfig.bind(this));
-    this.registerTopicListener(`${this.homey.app.rootTopic}/config/${this.dataMac}/button/1`, this.onTopicButtonConfig.bind(this));
-    this.registerTopicListener(`${this.homey.app.rootTopic}/config/${this.dataMac}/button/2`, this.onTopicButtonConfig.bind(this));
-    this.registerTopicListener(`${this.homey.app.rootTopic}/config/${this.dataMac}/button/3`, this.onTopicButtonConfig.bind(this));
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${this.dataMac}/button/0`, this.onTopicButtonConfig.bind(this));
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${this.dataMac}/button/1`, this.onTopicButtonConfig.bind(this));
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${this.dataMac}/button/2`, this.onTopicButtonConfig.bind(this));
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${this.dataMac}/button/3`, this.onTopicButtonConfig.bind(this));
   }
 
   async initDingzConfig() {

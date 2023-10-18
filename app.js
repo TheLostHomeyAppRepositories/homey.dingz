@@ -25,7 +25,6 @@ module.exports = class DingzApp extends MyApp {
         password: 'mqttPasswd',
       }));
     }
-    this.rootTopic = 'dingz/dingzNet';
 
     this.dingzNet = new DingzNet(this);
     await this.dingzNet.initDingzNet(await this.getMqttBrokerUri());

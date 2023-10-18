@@ -8,12 +8,14 @@ const { DINGZ } = require('../lib/dingzAPI');
 
 module.exports = class BaseDevice extends MyMqttDevice {
 
-  #apiPath = '';
-
   dingzConfig = null;
 
   static get DINGZ() {
     return DINGZ;
+  }
+
+  get dingzNet() {
+    return this.homey.app.dingzNet;
   }
 
   // v1/v2 compatibility layer
@@ -70,7 +72,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
     v2id = v2id.replace(':dimmer:', ':output:');
     v2id = v2id.replace(':blind:', ':motor:');
 
-    this.registerTopicListener(`${this.homey.app.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
   }
 
   onTopicConfig(topic, data) {
