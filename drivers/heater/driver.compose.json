@@ -1,0 +1,13 @@
+{
+  "deprecated": true,
+  "name": {
+    "en": "Heater",
+    "de": "Heizung"
+  },
+  "$extends": "default",
+  "class": "socket",
+  "icon": "../../heater/assets/icon.svg",
+  "capabilities": [
+    "measure_power"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "deprecated": true,
+  "name": {
+    "en": "Irrigation",
+    "de": "Bewässerung"
+  },
+  "$extends": "default",
+  "class": "socket",
+  "icon": "../../irrigation/assets/icon.svg",
+  "capabilities": [
+    "measure_power"
+  ]
+}

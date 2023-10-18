@@ -8,7 +8,10 @@ const DingzDevice = require('../dingz/device');
 const LedDevice = require('../led/device');
 const SwitchDevice = require('../switch/device');
 const LightDevice = require('../light/device');
+const FanDevice = require('../fan/device');
 const SmartlightDevice = require('../smart_light/device');
+const HeaterDevice = require('../heater/device');
+const IrrigationDevice = require('../irrigation/device');
 const ShadeDevice = require('../shade/device');
 const BlindDevice = require('../blind/device');
 
@@ -64,17 +67,26 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     // v1 to v2 Compatibility
     const type = device.getData().type || device.getData().deviceId;
     switch (type) {
+      // Dingz
       case 'dingz':
         return DingzDevice;
       case 'led':
         return LedDevice;
-      case 'switch':
-        return SwitchDevice;
+      // Outputs
+      case 'fan':
+        return FanDevice; // TODO: Specs ??
+      case 'heating_valve':
+        return HeaterDevice; // TODO: Specs ??
+      case 'irrigation_valve':
+        return IrrigationDevice; // TODO: Specs ??
       case 'light':
         return LightDevice;
       case 'smart_light':
         return SmartlightDevice;
-      case 'shade':
+      case 'switch': // aka "power_socket"
+        return SwitchDevice;
+      // Motors
+      case 'shade': // aka "awning"
         return ShadeDevice;
       case 'blind':
         return BlindDevice;
