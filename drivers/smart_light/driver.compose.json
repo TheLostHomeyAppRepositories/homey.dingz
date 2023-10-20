@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "Always On"
+    "en": "Always On",
+    "de": "Immer an"
   },
   "$extends": "default",
   "class": "socket",

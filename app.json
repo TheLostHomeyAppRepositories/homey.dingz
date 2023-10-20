@@ -151,19 +151,61 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../smart_light/assets/icon.svg",
+      "icon": "../../fan/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
+      "deprecated": true,
       "name": {
-        "en": "Always On"
+        "en": "Fan",
+        "de": "Lüfter"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "fan"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../heater/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "deprecated": true,
+      "name": {
+        "en": "Heater",
+        "de": "Heizung"
       },
       "class": "socket",
       "capabilities": [
         "measure_power"
       ],
       "id": "heater"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../irrigation/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "deprecated": true,
+      "name": {
+        "en": "Irrigation",
+        "de": "Bewässerung"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "irrigation"
     },
     {
       "connectivity": [
@@ -202,7 +244,8 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "Light"
+        "en": "Light",
+        "de": "Licht"
       },
       "class": "light",
       "capabilities": [
@@ -217,6 +260,26 @@
         }
       },
       "id": "light"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../puls/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "deprecated": true,
+      "name": {
+        "en": "Pulse",
+        "de": "Puls"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "pulse"
     },
     {
       "connectivity": [
@@ -246,7 +309,8 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "Always On"
+        "en": "Always On",
+        "de": "Immer an"
       },
       "class": "socket",
       "capabilities": [
@@ -264,7 +328,8 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "Switch"
+        "en": "Switch",
+        "de": "Steckdose geschaltet"
       },
       "class": "socket",
       "capabilities": [

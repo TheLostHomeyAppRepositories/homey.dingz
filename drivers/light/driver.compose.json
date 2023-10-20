@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "Light"
+    "en": "Light",
+    "de": "Licht"
   },
   "$extends": "default",
   "class": "light",

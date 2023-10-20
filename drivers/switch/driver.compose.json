@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "Switch"
+    "en": "Switch",
+    "de": "Steckdose geschaltet"
   },
   "$extends": "default",
   "class": "socket",
