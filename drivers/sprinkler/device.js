@@ -2,7 +2,7 @@
 
 const BaseDevice = require('../device');
 
-module.exports = class IrrigationDevice extends BaseDevice {
+module.exports = class SprinklerDevice extends BaseDevice {
 
   TYPE_GROUP = 'outputs';
 
@@ -24,7 +24,7 @@ module.exports = class IrrigationDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
-        this.showWarning(error.message);
+        return Promise.reject(error);
       });
   }
 

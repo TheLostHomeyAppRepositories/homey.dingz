@@ -191,26 +191,6 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../irrigation/assets/icon.svg",
-      "images": {
-        "large": "drivers/dingz/assets/images/large.png",
-        "small": "drivers/dingz/assets/images/small.png"
-      },
-      "deprecated": true,
-      "name": {
-        "en": "Irrigation",
-        "de": "Bewässerung"
-      },
-      "class": "socket",
-      "capabilities": [
-        "measure_power"
-      ],
-      "id": "irrigation"
-    },
-    {
-      "connectivity": [
-        "lan"
-      ],
       "icon": "../../led/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -317,6 +297,26 @@
         "measure_power"
       ],
       "id": "smart_light"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../sprinkler/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "deprecated": true,
+      "name": {
+        "en": "Sprinkler",
+        "de": "Bewässerung"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "sprinkler"
     },
     {
       "connectivity": [

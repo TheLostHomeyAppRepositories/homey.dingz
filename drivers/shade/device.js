@@ -21,7 +21,6 @@ module.exports = class ShadeDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: position })}`))
       .catch((error) => {
         this.logError(`onCapabilityWindowCoveringsSet() > sendCommand > ${error}`);
-        this.showWarning(error.message);
         return Promise.reject(error);
       });
   }

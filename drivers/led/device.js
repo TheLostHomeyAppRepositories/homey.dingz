@@ -10,7 +10,7 @@ module.exports = class LedDevice extends BaseDevice {
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
-    // this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this)); TODO: Dim ??
+    this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
 
     this.registerTopicListener('/state/led', this.onTopicLight.bind(this));
@@ -25,7 +25,6 @@ module.exports = class LedDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: value ? 'On' : 'Off' })}`))
       .catch((error) => {
         this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
-        this.showWarning(error.message);
         return Promise.reject(error);
       });
   }
@@ -33,20 +32,24 @@ module.exports = class LedDevice extends BaseDevice {
   onCapabilityDim(value, opts) {
     this.logDebug(`onCapabilityDim() > ${value} opts: ${JSON.stringify(opts)}`);
 
-    const brightness = value * 100;
-    if (brightness < 1 && this.getCapabilityValue('onoff')) {
-      this.triggerCapabilityListener('onoff', false);
-    } else if (brightness > 0 && !this.getCapabilityValue('onoff')) {
-      this.triggerCapabilityListener('onoff', true);
-    }
+    const error = Error('Dim is currently not supported');
+    this.showWarning(error.message);
+    // return Promise.reject(error);
 
-    return this.sendCommand('/led', { on: brightness })
-      .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
-      .catch((error) => {
-        this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
-        this.showWarning(error.message);
-        return Promise.reject(error);
-      });
+    // const brightness = value * 100;
+    // if (brightness < 1 && this.getCapabilityValue('onoff')) {
+    //   this.triggerCapabilityListener('onoff', false);
+    // } else if (brightness > 0 && !this.getCapabilityValue('onoff')) {
+    //   this.triggerCapabilityListener('onoff', true);
+    // }
+
+    // return this.sendCommand('/led', { on: brightness })
+    //   .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
+    //   .catch((error) => {
+    //     this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
+    //     this.showWarning(error.message);
+    //     return Promise.reject(error);
+    //   });
   }
 
   onCapabilityLightHue(valueObj, opts) {
@@ -62,7 +65,6 @@ module.exports = class LedDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.lightHueSet', { value: color.toHsvString() })}`))
       .catch((error) => {
         this.logError(`onCapabilityLightHue() > sendCommand > ${error}`);
-        this.showWarning(error.message);
         return Promise.reject(error);
       });
   }
@@ -76,7 +78,7 @@ module.exports = class LedDevice extends BaseDevice {
     const saturation = Number(hsv.s.toFixed(2));
 
     this.setCapabilityValue('onoff', data.on !== 0);
-    this.setCapabilityValue('dim', data.on === 0 ? 0 : 100); // NOTE: Workaround until iolo has implemented dim
+    this.setCapabilityValue('dim', (data.on === 0 ? 0 : 100) / 100); // NOTE: Workaround until iolo has implemented dim
     this.setCapabilityValue('light_hue', hue);
     this.setCapabilityValue('light_saturation', saturation);
   }

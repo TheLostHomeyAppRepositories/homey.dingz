@@ -42,6 +42,14 @@ module.exports = class BaseDevice extends MyMqttDevice {
   async onInit(options = {}) {
     super.onInit(options);
 
+    // NOTE: Convert from v1 to v2 format
+    let v2id = this.data.id.toLowerCase();
+    v2id = v2id.replace(':dimmer:', ':output:');
+    v2id = v2id.replace(':blind:', ':motor:');
+
+    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
+
+    // dingzSwitch set mqtt-broker url
     const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
     await httpAPI.get('services_config')
       .then(async (config) => {
@@ -60,19 +68,14 @@ module.exports = class BaseDevice extends MyMqttDevice {
     // NOTE: Remove v1 actionUrl >> del on next version
     await httpAPI.get('action')
       .then(async (data) => {
-        const urls = data.generic.split('||').filter((elm) => elm.length !== 0 && !elm.includes('/api/app/org.cflat-inc.dingz')).join('||');
-        await httpAPI.post('action/generic/', urls);
+        if (data.generic.includes('/api/app/org.cflat-inc.dingz')) {
+          const urls = data.generic.split('||').filter((elm) => elm.length !== 0 && !elm.includes('/api/app/org.cflat-inc.dingz')).join('||');
+          await httpAPI.post('action/generic/', urls);
+        }
       })
       .catch(async (error) => {
         this.logError(`onInit() > reset actionUrl ${error}`);
       });
-
-    // NOTE: Convert from v1 to v2 format
-    let v2id = this.data.id.toLowerCase();
-    v2id = v2id.replace(':dimmer:', ':output:');
-    v2id = v2id.replace(':blind:', ':motor:');
-
-    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
   }
 
   onTopicConfig(topic, data) {

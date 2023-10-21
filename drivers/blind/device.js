@@ -22,7 +22,6 @@ module.exports = class BlindDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: position })}`))
       .catch((error) => {
         this.logError(`onCapabilityWindowCoveringsSet() > sendCommand > ${error}`);
-        this.showWarning(error.message);
         return Promise.reject(error);
       });
   }
@@ -36,7 +35,6 @@ module.exports = class BlindDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: lamella })}`))
       .catch((error) => {
         this.logError(`onCapabilityWindowCoveringsTiltSet() > sendCommand > ${error}`);
-        this.showWarning(error.message);
         return Promise.reject(error);
       });
   }

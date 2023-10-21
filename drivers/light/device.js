@@ -45,7 +45,7 @@ module.exports = class LightDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
-        this.showWarning(error.message);
+        return Promise.reject(error);
       });
   }
 
@@ -60,7 +60,7 @@ module.exports = class LightDevice extends BaseDevice {
       .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
-        this.showWarning(error.message);
+        return Promise.reject(error);
       });
   }
 

@@ -10,7 +10,7 @@ const LedDevice = require('../led/device');
 // outputs
 const FanDevice = require('../fan/device');
 const HeaterDevice = require('../heater/device');
-const IrrigationDevice = require('../irrigation/device');
+const SprinklerDevice = require('../sprinkler/device');
 const LightDevice = require('../light/device');
 const PulseDevice = require('../pulse/device');
 const SmartlightDevice = require('../smart_light/device');
@@ -82,7 +82,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       case 'heating_valve':
         return HeaterDevice; // TODO: Specs ??
       case 'irrigation_valve':
-        return IrrigationDevice; // TODO: Specs ??
+        return SprinklerDevice;
       case 'light':
         return LightDevice;
       case 'pulse_button':
