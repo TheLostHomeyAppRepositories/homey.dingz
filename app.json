@@ -161,10 +161,33 @@
         "en": "Fan",
         "de": "Lüfter"
       },
-      "class": "socket",
+      "class": "fan",
       "capabilities": [
+        "onoff",
+        "dim",
+        "ramp",
         "measure_power"
       ],
+      "capabilitiesOptions": {
+        "dim": {
+          "title": {
+            "en": "Speed",
+            "de": "Geschwindigkeit"
+          }
+        },
+        "ramp": {
+          "title": {
+            "en": "Delay",
+            "de": "Verzögerung"
+          },
+          "units": {
+            "en": "min",
+            "de": "Min"
+          },
+          "min": 0,
+          "max": 20
+        }
+      },
       "id": "fan"
     },
     {

@@ -5,9 +5,20 @@
     "de": "Lüfter"
   },
   "$extends": "default",
-  "class": "socket",
+  "class": "fan",
   "icon": "../../fan/assets/icon.svg",
   "capabilities": [
+    "onoff",
+    "dim",
+    "ramp",
     "measure_power"
-  ]
+  ],
+  "capabilitiesOptions": {
+    "dim": {
+      "title": {
+          "en": "Speed",
+          "de": "Geschwindigkeit"
+      }
+    }
+  }
 }

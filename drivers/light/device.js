@@ -38,10 +38,10 @@ module.exports = class LightDevice extends BaseDevice {
     this.logDebug(`onCapabilityOnOff() > ${value} opts: ${JSON.stringify(opts)}`);
 
     const turn = value ? 'on' : 'off';
-    // const brightness = turn === 'on' ? 100 : 0;
+    const brightness = value ? 100 : 0;
     const fadetime = FADETIME;
 
-    return this.sendCommand(`/light/${this.dataDevice}`, { turn, fadetime })
+    return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
@@ -52,11 +52,11 @@ module.exports = class LightDevice extends BaseDevice {
   onCapabilityDim(value, opts) {
     this.logDebug(`onCapabilityLight() > ${value} opts: ${JSON.stringify(opts)}`);
 
+    const turn = value > 0 ? 'on' : 'off';
     const brightness = Math.round(value * 100);
-    // const turn = brightness >= 1 ? 'on' : 'off';
     const fadetime = FADETIME;
 
-    return this.sendCommand(`/light/${this.dataDevice}`, { brightness, fadetime })
+    return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
