@@ -163,7 +163,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         },
       };
     })
-      .sort((a, b) => (a.name > b.name ? 1 : -1));
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   async #handelDingzDevices(dingzSwitch) {
@@ -175,14 +175,17 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     });
 
     return devicesConfig
-      .sort((a, b) => (a.name > b.name ? 1 : -1))
-      .map((device) => {
-        const deviceManifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.type);
-        if (deviceManifest === undefined) {
-          throw new Error(`Device manifest (${device.type}) not found`);
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((device) => {
+        const manifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.type);
+        if (manifest === undefined || (manifest['deprecated'] && manifest['deprecated'] === true)) {
+          this.logWarning(`DeviceType "${device.type}" not supported`);
+          return false;
         }
-
-        const manifest = { ...deviceManifest };
+        return true;
+      })
+      .map((device) => {
+        const manifest = { ...this.homey.manifest.drivers.find((manifest) => manifest.id === device.type) };
         manifest.name = device.name;
         manifest['data'] = manifest.data || {};
         manifest.data['id'] = device.id;
