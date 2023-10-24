@@ -56,12 +56,15 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "Blind"
+        "en": "Blind",
+        "de": "?Blind?"
       },
       "class": "blinds",
       "capabilities": [
+        "windowcoverings_state",
         "windowcoverings_set",
-        "windowcoverings_tilt_set"
+        "windowcoverings_tilt_set",
+        "measure_power"
       ],
       "id": "blind"
     },
@@ -151,6 +154,48 @@
       "connectivity": [
         "lan"
       ],
+      "icon": "../../door/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": {
+        "en": "Door",
+        "de": "Türe"
+      },
+      "class": "garagedoor",
+      "capabilities": [
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "alarm_contact",
+        "measure_power"
+      ],
+      "capabilitiesOptions": {
+        "windowcoverings_state": {
+          "title": {
+            "en": "Door state",
+            "de": "Türe-Status"
+          }
+        },
+        "windowcoverings_set": {
+          "desc": {
+            "en": "Set the position of door. 0% is closed, 100% is open",
+            "de": "Die Position des Türe setzen. 0% ist geschlossen, 100% ist offen"
+          }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Door open",
+            "de": "Türe göffnet"
+          }
+        }
+      },
+      "id": "door"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../fan/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -177,6 +222,34 @@
         }
       },
       "id": "fan"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../window/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": {
+        "en": "Window",
+        "de": "Fenster"
+      },
+      "class": "garagedoor",
+      "capabilities": [
+        "garagedoor_closed",
+        "windowcoverings_set"
+      ],
+      "capabilitiesOptions": {
+        "windowcoverings_set": {
+          "desc": {
+            "en": "Set the position of window. 0% is closed, 100% is open",
+            "de": "Die Position des Fenster setzen. 0% ist geschlossen, 100% ist offen"
+          }
+        }
+      },
+      "id": "garagedoor.$$$"
     },
     {
       "connectivity": [
@@ -288,11 +361,14 @@
         "small": "drivers/dingz/assets/images/small.png"
       },
       "name": {
-        "en": "Shade"
+        "en": "Shade",
+        "de": "?shade?"
       },
       "class": "sunshade",
       "capabilities": [
-        "windowcoverings_set"
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "measure_power"
       ],
       "id": "shade"
     },
@@ -354,6 +430,48 @@
         "measure_power"
       ],
       "id": "switch"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
+      "icon": "../../window/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": {
+        "en": "Window",
+        "de": "Fenster"
+      },
+      "class": "garagedoor",
+      "capabilities": [
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "alarm_contact",
+        "measure_power"
+      ],
+      "capabilitiesOptions": {
+        "windowcoverings_state": {
+          "title": {
+            "en": "Window state",
+            "de": "Fenster-Status"
+          }
+        },
+        "windowcoverings_set": {
+          "desc": {
+            "en": "Set the position of window. 0% is closed, 100% is open",
+            "de": "Die Position des Fenster setzen. 0% ist geschlossen, 100% ist offen"
+          }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Window open",
+            "de": "Fenster göffnet"
+          }
+        }
+      },
+      "id": "window"
     }
   ],
   "flow": {

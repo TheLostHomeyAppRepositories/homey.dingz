@@ -1,11 +1,14 @@
 {
   "name": {
-    "en": "Shade"
+    "en": "Shade",
+    "de": "Jalousie"
   },
   "$extends": "default",
   "class": "sunshade",
   "icon": "../../shade/assets/icon.svg",
   "capabilities": [
-    "windowcoverings_set"
+    "windowcoverings_state",
+    "windowcoverings_set",
+    "measure_power"  
   ]
 }

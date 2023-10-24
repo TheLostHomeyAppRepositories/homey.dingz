@@ -1,0 +1,21 @@
+{
+  "name": {
+    "en": "Window",
+    "de": "Fenster"
+  },
+  "$extends": "default",
+  "class": "garagedoor",
+  "icon": "../../window/assets/icon.svg",
+  "capabilities": [
+    "garagedoor_closed",
+    "windowcoverings_set"
+  ],
+  "capabilitiesOptions": {
+    "windowcoverings_set": {
+      "desc": {
+          "en": "Set the position of window. 0% is closed, 100% is open",
+          "de": "Die Position des Fenster setzen. 0% ist geschlossen, 100% ist offen"
+      }
+    }
+  }
+}

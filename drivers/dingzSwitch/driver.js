@@ -18,6 +18,8 @@ const SwitchDevice = require('../switch/device');
 // motors
 const BlindDevice = require('../blind/device');
 const ShadeDevice = require('../shade/device');
+const WindowDevice = require('../window/device');
+const DoorDevice = require('../door/device');
 
 module.exports = class DingzSwitchDriver extends BaseDriver {
 
@@ -96,6 +98,10 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return BlindDevice;
       case 'shade': // aka "awning"
         return ShadeDevice;
+      case 'window':
+        return WindowDevice;
+      case 'door':
+        return DoorDevice;
       default:
         this.logError(`onMapDeviceClass - unknown type: ${type}`);
         return Error(`Unknown device type ${type}`);

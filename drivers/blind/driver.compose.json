@@ -1,12 +1,15 @@
 {
   "name": {
-    "en": "Blind"
+    "en": "Blind",
+    "de": "Rolladen"
   },
   "$extends": "default",
   "class": "blinds",
   "icon": "../../blind/assets/icon.svg",
   "capabilities": [
+    "windowcoverings_state",
     "windowcoverings_set",
-    "windowcoverings_tilt_set"
+    "windowcoverings_tilt_set",
+    "measure_power"  
   ]
 }
