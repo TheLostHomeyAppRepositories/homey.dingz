@@ -8,6 +8,6 @@
   "class": "socket",
   "icon": "../../heater/assets/icon.svg",
   "capabilities": [
-    "measure_power"
-  ]
+    "onoff",
+    "measure_power"  ]
 }

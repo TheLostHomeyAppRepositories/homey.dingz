@@ -13,7 +13,7 @@ module.exports = class LedDevice extends BaseDevice {
     this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
 
-    this.registerTopicListener('/state/led', this.onTopicLight.bind(this));
+    this.registerTopicListener('/state/led', this.onTopicState.bind(this));
   }
 
   onCapabilityOnOff(value, opts) {
@@ -69,8 +69,8 @@ module.exports = class LedDevice extends BaseDevice {
       });
   }
 
-  onTopicLight(topic, data) {
-    this.logDebug(`onTopicLight() > ${topic} data: ${JSON.stringify(data)}`);
+  onTopicState(topic, data) {
+    this.logDebug(`onTopicState() > ${topic} data: ${JSON.stringify(data)}`);
 
     const color = tinycolor({ r: data.r, g: data.g, b: data.b });
     const hsv = color.toHsv();

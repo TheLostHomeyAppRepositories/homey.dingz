@@ -1,13 +1,15 @@
 {
-  "deprecated": true,
   "name": {
     "en": "Pulse",
     "de": "Puls"
   },
   "$extends": "default",
   "class": "socket",
-  "icon": "../../puls/assets/icon.svg",
+  "icon": "../../pulse/assets/icon.svg",
   "capabilities": [
+    "onoff",
+    "dim",
+    "ramp",
     "measure_power"
   ]
 }

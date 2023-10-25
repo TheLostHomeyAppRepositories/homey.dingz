@@ -8,13 +8,14 @@ const BaseDriver = require('../driver');
 const DingzDevice = require('../dingz/device');
 const LedDevice = require('../led/device');
 // outputs
-const FanDevice = require('../fan/device');
+const LightDevice = require('../light/device');
+const AlwaysDevice = require('../always/device');
+const SwitchDevice = require('../switch/device');
 const HeaterDevice = require('../heater/device');
 const SprinklerDevice = require('../sprinkler/device');
-const LightDevice = require('../light/device');
+const FanDevice = require('../fan/device');
 const PulseDevice = require('../pulse/device');
-const SmartlightDevice = require('../smart_light/device');
-const SwitchDevice = require('../switch/device');
+const GaragedoorDevice = require('../garagedoor/device');
 // motors
 const BlindDevice = require('../blind/device');
 const ShadeDevice = require('../shade/device');
@@ -79,20 +80,22 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       case 'led':
         return LedDevice;
       // outputs
-      case 'fan':
-        return FanDevice; // TODO: Specs ??
-      case 'heating_valve':
-        return HeaterDevice; // TODO: Specs ??
-      case 'irrigation_valve':
-        return SprinklerDevice;
       case 'light':
         return LightDevice;
-      case 'pulse_button':
-        return PulseDevice;
-      case 'smart_light':
-        return SmartlightDevice;
-      case 'switch': // aka "power_socket"
+      case 'always':
+        return AlwaysDevice;
+      case 'switch':
         return SwitchDevice;
+      case 'heater':
+        return HeaterDevice; // TODO: Specs ??
+      case 'sprinkler': // aka "power_socket"
+        return SprinklerDevice;
+      case 'fan':
+        return FanDevice; // TODO: Specs ??
+      case 'pulse':
+        return PulseDevice;
+      case 'garagedoor':
+        return GaragedoorDevice;
       // motors
       case 'blind':
         return BlindDevice;
@@ -175,6 +178,8 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   async #handelDingzDevices(dingzSwitch) {
     this.logDebug(`#handelDingzDevices() > dingzSwitch: ${JSON.stringify(dingzSwitch)}`);
 
+    await this.dingzNet.publishDeviceConfig(dingzSwitch.data.address);
+
     let devicesConfig = [];
     await this.dingzNet.getDingzSwitchConfig(dingzSwitch.data.address).then((config) => {
       devicesConfig = [].concat(Object.values(config.dingz), Object.values(config.outputs), Object.values(config.motors));
@@ -184,7 +189,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       .sort((a, b) => a.name.localeCompare(b.name))
       .filter((device) => {
         const manifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.type);
-        if (manifest === undefined || (manifest['deprecated'] && manifest['deprecated'] === true)) {
+        if (manifest === undefined || manifest.deprecated) {
           this.logWarning(`DeviceType "${device.type}" not supported`);
           return false;
         }

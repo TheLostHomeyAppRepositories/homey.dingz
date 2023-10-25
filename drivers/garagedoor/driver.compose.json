@@ -1,0 +1,23 @@
+{
+  "deprecated": true,
+  "name": {
+    "en": "Garagedoor",
+    "de": "Garagentor"
+  },
+  "$extends": "default",
+  "class": "garagedoor",
+  "icon": "../../garagedoor/assets/icon.svg",
+  "capabilities": [
+    "garagedoor_closed",
+    "alarm_contact",
+    "measure_power"
+  ],
+  "capabilitiesOptions": {
+    "windowcoverings_set": {
+      "desc": {
+        "en": "Set the position of garagedoor. 0% is open, 100% is closed",
+        "de": "Die Position des Garagentor setzen. 0% ist offen, 100% ist geschlossen"
+      }
+    }
+  }
+}

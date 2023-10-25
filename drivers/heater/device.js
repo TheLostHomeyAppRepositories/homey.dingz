@@ -1,21 +1,11 @@
 'use strict';
 
-const BaseDevice = require('../device');
+const OutputDevice = require('../output');
 
-module.exports = class HeaterDevice extends BaseDevice {
-
-  TYPE_GROUP = 'outputs';
+module.exports = class HeaterDevice extends OutputDevice {
 
   onInit(options = {}) {
     super.onInit(options);
-
-    // this.registerTopicListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
-  }
-
-  onTopicPower(topic, data) {
-    this.logDebug(`onTopicPower() > ${topic} data: ${data}`);
-
-    this.setCapabilityValue('measure_power', Math.round(data * 10) / 10);
   }
 
 };

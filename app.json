@@ -50,6 +50,25 @@
       "connectivity": [
         "lan"
       ],
+      "icon": "../../always/assets/icon.svg",
+      "images": {
+        "large": "drivers/dingz/assets/images/large.png",
+        "small": "drivers/dingz/assets/images/small.png"
+      },
+      "name": {
+        "en": "Always On",
+        "de": "Immer an"
+      },
+      "class": "socket",
+      "capabilities": [
+        "measure_power"
+      ],
+      "id": "always"
+    },
+    {
+      "connectivity": [
+        "lan"
+      ],
       "icon": "../../blind/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
@@ -57,7 +76,7 @@
       },
       "name": {
         "en": "Blind",
-        "de": "?Blind?"
+        "de": "Rolladen"
       },
       "class": "blinds",
       "capabilities": [
@@ -163,7 +182,7 @@
         "en": "Door",
         "de": "Türe"
       },
-      "class": "garagedoor",
+      "class": "windowcoverings",
       "capabilities": [
         "windowcoverings_state",
         "windowcoverings_set",
@@ -179,8 +198,8 @@
         },
         "windowcoverings_set": {
           "desc": {
-            "en": "Set the position of door. 0% is closed, 100% is open",
-            "de": "Die Position des Türe setzen. 0% ist geschlossen, 100% ist offen"
+            "en": "Set the position of door. 0% is open, 100% is closed",
+            "de": "Die Position des Türe setzen. 0% ist offen, 100% ist geschlossen"
           }
         },
         "alarm_contact": {
@@ -201,7 +220,6 @@
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
-      "deprecated": true,
       "name": {
         "en": "Fan",
         "de": "Lüfter"
@@ -209,47 +227,40 @@
       "class": "fan",
       "capabilities": [
         "onoff",
-        "dim",
         "ramp",
         "measure_power"
       ],
-      "capabilitiesOptions": {
-        "dim": {
-          "title": {
-            "en": "Speed",
-            "de": "Geschwindigkeit"
-          }
-        }
-      },
       "id": "fan"
     },
     {
       "connectivity": [
         "lan"
       ],
-      "icon": "../../window/assets/icon.svg",
+      "icon": "../../garagedoor/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
+      "deprecated": true,
       "name": {
-        "en": "Window",
-        "de": "Fenster"
+        "en": "Garagedoor",
+        "de": "Garagentor"
       },
       "class": "garagedoor",
       "capabilities": [
         "garagedoor_closed",
-        "windowcoverings_set"
+        "alarm_contact",
+        "measure_power"
       ],
       "capabilitiesOptions": {
         "windowcoverings_set": {
           "desc": {
-            "en": "Set the position of window. 0% is closed, 100% is open",
-            "de": "Die Position des Fenster setzen. 0% ist geschlossen, 100% ist offen"
+            "en": "Set the position of garagedoor. 0% is open, 100% is closed",
+            "de": "Die Position des Garagentor setzen. 0% ist offen, 100% ist geschlossen"
           }
         }
       },
-      "id": "garagedoor.$$$"
+      "id": "garagedoor"
     },
     {
       "connectivity": [
@@ -267,6 +278,7 @@
       },
       "class": "socket",
       "capabilities": [
+        "onoff",
         "measure_power"
       ],
       "id": "heater"
@@ -335,18 +347,20 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../puls/assets/icon.svg",
+      "icon": "../../pulse/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
-      "deprecated": true,
       "name": {
         "en": "Pulse",
         "de": "Puls"
       },
       "class": "socket",
       "capabilities": [
+        "onoff",
+        "dim",
+        "ramp",
         "measure_power"
       ],
       "id": "pulse"
@@ -362,7 +376,7 @@
       },
       "name": {
         "en": "Shade",
-        "de": "?shade?"
+        "de": "Jalousie"
       },
       "class": "sunshade",
       "capabilities": [
@@ -376,37 +390,18 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../smart_light/assets/icon.svg",
-      "images": {
-        "large": "drivers/dingz/assets/images/large.png",
-        "small": "drivers/dingz/assets/images/small.png"
-      },
-      "name": {
-        "en": "Always On",
-        "de": "Immer an"
-      },
-      "class": "socket",
-      "capabilities": [
-        "measure_power"
-      ],
-      "id": "smart_light"
-    },
-    {
-      "connectivity": [
-        "lan"
-      ],
       "icon": "../../sprinkler/assets/icon.svg",
       "images": {
         "large": "drivers/dingz/assets/images/large.png",
         "small": "drivers/dingz/assets/images/small.png"
       },
-      "deprecated": true,
       "name": {
         "en": "Sprinkler",
         "de": "Bewässerung"
       },
       "class": "socket",
       "capabilities": [
+        "onoff",
         "measure_power"
       ],
       "id": "sprinkler"
@@ -444,7 +439,7 @@
         "en": "Window",
         "de": "Fenster"
       },
-      "class": "garagedoor",
+      "class": "windowcoverings",
       "capabilities": [
         "windowcoverings_state",
         "windowcoverings_set",
@@ -460,8 +455,8 @@
         },
         "windowcoverings_set": {
           "desc": {
-            "en": "Set the position of window. 0% is closed, 100% is open",
-            "de": "Die Position des Fenster setzen. 0% ist geschlossen, 100% ist offen"
+            "en": "Set the position of window.  0% is open, 100% is closed",
+            "de": "Die Position des Fenster setzen. 0% ist offen, 100% ist geschlossen"
           }
         },
         "alarm_contact": {

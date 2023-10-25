@@ -1,5 +1,4 @@
 {
-  "deprecated": true,
   "name": {
     "en": "Sprinkler",
     "de": "Bewässerung"
@@ -8,6 +7,7 @@
   "class": "socket",
   "icon": "../../sprinkler/assets/icon.svg",
   "capabilities": [
+    "onoff",
     "measure_power"
   ]
 }

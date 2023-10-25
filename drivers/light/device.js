@@ -1,21 +1,15 @@
 'use strict';
 
-const BaseDevice = require('../device');
+const OutputDevice = require('../output');
 
 const FADETIME = 10;
 
-module.exports = class LightDevice extends BaseDevice {
-
-  TYPE_GROUP = 'outputs';
+module.exports = class LightDevice extends OutputDevice {
 
   async onInit(options = {}) {
     super.onInit(options);
 
-    this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
     this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
-
-    this.registerTopicListener(`/state/light/${this.dataDevice}`, this.onTopicLight.bind(this));
-    this.registerTopicListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
   async initDingzConfig() {
@@ -64,20 +58,12 @@ module.exports = class LightDevice extends BaseDevice {
       });
   }
 
-  onTopicLight(topic, data) {
-    this.logDebug(`onTopicLight() > ${topic} data: ${JSON.stringify(data)}`);
-
-    this.setCapabilityValue('onoff', data.turn === 'on');
+  onTopicState(topic, data) {
+    super.onTopicState(topic, data);
 
     if (this.hasCapability('dim')) {
-      this.setCapabilityValue('dim', data.brightness / 100);
+      this.setCapabilityValue('dim', data.turn === 'on' ? data.brightness / 100 : 0);
     }
-  }
-
-  onTopicPower(topic, data) {
-    this.logDebug(`onTopicPower() > ${topic} data: ${data}`);
-
-    this.setCapabilityValue('measure_power', Math.round(data * 10) / 10);
   }
 
 };

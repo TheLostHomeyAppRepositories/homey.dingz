@@ -5,7 +5,7 @@
   },
   "$extends": "default",
   "class": "socket",
-  "icon": "../../smart_light/assets/icon.svg",
+  "icon": "../../always/assets/icon.svg",
   "capabilities": [
     "measure_power"
   ]
