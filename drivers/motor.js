@@ -12,7 +12,7 @@ module.exports = class MotorDevice extends BaseDevice {
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowCoveringsState.bind(this));
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowCoveringsSet.bind(this));
 
-    this.registerTopicListener(`/state/motor/${this.dataDevice}`, this.onTopicPosition.bind(this));
+    this.registerTopicListener(`/state/motor/${this.dataDevice}`, this.onTopicState.bind(this));
     this.registerTopicListener(`/power/motor/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
@@ -43,8 +43,8 @@ module.exports = class MotorDevice extends BaseDevice {
       });
   }
 
-  onTopicPosition(topic, data) {
-    this.logDebug(`onTopicPosition() > ${topic} data: ${JSON.stringify(data)}`);
+  onTopicState(topic, data) {
+    this.logDebug(`onTopicState() > ${topic} data: ${JSON.stringify(data)}`);
 
     // eslint-disable-next-line no-nested-ternary
     this.setCapabilityValue('windowcoverings_state', data.motion === '1' ? 'up' : data.motion === '2' ? 'down' : 'idle');

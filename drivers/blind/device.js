@@ -23,8 +23,8 @@ module.exports = class BlindDevice extends MotorDevice {
       });
   }
 
-  onTopicPosition(topic, data) {
-    super.onTopicPosition(topic, data);
+  onTopicState(topic, data) {
+    super.onTopicState(topic, data);
 
     this.setCapabilityValue('windowcoverings_tilt_set', Number((data.lamella / 100).toFixed(2)));
   }

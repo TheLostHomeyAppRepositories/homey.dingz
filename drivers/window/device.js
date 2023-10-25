@@ -8,8 +8,8 @@ module.exports = class WindowDevice extends MotorDevice {
     super.onInit(options);
   }
 
-  onTopicPosition(topic, data) {
-    super.onTopicPosition(topic, data);
+  onTopicState(topic, data) {
+    super.onTopicState(topic, data);
 
     this.setCapabilityValue('alarm_contact', data.position !== 100);
   }
