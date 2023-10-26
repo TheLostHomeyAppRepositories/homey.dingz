@@ -130,7 +130,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       if (selectDingzSwitch) {
         result = this.#handelDingzSwitches(Object.values(discoveryStrategy.getDiscoveryResults()));
       } else {
-        result = this.#handelDingzDevices(dingzSwitch);
+        result = this.#handelDingzDevices(session, dingzSwitch);
       }
       return result;
     });
@@ -175,7 +175,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  async #handelDingzDevices(dingzSwitch) {
+  async #handelDingzDevices(session, dingzSwitch) {
     this.logDebug(`#handelDingzDevices() > dingzSwitch: ${JSON.stringify(dingzSwitch)}`);
 
     await this.dingzNet.publishDeviceConfig(dingzSwitch.data.address);
@@ -187,10 +187,12 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
 
     return devicesConfig
       .sort((a, b) => a.name.localeCompare(b.name))
-      .filter((device) => {
+      .filter(async (device) => {
         const manifest = this.homey.manifest.drivers.find((manifest) => manifest.id === device.type);
         if (manifest === undefined || manifest.deprecated) {
-          this.logWarning(`DeviceType "${device.type}" not supported`);
+          const msg = `DeviceType "${device.type}" are not supported`;
+          // await session.emit('homeyAlert', msg, 'warning');
+          this.logWarning(msg);
           return false;
         }
         return true;
