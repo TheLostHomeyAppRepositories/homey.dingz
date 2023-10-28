@@ -127,12 +127,6 @@
       "discovery": "dingz",
       "pair": [
         {
-          "id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "options": {
@@ -502,21 +496,21 @@
             "type": "dropdown",
             "values": [
               {
-                "id": "1",
+                "id": "m1",
                 "label": {
                   "en": "Short Press",
                   "de": "Kurz gedrückt"
                 }
               },
               {
-                "id": "2",
+                "id": "m2",
                 "label": {
                   "en": "Double Press",
                   "de": "2x Kurz gedrückt"
                 }
               },
               {
-                "id": "3",
+                "id": "r",
                 "label": {
                   "en": "Long Press",
                   "de": "Lange gedrückt"

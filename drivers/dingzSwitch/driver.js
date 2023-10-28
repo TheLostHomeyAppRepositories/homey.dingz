@@ -45,7 +45,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     // Create flow-cards
     this.#flowTriggerDingzButtonPressed = this.homey.flow.getDeviceTriggerCard('dingzButton_pressed');
     this.#flowTriggerDingzButtonPressed
-      .registerRunListener((args, state) => args.button.id === state.index && args.action === state.action)
+      .registerRunListener((args, state) => args.button.dingzButton && args.button.id === state.buttonId && args.action === state.action)
       .getArgument('button')
       .registerAutocompleteListener((query, args) => args.device.onDingzButtonAutocomplete(query, args));
 
@@ -220,7 +220,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   triggerDingzButtonPressedFlow(device, tokens, state) {
     this.#flowTriggerDingzButtonPressed
       .trigger(device, tokens, state)
-      .then(() => device.logNotice(`DingzButton-${state.index} was '${this.#getActionLabel(state.action)}' pressed`))
+      .then(() => device.logNotice(`DingzButton-${Number(state.buttonId) + 1} was '${this.#getActionLabel(state.action)}' pressed`))
       .catch((error) => this.logError(`triggerDingzButtonPressedFlow() > ${error}`));
   }
 
