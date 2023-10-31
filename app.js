@@ -21,8 +21,8 @@ module.exports = class DingzApp extends MyApp {
       await this.homey.settings.set('mqtt', JSON.stringify({
         broker: 'localhost',
         port: '1883',
-        user: 'mqttUser',
-        password: 'mqttPasswd',
+        user: 'dingzNet',
+        password: 'dingzNet',
       }));
     }
 

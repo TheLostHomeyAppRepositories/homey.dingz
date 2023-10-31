@@ -19,7 +19,7 @@
     "ramp": {
       "title": {
           "en": "FadeTime",
-          "de": "Überblendzeit"
+          "de": "Fadingzeit"
       }
     }
   }

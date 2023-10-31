@@ -71,13 +71,21 @@ module.exports = class DingzDevice extends BaseDevice {
   onTopicButton(topic, data) {
     this.logDebug(`onTopicButton() > ${topic} data: ${data}`);
 
-    const state = { buttonId: topic.split('/').slice(-1)[0], action: data };
+    const state = { buttonId: Number(topic.split('/').slice(-1)[0]), action: data };
 
-    switch (data) {
-      case DINGZ.SHORT_PRESS:
-      case DINGZ.DOUBLE_PRESS:
-      case DINGZ.LONG_PRESS:
-        this.driver.triggerDingzButtonPressedFlow(this, {}, state);
+    switch (this.#buttons[state.buttonId].mode) {
+      case DINGZ.MODE_BUTTON:
+        switch (data) {
+          case DINGZ.SHORT_PRESS:
+          case DINGZ.DOUBLE_PRESS:
+          case DINGZ.LONG_PRESS:
+            this.driver.triggerDingzButtonPressedFlow(this, {}, state);
+            break;
+          default:
+        }
+        break;
+      case DINGZ.MODE_REMOTE:
+        // TODO: Carousel
         break;
       default:
     }
@@ -90,13 +98,12 @@ module.exports = class DingzDevice extends BaseDevice {
 
   onDingzButtonAutocomplete() {
     return Object.values(this.#buttons)
+      .filter((button) => button.mode === DINGZ.MODE_BUTTON)
       .map((button) => {
-        const id = button.device.toString();
-        const name = button.name === '' ? `${Number(id) + 1}` : `${Number(id) + 1} - (${button.name})`;
-        const { dingzButton } = button;
-        return { id, name, dingzButton };
-      })
-      .filter((button) => button.dingzButton);
+        const id = button.device;
+        const name = button.name === '' ? `${button.device + 1}` : `${button.device + 1} - (${button.name})`;
+        return { id, name };
+      });
   }
 
 };

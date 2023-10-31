@@ -27,7 +27,8 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
   #flowTriggerDingzButtonPressed;
   #flowTriggerLightStateChanged;
   #lightStateCondition;
-  #rampAction;
+  #onoffDurationAction;
+  #dimDurationAction;
   #dingzLedColorSetAction;
   #windowcoveringsTiltSetAction;
 
@@ -45,7 +46,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     // Create flow-cards
     this.#flowTriggerDingzButtonPressed = this.homey.flow.getDeviceTriggerCard('dingzButton_pressed');
     this.#flowTriggerDingzButtonPressed
-      .registerRunListener((args, state) => args.button.dingzButton && args.button.id === state.buttonId && args.action === state.action)
+      .registerRunListener((args, state) => args.button.id === state.buttonId && args.action === state.action)
       .getArgument('button')
       .registerAutocompleteListener((query, args) => args.device.onDingzButtonAutocomplete(query, args));
 
@@ -57,9 +58,13 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     this.#lightStateCondition
       .registerRunListener((args, state) => args.device.getCapabilityValue('light_state') === args.lightState);
 
-    this.#rampAction = this.homey.flow.getActionCard('ramp');
-    this.#rampAction
-      .registerRunListener((args, state) => args.device.onCapabilityDim(args, {}));
+    this.#onoffDurationAction = this.homey.flow.getActionCard('onoffDuration');
+    this.#onoffDurationAction
+      .registerRunListener((args, state) => args.device.onCapabilityOnOff(args.action === 'on', { duration: args.duration }));
+
+    this.#dimDurationAction = this.homey.flow.getActionCard('dimDuration');
+    this.#dimDurationAction
+      .registerRunListener((args, state) => args.device.onCapabilityDim(args.dim, { duration: args.duration }));
 
     this.#dingzLedColorSetAction = this.homey.flow.getActionCard('dingzLedColor_set');
     this.#dingzLedColorSetAction

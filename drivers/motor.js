@@ -16,6 +16,22 @@ module.exports = class MotorDevice extends BaseDevice {
     this.registerTopicListener(`/power/motor/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
+  async initDingzConfig() {
+    super.initDingzConfig();
+
+    // TODO: migrate device to v2
+    if (!this.hasCapability('windowcoverings_state')) {
+      await this.addCapability('windowcoverings_state')
+        .then(() => this.logDebug('initDingzConfig() - "windowcoverings_state" capability added'))
+        .catch((error) => this.logError(`initDingzConfig() - ${error}`));
+    }
+    if (!this.hasCapability('measure_power')) {
+      await this.addCapability('measure_power')
+        .then(() => this.logDebug('initDingzConfig() - "measure_power" capability added'))
+        .catch((error) => this.logError(`initDingzConfig() - ${error}`));
+    }
+  }
+
   async onCapabilityWindowCoveringsState(value, opts) {
     this.logDebug(`onCapabilityWindowCoveringsState() > ${value}`);
 

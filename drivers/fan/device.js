@@ -2,7 +2,7 @@
 
 const OutputDevice = require('../output');
 
-const FADETIME = 5 * 60 * 1000; // Default 5 Min.
+const FADETIME = 5 * 60; // Default 5 Min.
 
 module.exports = class FanDevice extends OutputDevice {
 
@@ -15,7 +15,7 @@ module.exports = class FanDevice extends OutputDevice {
 
     const turn = value ? 'on' : 'off';
     const brightness = value ? 100 : 0;
-    const fadetime = FADETIME;
+    const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))

@@ -32,7 +32,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
   }
 
   get dataDevice() {
-    return this.data.device || this.data.relativeIdx;
+    return this.data.device || (this.data.relativeIdx === '' ? null : Number(this.data.relativeIdx));
   }
 
   get dataType() {
@@ -53,7 +53,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
     const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
     await httpAPI.get('services_config')
       .then(async (config) => {
-        const uri = this.getMqttBrokerUri();
+        const uri = await this.getMqttBrokerUri();
         if (!config['mqtt'].enable || config['mqtt'].uri !== uri) {
           await httpAPI.post('services_config', { mqtt: { uri, enable: true } });
         }
@@ -94,12 +94,12 @@ module.exports = class BaseDevice extends MyMqttDevice {
   async initDingzConfig() {
     this.logDebug('initDingzConfig()');
 
-    // v1 to v2 Compatibility (Only ones)
+    // TODO: migrate to v2
     if (!this.data.model || this.getStoreValue('dataModel')) {
       await this.setStoreValue('dataModel', this.dingzConfig.model);
     }
     if (!this.data.dip || this.getStoreValue('dataDip')) {
-      await this.setStoreValue('dataDip', this.dingzConfig.dip);
+      await this.setStoreValue('dataDip', Number(this.dingzConfig.dip));
     }
   }
 
@@ -108,13 +108,16 @@ module.exports = class BaseDevice extends MyMqttDevice {
 
     return Promise.resolve(true).then(() => {
       if (!this.dingzConfig.firmware.startsWith('2.1')) {
-        throw new Error(`${this.getName()}] firmware v2.1.x required`);
+        throw new Error(`${this.dingzConfig.name} firmware v2.1.x required`);
       }
       if (this.dataDip !== this.dingzConfig.dip) {
-        throw new Error(`${this.getName()} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
+        throw new Error(`${this.dingzConfig.name} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
       }
       if (this.dataType !== this.dingzConfig.type) {
-        throw new Error(`${this.getName()}  output/motor type has changed from "${this.dataType}" to "${this.dingzConfig.type}". Remove the device and add it again.`);
+        throw new Error(`${this.dingzConfig.name} output/motor type has changed from "${this.dataType}" to "${this.dingzConfig.type}". Remove the device and add it again.`);
+      }
+      if (!this.dingzConfig.active) {
+        throw new Error(`${this.dingzConfig.name} device is disabled in the dingzSwitch.`);
       }
     });
   }

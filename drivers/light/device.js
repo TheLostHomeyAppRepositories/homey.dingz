@@ -2,7 +2,7 @@
 
 const OutputDevice = require('../output');
 
-const FADETIME = 10;
+const FADETIME = 1; // Default 1-sec
 
 module.exports = class LightDevice extends OutputDevice {
 
@@ -31,29 +31,29 @@ module.exports = class LightDevice extends OutputDevice {
   onCapabilityOnOff(value, opts) {
     this.logDebug(`onCapabilityOnOff() > ${value} opts: ${JSON.stringify(opts)}`);
 
-    const turn = value ? 'on' : 'off';
-    const brightness = value ? 100 : 0;
-    const fadetime = FADETIME;
+    const turn = value > 0 ? 'on' : 'off';
+    const brightness = turn ? 100 : 0;
+    const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
       .catch((error) => {
-        this.logError(`onCapabilityLight() > sendCommand > ${error}`);
+        this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
         return Promise.reject(error);
       });
   }
 
   onCapabilityDim(value, opts) {
-    this.logDebug(`onCapabilityLight() > ${value} opts: ${JSON.stringify(opts)}`);
+    this.logDebug(`onCapabilityDim() > ${value} opts: ${JSON.stringify(opts)}`);
 
     const turn = value > 0 ? 'on' : 'off';
     const brightness = Math.round(value * 100);
-    const fadetime = FADETIME;
+    const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
       .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
       .catch((error) => {
-        this.logError(`onCapabilityLight() > sendCommand > ${error}`);
+        this.logError(`onCapabilityDim() > sendCommand > ${error}`);
         return Promise.reject(error);
       });
   }

@@ -28,8 +28,12 @@ module.exports = class OutputDevice extends BaseDevice {
       });
   }
 
-  onTopicState(topic, data) {
+  async onTopicState(topic, data) {
     this.logDebug(`onTopicState() > ${topic} data: ${JSON.stringify(data)}`);
+
+    if (data.exception !== 0) {
+      this.logError('dingzSwitch overloaded');
+    }
 
     this.setCapabilityValue('onoff', data.turn === 'on');
   }

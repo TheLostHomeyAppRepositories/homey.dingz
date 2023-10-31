@@ -46,6 +46,53 @@
       ]
     },
     {
+      "deprecated": true,
+      "id": "carouselButton_pressed",
+      "title": {
+        "en": "Carousel button is pressed",
+        "de": "Karusell Taster ist gedrückt"
+      },
+      "$filter": "capabilities=dingz_button",
+      "titleFormatted": {
+        "en": "Carousel button [[button]] is [[action]]",
+        "de": "Karusell Taster [[button]] ist [[action]]"
+      },
+      "args": [
+        {
+          "name": "button",
+          "type": "autocomplete"
+        },
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "m1",
+              "label": {
+                "en": "Short Press",
+                "de": "Kurz gedrückt"
+              }
+            },
+            {
+              "id": "m2",
+              "label": {
+                "en": "Double Press",
+                "de": "2x Kurz gedrückt"
+              }
+            },
+            {
+              "id": "r",
+              "label": {
+                "en": "Long Press",
+                "de": "Lange gedrückt"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "deprecated": true,
       "id": "lightState_changed",
       "title": {
         "en": "Light state changed",
@@ -89,6 +136,7 @@
   ],
   "conditions": [
     {
+      "deprecated": true,
       "id": "is_lightState",
       "title": {
         "en": "Light state is !{{|not}}",
@@ -136,19 +184,66 @@
   ],
   "actions": [
     {
-      "id": "ramp",
+      "id": "onoffDuration",
       "title": {
-        "en": "Fade dimmer",
-        "de": "Fade dimmer"
+        "en": "Turn on or off in n sec",
+        "de": "Ein oder ausschalten in n sek"
       },
-      "$filter": "capabilities=ramp",
+      "$filter": "capabilities=onoff,ramp",
       "titleFormatted": {
-        "en": "Dim light to [[dim]] in [[ramp]]sec",
-        "de": "Licht dimmen auf [[dim]] in [[ramp]]Sek"
+        "en": "[[action]] in [[duration]]sec",
+        "de": "[[action]] in [[duration]]Sek"
       },
       "hint": {
-        "en": "Use this card to dim the light and the duration for dimming in seconds.",
-        "de": "Verwenden Sie diese Karte, um das Licht zu dimmen und die Dauer für das Dimmen in Sekunden."
+        "en": "Use this card to turn the device on or off in n seconds.",
+        "de": "Verwenden Sie diese Karte, um das Gerät in n Sekunden ein oder auszuschalten."
+      },
+      "args": [
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "on",
+              "label": {
+                "en": "Turn on",
+                "de": "Einschalten"
+              }
+            },
+            {
+              "id": "off",
+              "label": {
+                "en": "Turn off",
+                "de": "Ausschalten"
+              }
+            }
+          ]
+        },
+        {
+          "name": "duration",
+          "type": "range",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "labelMultiplier": 1,
+          "labelDecimals": 0
+        }
+      ]
+    },
+    {
+      "id": "dimDuration",
+      "title": {
+        "en": "Dim in n sec",
+        "de": "Dimmen in n Sek"
+      },
+      "$filter": "capabilities=dim,ramp",
+      "titleFormatted": {
+        "en": "Dim to [[dim]] in [[duration]]sec",
+        "de": "Dimmen auf [[dim]] in [[duration]]Sek"
+      },
+      "hint": {
+        "en": "Use this card to dim the device in n seconds",
+        "de": "Verwenden Sie diese Karte, um das Gerät in n Sekunden zu dimmen."
       },
       "args": [
         {
@@ -163,10 +258,10 @@
           "labelDecimals": 0
         },
         {
-          "name": "ramp",
+          "name": "duration",
           "type": "range",
           "min": 0,
-          "max": 25,
+          "max": 10,
           "step": 1,
           "labelMultiplier": 1,
           "labelDecimals": 0
