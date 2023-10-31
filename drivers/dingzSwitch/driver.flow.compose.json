@@ -269,6 +269,58 @@
       ]
     },
     {
+      "id": "dingzLedColor_set",
+      "title": {
+        "en": "dingzLED color",
+        "de": "dingzLED Farbe"
+      },
+      "$filter": "capabilities=light_hue,light_saturation",
+      "titleFormatted": {
+        "en": "Set a color to [[color]]",
+        "de": "Die Farbe auf [[color]] setzen"
+      },
+      "hint": {
+        "en": "Use this card to set a color of the LED on the dingz front.",
+        "de": "Verwenden Sie diese Karte, um eine Farbe der LED auf der dingz Front zu setzen."
+      },
+      "args": [
+        {
+          "name": "color",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "{'light_hue': 0, 'light_saturation': 1}",
+              "label": {
+                "en": "Read",
+                "de": "Rot"
+              }
+            },
+            {
+              "id": "{'light_hue': 0.25, 'light_saturation': 1}",
+              "label": {
+                "en": "Green",
+                "de": "Grün"
+              }
+            },
+            {
+              "id": "{'light_hue': 0.53, 'light_saturation': 1}",
+              "label": {
+                "en": "Blue",
+                "de": "Blau"
+              }
+            },
+            {
+              "id": "{'light_hue': '0', 'light_saturation' : '0'}",
+              "label": {
+                "en": "White",
+                "de": "Weiss"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "windowcoverings_tilt_set",
       "title": {
         "en": "Adjust the lamellas",
@@ -293,58 +345,6 @@
           "label": "%",
           "labelMultiplier": 100,
           "labelDecimals": 0
-        }
-      ]
-    },
-    {
-      "id": "dingzLedColor_set",
-      "title": {
-        "en": "dingzLED color",
-        "de": "dingzLED Farbe"
-      },
-      "$filter": "capabilities=light_hue,light_saturation",
-      "titleFormatted": {
-        "en": "Set a color to [[color]]",
-        "de": "Die Farbe auf [[color]] setzen"
-      },
-      "hint": {
-        "en": "Use this card to set a color of the LED on the dingz front.",
-        "de": "Verwenden Sie diese Karte, um eine Farbe der LED auf der dingz Front zu setzen."
-      },
-      "args": [
-        {
-          "name": "color",
-          "type": "dropdown",
-          "values": [
-            {
-              "id": "{'light_hue': '0', 'saturation': '1'}",
-              "label": {
-                "en": "Read",
-                "de": "Rot"
-              }
-            },
-            {
-              "id": "{'light_hue': '0.25', 'saturation': '1'}",
-              "label": {
-                "en": "Green",
-                "de": "Grün"
-              }
-            },
-            {
-              "id": "{'light_hue': '0.53', 'saturation': '1'}",
-              "label": {
-                "en": "Blue",
-                "de": "Blau"
-              }
-            },
-            {
-              "id": "{'light_hue': '0', 'saturation' : '0'}",
-              "label": {
-                "en": "White",
-                "de": "Weiss"
-              }
-            }
-          ]
         }
       ]
     }

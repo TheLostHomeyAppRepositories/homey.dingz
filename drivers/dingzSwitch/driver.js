@@ -68,7 +68,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
 
     this.#dingzLedColorSetAction = this.homey.flow.getActionCard('dingzLedColor_set');
     this.#dingzLedColorSetAction
-      .registerRunListener((args, state) => args.device.onCapabilityDingzLedColor(args, {}));
+      .registerRunListener((args, state) => args.device.onCapabilityLightHue(JSON.parse(args.color.replace(/'/g, '"')), {}));
 
     this.#windowcoveringsTiltSetAction = this.homey.flow.getActionCard('windowcoverings_tilt_set');
     this.#windowcoveringsTiltSetAction
