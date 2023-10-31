@@ -18,7 +18,7 @@ module.exports = class FanDevice extends OutputDevice {
     const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
-      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
+      .then(() => this.logNotice(`Set state > ${turn}`))
       .catch((error) => {
         this.logError(`onCapabilityLight() > sendCommand > ${error}`);
         return Promise.reject(error);

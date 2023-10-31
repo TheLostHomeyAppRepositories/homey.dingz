@@ -36,7 +36,7 @@ module.exports = class LightDevice extends OutputDevice {
     const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
-      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: turn })}`))
+      .then(() => this.logNotice(`Set state > ${turn}`))
       .catch((error) => {
         this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
         return Promise.reject(error);
@@ -51,7 +51,7 @@ module.exports = class LightDevice extends OutputDevice {
     const fadetime = (!opts.duration ? FADETIME : opts.duration) * 10;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { turn, brightness, fadetime })
-      .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
+      .then(() => this.logNotice(`Set state > brightness: ${brightness}`))
       .catch((error) => {
         this.logError(`onCapabilityDim() > sendCommand > ${error}`);
         return Promise.reject(error);

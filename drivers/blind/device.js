@@ -16,7 +16,7 @@ module.exports = class BlindDevice extends MotorDevice {
     const lamella = value * 100;
 
     return this.sendCommand(`/motor/${this.dataDevice}`, { lamella })
-      .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: lamella })}`))
+      .then(() => this.logNotice(`Set state > lamella: ${lamella}`))
       .catch((error) => {
         this.logError(`onCapabilityWindowCoveringsTiltSet() > sendCommand > ${error}`);
         return Promise.reject(error);

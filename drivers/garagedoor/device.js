@@ -20,7 +20,7 @@ module.exports = class GaragedoorDevice extends OutputDevice {
     const position = value ? 100 : 0;
 
     return this.sendCommand(`/light/${this.dataDevice}`, { position })
-      .then(() => this.logNotice(`${this.homey.__('device.garagedoorClosed', { value: position })}`))
+      .then(() => this.logNotice(`Set state > position: ${position}`))
       .catch((error) => {
         this.logError(`onCapabilityGaragedoorClosed() > sendCommand > ${error}`);
         return Promise.reject(error);

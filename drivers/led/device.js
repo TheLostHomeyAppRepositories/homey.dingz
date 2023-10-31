@@ -22,7 +22,8 @@ module.exports = class LedDevice extends BaseDevice {
     const onValue = value ? 1 : 0;
 
     return this.sendCommand('/led', { on: onValue })
-      .then(() => this.logNotice(`${this.homey.__('device.stateSet', { value: value ? 'On' : 'Off' })}`))
+      .then(() => this.logNotice(`Set state > ${value ? 'On' : 'Off'}`))
+
       .catch((error) => {
         this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
         return Promise.reject(error);
@@ -44,7 +45,7 @@ module.exports = class LedDevice extends BaseDevice {
     // }
 
     // return this.sendCommand('/led', { on: brightness })
-    //   .then(() => this.logNotice(`${this.homey.__('device.dimSet', { value: brightness })}`))
+    //   .then(() => this.logNotice(`Set state > brightness: ${brightness}`))
     //   .catch((error) => {
     //     this.logError(`onCapabilityOnOff() > sendCommand > ${error}`);
     //     this.showWarning(error.message);
@@ -62,7 +63,7 @@ module.exports = class LedDevice extends BaseDevice {
 
     return this.sendCommand('/led', color.toRgb())
       .then(() => this.triggerCapabilityListener('onoff', true))
-      .then(() => this.logNotice(`${this.homey.__('device.lightHueSet', { value: color.toHsvString() })}`))
+      .then(() => this.logNotice(`Set state > color: ${color.toString()}`))
       .catch((error) => {
         this.logError(`onCapabilityLightHue() > sendCommand > ${error}`);
         return Promise.reject(error);

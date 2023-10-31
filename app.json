@@ -763,38 +763,6 @@
         ]
       },
       {
-        "id": "windowcoverings_tilt_set",
-        "title": {
-          "en": "Adjust the lamellas",
-          "de": "Stellen Sie die Lamellen ein"
-        },
-        "titleFormatted": {
-          "en": "Set the lamella to [[value]]",
-          "de": "Stellen Sie die Lamellen auf [[value]]"
-        },
-        "hint": {
-          "en": "Change the position to open (100%), closed (0%), or a value in between.",
-          "de": "Ändern Sie die Position auf offen (100 %), geschlossen (0 %) oder einen Wert dazwischen."
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=dingzSwitch&capabilities=windowcoverings_tilt_set"
-          },
-          {
-            "type": "range",
-            "name": "value",
-            "min": 0,
-            "max": 1,
-            "step": 0.01,
-            "label": "%",
-            "labelMultiplier": 100,
-            "labelDecimals": 0
-          }
-        ]
-      },
-      {
         "id": "dingzLedColor_set",
         "title": {
           "en": "dingzLED color",
@@ -847,6 +815,38 @@
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_tilt_set",
+        "title": {
+          "en": "Adjust the lamellas",
+          "de": "Stellen Sie die Lamellen ein"
+        },
+        "titleFormatted": {
+          "en": "Set the lamella to [[value]]",
+          "de": "Stellen Sie die Lamellen auf [[value]]"
+        },
+        "hint": {
+          "en": "Change the position to open (100%), closed (0%), or a value in between.",
+          "de": "Ändern Sie die Position auf offen (100 %), geschlossen (0 %) oder einen Wert dazwischen."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dingzSwitch&capabilities=windowcoverings_tilt_set"
+          },
+          {
+            "type": "range",
+            "name": "value",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
           }
         ]
       }

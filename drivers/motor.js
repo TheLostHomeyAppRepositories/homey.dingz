@@ -39,7 +39,7 @@ module.exports = class MotorDevice extends BaseDevice {
     const motion = value === 'up' ? 1 : value === 'down' ? 2 : 0;
 
     return this.sendCommand(`/motor/${this.dataDevice}`, { motion })
-      .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsState', { value })}`))
+      .then(() => this.logNotice(`Set state > ${value}`))
       .catch((error) => {
         this.logError(`onCapabilityGaragedoorClosed() > sendCommand > ${error}`);
         return Promise.reject(error);
@@ -52,7 +52,7 @@ module.exports = class MotorDevice extends BaseDevice {
     const position = value * 100;
 
     return this.sendCommand(`/motor/${this.dataDevice}`, { position })
-      .then(() => this.logNotice(`${this.homey.__('device.windowCoveringsSet', { value: position })}`))
+      .then(() => this.logNotice(`Set state > position: ${position}`))
       .catch((error) => {
         this.logError(`onCapabilityWindowCoveringsSet() > sendCommand > ${error}`);
         return Promise.reject(error);
