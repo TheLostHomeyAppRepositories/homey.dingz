@@ -16,7 +16,7 @@ module.exports = class DingzApp extends MyApp {
   async onInit() {
     super.onInit();
 
-    this.homey.settings.unset('mqtt'); // NOTE: Only for test
+    // this.homey.settings.unset('mqtt'); // NOTE: Only for test
     if (!this.homey.settings.get('mqtt')) {
       await this.homey.settings.set('mqtt', JSON.stringify({
         broker: 'localhost',

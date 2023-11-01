@@ -68,7 +68,7 @@
           }
           Homey.set('mqtt', JSON.stringify(settings), (error) => {
             if (error) return Homey.alert(error);            
-            Homey.alert('ATTENTION:\nFor the change to take effect, you MUST restart the app', function (err, val) {
+            Homey.alert('\nATTENTION:\n\nFor the change to take effect, you MUST restart the app', function (err, val) {
               if (error) return Homey.alert(error);
               // if (!val) return;
               // TODO: Restart dingz-app
