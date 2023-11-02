@@ -68,7 +68,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
 
     this.#dingzLedColorSetAction = this.homey.flow.getActionCard('dingzLedColor_set');
     this.#dingzLedColorSetAction
-      .registerRunListener((args, state) => args.device.onCapabilityLightHue(JSON.parse(args.color.replace(/'/g, '"')), {}));
+      .registerRunListener((args, state) => args.device.onCapabilityLightHue(JSON.parse("{ 'light_hue': 0, 'light_saturation': 1}".replace(/'/g, '"')), {}));
 
     this.#windowcoveringsTiltSetAction = this.homey.flow.getActionCard('windowcoverings_tilt_set');
     this.#windowcoveringsTiltSetAction
@@ -93,7 +93,7 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
         return SwitchDevice;
       case 'heater':
         return HeaterDevice; // TODO: Specs ??
-      case 'sprinkler': // aka "power_socket"
+      case 'sprinkler':
         return SprinklerDevice;
       case 'fan':
         return FanDevice; // TODO: Specs ??
