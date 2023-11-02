@@ -108,16 +108,16 @@ module.exports = class BaseDevice extends MyMqttDevice {
 
     return Promise.resolve(true).then(() => {
       if (!this.dingzConfig.firmware.startsWith('2.1')) {
-        throw new Error(`${this.dingzConfig.name} firmware v2.1.x required`);
+        throw Error(`${this.dingzConfig.name} firmware v2.1.x required`);
       }
       if (this.dataDip !== this.dingzConfig.dip) {
-        throw new Error(`${this.dingzConfig.name} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
+        throw Error(`${this.dingzConfig.name} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
       }
       if (this.dataType !== this.dingzConfig.type) {
-        throw new Error(`${this.dingzConfig.name} output/motor type has changed from "${this.dataType}" to "${this.dingzConfig.type}". Remove the device and add it again.`);
+        throw Error(`${this.dingzConfig.name} output/motor type has changed from "${this.dataType}" to "${this.dingzConfig.type}". Remove the device and add it again.`);
       }
       if (!this.dingzConfig.active) {
-        throw new Error(`${this.dingzConfig.name} device is disabled in the dingzSwitch.`);
+        throw Error(`${this.dingzConfig.name} device is disabled in the dingzSwitch.`);
       }
     });
   }
