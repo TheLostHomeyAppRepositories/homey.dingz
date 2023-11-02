@@ -52,8 +52,8 @@
       ],
       "icon": "../../always/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/always/assets/images/small.png",
+        "large": "drivers/always/assets/images/large.png"
       },
       "name": {
         "en": "Always On",
@@ -71,8 +71,8 @@
       ],
       "icon": "../../blind/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/blind/assets/images/small.png",
+        "large": "drivers/blind/assets/images/large.png"
       },
       "name": {
         "en": "Blind",
@@ -93,8 +93,8 @@
       ],
       "icon": "../../dingz/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/dingz/assets/images/small.png",
+        "large": "drivers/dingz/assets/images/large.png"
       },
       "name": "dingz",
       "class": "other",
@@ -113,8 +113,8 @@
       ],
       "icon": "./assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/dingzSwitch/assets/images/small.png",
+        "large": "drivers/dingzSwitch/assets/images/large.png"
       },
       "name": "dingzSwitch",
       "class": "other",
@@ -175,8 +175,8 @@
       ],
       "icon": "../../door/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/door/assets/images/small.png",
+        "large": "drivers/door/assets/images/large.png"
       },
       "name": {
         "en": "Door",
@@ -217,8 +217,8 @@
       ],
       "icon": "../../fan/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/fan/assets/images/small.png",
+        "large": "drivers/fan/assets/images/large.png"
       },
       "name": {
         "en": "Fan",
@@ -238,8 +238,8 @@
       ],
       "icon": "../../garagedoor/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/garagedoor/assets/images/small.png",
+        "large": "drivers/garagedoor/assets/images/large.png"
       },
       "deprecated": true,
       "name": {
@@ -268,8 +268,8 @@
       ],
       "icon": "../../heater/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/heater/assets/images/small.png",
+        "large": "drivers/heater/assets/images/large.png"
       },
       "deprecated": true,
       "name": {
@@ -289,8 +289,8 @@
       ],
       "icon": "../../led/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/led/assets/images/small.png",
+        "large": "drivers/led/assets/images/large.png"
       },
       "name": {
         "en": "Front LED"
@@ -315,8 +315,8 @@
       ],
       "icon": "../../light/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/light/assets/images/small.png",
+        "large": "drivers/light/assets/images/large.png"
       },
       "name": {
         "en": "Light",
@@ -348,8 +348,8 @@
       ],
       "icon": "../../pulse/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/pulse/assets/images/small.png",
+        "large": "drivers/pulse/assets/images/large.png"
       },
       "name": {
         "en": "Pulse",
@@ -370,8 +370,8 @@
       ],
       "icon": "../../shade/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/shade/assets/images/small.png",
+        "large": "drivers/shade/assets/images/large.png"
       },
       "name": {
         "en": "Shade",
@@ -391,8 +391,8 @@
       ],
       "icon": "../../sprinkler/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/sprinkler/assets/images/small.png",
+        "large": "drivers/sprinkler/assets/images/large.png"
       },
       "name": {
         "en": "Sprinkler",
@@ -411,8 +411,8 @@
       ],
       "icon": "../../switch/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/switch/assets/images/small.png",
+        "large": "drivers/switch/assets/images/large.png"
       },
       "name": {
         "en": "Switch",
@@ -431,8 +431,8 @@
       ],
       "icon": "../../window/assets/icon.svg",
       "images": {
-        "small": "./assets/images/small.png",
-        "large": "./assets/images/large.png"
+        "small": "drivers/window/assets/images/small.png",
+        "large": "drivers/window/assets/images/large.png"
       },
       "name": {
         "en": "Window",

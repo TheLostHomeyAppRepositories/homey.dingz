@@ -3,6 +3,10 @@
   "$extends": "default",
   "class": "other",
   "icon": "../../dingz/assets/icon.svg",
+  "images": {
+    "small": "drivers/dingz/assets/images/small.png",
+    "large": "drivers/dingz/assets/images/large.png"
+  },
   "capabilities": [
     "alarm_motion",
     "measure_temperature",

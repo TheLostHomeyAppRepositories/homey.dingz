@@ -6,6 +6,10 @@
   "$extends": "default",
   "class": "fan",
   "icon": "../../fan/assets/icon.svg",
+  "images": {
+    "small": "drivers/fan/assets/images/small.png",
+    "large": "drivers/fan/assets/images/large.png"
+  },
   "capabilities": [
     "onoff",
     "ramp",

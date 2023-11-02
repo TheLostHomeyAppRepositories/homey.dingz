@@ -6,6 +6,10 @@
   "$extends": "default",
   "class": "light",
   "icon": "../../light/assets/icon.svg",
+  "images": {
+    "small": "drivers/light/assets/images/small.png",
+    "large": "drivers/light/assets/images/large.png"
+  },
   "capabilities": [
     "onoff",
     "dim",

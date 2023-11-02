@@ -6,6 +6,10 @@
   "$extends": "default",
   "class": "socket",
   "icon": "../../pulse/assets/icon.svg",
+  "images": {
+    "small": "drivers/pulse/assets/images/small.png",
+    "large": "drivers/pulse/assets/images/large.png"
+  },
   "capabilities": [
     "onoff",
     "dim",
