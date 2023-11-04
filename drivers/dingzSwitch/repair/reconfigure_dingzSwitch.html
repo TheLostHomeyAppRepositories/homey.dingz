@@ -9,13 +9,19 @@
     </header>
     <br />
     <button id="open_dingzWebUI" class="homey-button-primary-full">Open dingzSwitch WebUI</button>
-    <br /><br />
+    <br />
     <div class="center">
         <span>To check or edit the configuration of the keys, outputs or other elements of the dingzSwitch.</span>
     </div>
     <br /><br />
-    <button id="reconfigure_dingzNet" class="homey-button-primary-full">Reconfigure dingzNet</button>
+    <button id="reboot_dingzSwitch" class="homey-button-primary-full">Restart DingzSwitch</button>
+    <br />
+    <div class="center">
+        <span>Restart the dingzSwitch. This takes approx. 30 sec</span>
+    </div> 
     <br /><br />
+    <button id="reconfigure_dingzNet" class="homey-button-primary-full">Reconfigure dingzNet</button>
+    <br />
     <div class="center">
         <span>Send the current dingzSwitch configuration to the dingzNet.</span>
     </div>
@@ -31,8 +37,23 @@
         $("#open_dingzWebUI").click( () => {
             Homey.showLoadingOverlay();
             Homey.emit("getDeviceAddress", null, (error, address) => {
-                if(error) return Homey.alert(error, 'error');
-                Homey.popup(`http://${address}/`);
+                if(error) {
+                    Homey.alert(error.message, 'error');
+                } else {
+                    Homey.popup(`http://${address}/`);
+                }
+                Homey.hideLoadingOverlay();
+            });
+        });
+
+        $("#reboot_dingzSwitch").click( () => {
+            Homey.showLoadingOverlay();
+            Homey.emit("rebootDingzSwitch", null, (error, device) => {
+                if(error) {
+                    Homey.alert(error.message, 'error');
+                } else {
+                    Homey.alert(`The dingzSwitch will be restarted (in approx. 30 seconds)`, 'info');
+                }
                 Homey.hideLoadingOverlay();
             });
         });
@@ -40,8 +61,11 @@
         $("#reconfigure_dingzNet").click( () => {
             Homey.showLoadingOverlay();
             Homey.emit("reconfigureDingzNet", null, (error, device) => {
-                if(error) return Homey.alert(error, 'error');
-                Homey.alert(`dingzNet reconfigured`, 'info');
+                if(error) {
+                    Homey.alert(error.message, 'error');
+                } else {
+                    Homey.alert(`dingzNet reconfigured`, 'info');
+                }
                 Homey.hideLoadingOverlay();
             });
         });

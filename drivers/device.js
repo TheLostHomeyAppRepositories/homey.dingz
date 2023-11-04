@@ -122,6 +122,23 @@ module.exports = class BaseDevice extends MyMqttDevice {
     });
   }
 
+  async rebootDingzSwitch() {
+    this.logDebug('rebootDingzSwitch()');
+
+    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+
+    return this.setWarning(null)
+      .then(() => httpAPI.post('reboot'))
+      .catch((error) => {
+        this.logError(`rebootDingzSwitch() > ${error}`);
+        if (error.response.status === 405) {
+          throw Error('Remote restart not allowed');
+        } else {
+          throw error;
+        }
+      });
+  }
+
   // MqttClient
 
   getMqttBrokerUri() {

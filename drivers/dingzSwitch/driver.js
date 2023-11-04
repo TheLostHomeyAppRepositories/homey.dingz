@@ -152,6 +152,11 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
       return device.getStoreValue('address');
     });
 
+    session.setHandler('rebootDingzSwitch', async () => {
+      const result = await device.rebootDingzSwitch();
+      return result;
+    });
+
     session.setHandler('reconfigureDingzNet', () => {
       return device.dingzNet.publishDeviceConfig(device.getStoreValue('address'));
     });
