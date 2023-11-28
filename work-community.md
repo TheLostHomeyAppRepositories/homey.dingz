@@ -4,7 +4,7 @@ The [dingz Switch](https://dingz.ch/) is a device that allows you to easily conn
 
 > After iolo surprised us with the new firmware v2.x and caught me on the wrong foot, I developed the v1.3.x branch, knowing that this is temporary and I have to catch up with the MQTT integration at a later time. 
 > 
-> **This branch will not be continued now**. 
+> **<p style="text-align: center;">The v1.3.x branch is discontinued<p>** 
 
 ---
 
@@ -26,7 +26,7 @@ The dingzNet is a transparent IoT/MQTT based communication platform over which t
 
 ---
 
-## Migration from Homey dingz-app v1.x to v2.x
+## Migration from Homey dingz-app v1.3.x to v2.x
 
 The migration should actually be (almost) automatic. The only thing you need is described in the setup.
 
@@ -44,6 +44,15 @@ To check if all flows are still working, I can highly recommend the homey app "F
 
 ---
 
+## Supported Devices
+
+- dingzSwitch > FW: 2.1.x
+- dingzSwitch plus > FW: 2.1.x
+
+>**Beta versions are not supported**
+
+---
+
 ## Setup
 
 1. Install MQTT broker (see Notes)
@@ -51,7 +60,7 @@ To check if all flows are still working, I can highly recommend the homey app "F
 1. Install [Homey Simple (Sys) Log](https://homey.app/en-us/app/nl.nielsdeklerk.log/Simple-(Sys)-Log/) *(Optional, but recommended)*
 1. Install [Homey dingz-app](https://homey.app/en-us/app/org.cflat-inc.dingz/dingz/)
 2. Check dingz > MQTT-Broker app settings and configure if necessary
-3. **Important:** Restart the dingz-app
+3. **Important:** Restart the dingz app.
    
 ---
 
@@ -102,9 +111,7 @@ Flow-Cards
 
 ## Notes
 
-- **Diagnostic-Reports** which are not requested by me will be deleted automatically [*Community first*](https://community.homey.app/t/app-pro-dingz/48029).
-
-- Only the dingz firmware **v2.1.x** is supported.
+- **Diagnostic-Reports** which are not requested by me will be deleted automatically ...[*Community first*](https://community.homey.app/t/app-pro-dingz/48029)...
 
 - Use **only** a local MQTT broker, because the dingz do not support mqtts protocol.
 
