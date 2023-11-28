@@ -43,5 +43,8 @@
   },
   "2.0.0": {
     "en": "Full support of dingz v2 firmware"
+  },
+  "2.0.1": {
+    "en": "Some changes"
   }
 }
