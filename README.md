@@ -6,6 +6,14 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ## Changelog
 
+v2.0.2
+
+- Timing problem fixed
+
+v2.0.1
+
+- Some changes
+
 v2.0.0
 
 - Full support of dingz v2 firmware
