@@ -1,11 +1,11 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
-  "id": "org.cflat-inc.dingz",
+  "id": "org.cflat-inc.dingzX",
   "version": "2.0.3",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
-    "en": "dingz"
+    "en": "dingzX"
   },
   "description": {
     "en": "dingz for all your things"
