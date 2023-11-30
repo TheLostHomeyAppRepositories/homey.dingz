@@ -6,6 +6,10 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ## Changelog
 
+v2.0.3
+
+- Error-Handling fixed
+
 v2.0.2
 
 - Timing problem fixed
