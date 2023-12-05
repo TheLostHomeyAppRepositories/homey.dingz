@@ -73,21 +73,25 @@ module.exports = class DingzDevice extends BaseDevice {
 
     const state = { buttonId: Number(topic.split('/').slice(-1)[0]), action: data };
 
-    switch (this.#buttons[state.buttonId].mode) {
-      case DINGZ.MODE_BUTTON:
-        switch (data) {
-          case DINGZ.SHORT_PRESS:
-          case DINGZ.DOUBLE_PRESS:
-          case DINGZ.LONG_PRESS:
-            this.driver.triggerDingzButtonPressedFlow(this, {}, state);
-            break;
-          default:
-        }
-        break;
-      case DINGZ.MODE_REMOTE:
+    if (state.buttonId in this.#buttons) {
+      switch (this.#buttons[state.buttonId].mode) {
+        case DINGZ.MODE_BUTTON:
+          switch (data) {
+            case DINGZ.SHORT_PRESS:
+            case DINGZ.DOUBLE_PRESS:
+            case DINGZ.LONG_PRESS:
+              this.driver.triggerDingzButtonPressedFlow(this, {}, state);
+              break;
+            default:
+          }
+          break;
+        case DINGZ.MODE_REMOTE:
         // TODO: Carousel
-        break;
-      default:
+          break;
+        default:
+      }
+    } else {
+      this.logError(`onTopicButton() - Button doesn't exist > ${topic} data: ${data}`);
     }
   }
 
