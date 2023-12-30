@@ -4,8 +4,6 @@ const BaseDevice = require('./device');
 
 module.exports = class MotorDevice extends BaseDevice {
 
-  TYPE_GROUP = 'motors';
-
   onInit(options = {}) {
     super.onInit(options);
 

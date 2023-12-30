@@ -4,8 +4,6 @@ const BaseDevice = require('./device');
 
 module.exports = class OutputDevice extends BaseDevice {
 
-  TYPE_GROUP = 'outputs';
-
   onInit(options = {}) {
     super.onInit(options);
 
