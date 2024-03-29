@@ -4,8 +4,10 @@ const { DINGZ } = require('../../lib/dingzAPI');
 
 const BaseDriver = require('../driver');
 
-// dingz
+// deprecated
 const DingzDevice = require('../dingz/device');
+// dingz
+const SensorDevice = require('../sensor/device');
 const LedDevice = require('../led/device');
 // outputs
 const LightDevice = require('../light/device');
@@ -79,9 +81,12 @@ module.exports = class DingzSwitchDriver extends BaseDriver {
     // v1 to v2 Compatibility
     const type = device.getData().type || device.getData().deviceId;
     switch (type) {
-      // dingz
+      // deprecated
       case 'dingz':
         return DingzDevice;
+      // dingz
+      case 'sensor':
+        return SensorDevice;
       case 'led':
         return LedDevice;
       // outputs

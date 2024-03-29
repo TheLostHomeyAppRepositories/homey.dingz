@@ -6,6 +6,18 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 ## Changelog
 
+v2.0.7
+
+- Change DingzDevice to SensorDevice 
+  
+v2.0.6
+
+- Some fixes
+
+v2.0.5
+
+- Some changes
+
 v2.0.4
 
 - Icons refactored
