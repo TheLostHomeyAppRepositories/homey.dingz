@@ -8,8 +8,8 @@ Adds support for [dingz](https://www.dingz.ch/).
 
 v2.0.7
 
-- Change DingzDevice to SensorDevice 
-  
+- sensor device added
+
 v2.0.6
 
 - Some fixes
