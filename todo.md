@@ -16,14 +16,14 @@
 ## Community
 - I have good news and bad news.
 
-First the good news. I was able to solve the problem with the missing zone activity & climate controls.
+First the good news. I was able to solve the problem with the missing zone activity and climate control.
 
-And now the bad news. The dingz device is now called Sensor Device !😉!
+And now the bad news. The dingz device is now called a sensor device!
 
-Because the zone controls require a sensor device, I had to implement a new dingzSwitch device. This is identical to the "old" dingz device, just with a "sensor" device class.
+Since the zone controls require a sensor device, I had to implement a new device. This is identical to the "old" dingz device, just with a "sensor" device class.
 
-You can simply replace the dingz device with the sensor device, customize the flows and then delete the device.
+You can simply replace the dingz device with the new sensor device, readjust the flows, then delete the "old" dingz device and finally restart the dingz app.
 
-By the way, the dingz device is now "Deprecated" 
+BDW, the dingz device is now "deprecated". 
 
 - PS. you can simply install this version directly on the Homey Pro which will overwrite the current version but keeps all devices which are already currently connected. 
