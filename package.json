@@ -6,14 +6,9 @@
   },
   "main": "app.js",
   "scripts": {
-    "debug": "homey app run",
-    "debug:remote": "npm run debug -- --remote",
-    "start": "npm install && homey app install",
-    "build": "homey app build",
-    "publish": "homey app publish",
     "eslint": "eslint --ext .js --ignore-path .gitignore .",
     "eslint:fix": "npm run eslint -- --fix",
-    "update:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.my-homey#master"
+    "upd:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.myHomey#master"
   },
   "keywords": [
     "Smarthome",
@@ -44,8 +39,7 @@
     "test": "test"
   },
   "dependencies": {
-    "i": "^0.3.7",
-    "my-homey": "github:cgHome/homey.my-homey#master",
+    "my-homey": "github:cgHome/homey.myHomey#master",
     "npm": "^10.5.0",
     "tinycolor2": "^1.6.0"
   }
