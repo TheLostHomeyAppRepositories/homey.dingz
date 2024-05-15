@@ -9,8 +9,8 @@ module.exports = class OutputDevice extends BaseDevice {
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
-    this.registerTopicListener(`/state/light/${this.dataDevice}`, this.onTopicState.bind(this));
-    this.registerTopicListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
+    this.registerDeviceListener(`/state/light/${this.dataDevice}`, this.onTopicState.bind(this));
+    this.registerDeviceListener(`/power/light/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
   onCapabilityOnOff(value, opts) {

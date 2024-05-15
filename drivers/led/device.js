@@ -13,7 +13,7 @@ module.exports = class LedDevice extends BaseDevice {
     this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
 
-    this.registerTopicListener('/state/led', this.onTopicState.bind(this));
+    this.registerDeviceListener('/state/led', this.onTopicState.bind(this));
   }
 
   onCapabilityOnOff(value, opts) {

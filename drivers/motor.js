@@ -10,8 +10,8 @@ module.exports = class MotorDevice extends BaseDevice {
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowCoveringsState.bind(this));
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowCoveringsSet.bind(this));
 
-    this.registerTopicListener(`/state/motor/${this.dataDevice}`, this.onTopicState.bind(this));
-    this.registerTopicListener(`/power/motor/${this.dataDevice}`, this.onTopicPower.bind(this));
+    this.registerDeviceListener(`/state/motor/${this.dataDevice}`, this.onTopicState.bind(this));
+    this.registerDeviceListener(`/power/motor/${this.dataDevice}`, this.onTopicPower.bind(this));
   }
 
   async initDingzConfig() {

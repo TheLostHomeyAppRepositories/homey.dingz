@@ -47,7 +47,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
     v2id = v2id.replace(':dimmer:', ':output:');
     v2id = v2id.replace(':blind:', ':motor:');
 
-    this.registerTopicListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
+    this.registerDeviceListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
 
     // dingzSwitch set mqtt-broker url
     const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
@@ -145,9 +145,9 @@ module.exports = class BaseDevice extends MyMqttDevice {
     return this.homey.app.getMqttBrokerUri();
   }
 
-  registerTopicListener(topic, callback) {
+  registerDeviceListener(topic, callback) {
     const myTopic = topic.startsWith('/') ? `dingz/${this.dataMac}/${this.dataModel}${topic}` : topic;
-    super.registerTopicListener(myTopic, callback);
+    super.registerDeviceListener(myTopic, callback);
   }
 
   sendCommand(topic, data) {

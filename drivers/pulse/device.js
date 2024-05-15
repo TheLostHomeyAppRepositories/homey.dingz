@@ -8,4 +8,6 @@ module.exports = class PulseDevice extends OutputDevice {
     super.onInit(options);
   }
 
+  // TODO: implement !!
+
 };
