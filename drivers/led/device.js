@@ -6,14 +6,21 @@ const BaseDevice = require('../device');
 
 module.exports = class LedDevice extends BaseDevice {
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
-    this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
+    // this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this)); // NOTE:: Currently not implemented
     this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHue.bind(this));
 
     this.registerDeviceListener('/state/led', this.onTopicState.bind(this));
+
+    // NOTE: Currently not implemented
+    if (this.hasCapability('dim')) {
+      await this.removeCapability('dim')
+        .then(() => this.logDebug('onInit() - dim capability removed'))
+        .catch((error) => this.logError(`onInit() - ${error}`));
+    }
   }
 
   onCapabilityOnOff(value, opts) {
@@ -58,8 +65,8 @@ module.exports = class LedDevice extends BaseDevice {
 
     const hue = (typeof valueObj.light_hue !== 'undefined') ? valueObj.light_hue : this.getCapabilityValue('light_hue');
     const saturation = (typeof valueObj.light_saturation !== 'undefined') ? valueObj.light_saturation : this.getCapabilityValue('light_saturation');
-    const color = tinycolor.fromRatio({ h: hue, s: saturation, v: 100 }); // NOTE: Workaround until iolo has implemented dim
-    // const color = tinycolor.fromRatio({ h: hue, s: saturation, v: this.getCapabilityValue('dim') * 100 });
+    // const color = tinycolor.fromRatio({ h: hue, s: saturation, v: this.getCapabilityValue('dim') * 100 }); NOTE: Currently not implemented
+    const color = tinycolor.fromRatio({ h: hue, s: saturation, v: 100 });
 
     return this.sendCommand('/led', color.toRgb())
       .then(() => this.triggerCapabilityListener('onoff', true))
@@ -79,7 +86,7 @@ module.exports = class LedDevice extends BaseDevice {
     const saturation = Number(hsv.s.toFixed(2));
 
     this.setCapabilityValue('onoff', data.on !== 0);
-    this.setCapabilityValue('dim', (data.on === 0 ? 0 : 100) / 100); // NOTE: Workaround until iolo has implemented dim
+    // this.setCapabilityValue('dim', (data.on === 0 ? 0 : 100) / 100); // NOTE: Currently not implemented
     this.setCapabilityValue('light_hue', hue);
     this.setCapabilityValue('light_saturation', saturation);
   }

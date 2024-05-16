@@ -352,6 +352,7 @@
         "small": "drivers/pulse/assets/images/small.png",
         "large": "drivers/pulse/assets/images/large.png"
       },
+      "deprecated": true,
       "name": {
         "en": "Pulse",
         "de": "Puls"

@@ -107,8 +107,8 @@ module.exports = class BaseDevice extends MyMqttDevice {
     this.logDebug('verifyDevice()');
 
     return Promise.resolve(true).then(() => {
-      if (!this.dingzConfig.firmware.startsWith('2.1')) {
-        throw Error(`${this.dingzConfig.name} firmware v2.1.x required`);
+      if (!(this.dingzConfig.firmware.startsWith('2.1') || this.dingzConfig.firmware.startsWith('2.2'))) {
+        throw Error(`${this.dingzConfig.name} firmware v2.1.x or v2.2.x required`);
       }
       if (this.dataDip !== this.dingzConfig.dip) {
         throw Error(`${this.dingzConfig.name} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
