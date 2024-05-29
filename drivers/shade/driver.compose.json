@@ -5,14 +5,9 @@
   },
   "$extends": "default",
   "class": "sunshade",
-  "icon": "../../shade/assets/icon.svg",
-  "images": {
-    "small": "drivers/shade/assets/images/small.png",
-    "large": "drivers/shade/assets/images/large.png"
-  },
   "capabilities": [
     "windowcoverings_state",
     "windowcoverings_set",
-    "measure_power"  
+    "measure_power"
   ]
 }

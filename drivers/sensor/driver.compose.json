@@ -2,11 +2,6 @@
   "name": "Sensor",
   "$extends": "default",
   "class": "sensor",
-  "icon": "../../sensor/assets/icon.svg",
-  "images": {
-    "small": "drivers/sensor/assets/images/small.png",
-    "large": "drivers/sensor/assets/images/large.png"
-  },
   "capabilities": [
     "alarm_motion",
     "measure_temperature",

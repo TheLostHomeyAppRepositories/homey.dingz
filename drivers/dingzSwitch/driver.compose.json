@@ -5,10 +5,6 @@
   "platforms": [
     "local"
   ],
-  "images": {
-    "small": "drivers/dingzSwitch/assets/images/small.png",
-    "large": "drivers/dingzSwitch/assets/images/large.png"
-  },
   "capabilities": [
     "onoff"
   ],

@@ -5,11 +5,6 @@
   },
   "$extends": "default",
   "class": "windowcoverings",
-  "icon": "../../window/assets/icon.svg",
-  "images": {
-    "small": "drivers/window/assets/images/small.png",
-    "large": "drivers/window/assets/images/large.png"
-  },
   "capabilities": [
     "windowcoverings_state",
     "windowcoverings_set",
@@ -19,21 +14,21 @@
   "capabilitiesOptions": {
     "windowcoverings_state": {
       "title": {
-          "en": "Window state",
-          "de": "Fenster-Status"
+        "en": "Window state",
+        "de": "Fenster-Status"
       }
     },
     "windowcoverings_set": {
       "desc": {
-          "en": "Set the position of window.  0% is open, 100% is closed",
-          "de": "Die Position des Fenster setzen. 0% ist offen, 100% ist geschlossen"
-      }  
+        "en": "Set the position of window.  0% is open, 100% is closed",
+        "de": "Die Position des Fenster setzen. 0% ist offen, 100% ist geschlossen"
+      }
     },
-      "alarm_contact": {
-        "title": {
-          "en": "Window open",
-          "de": "Fenster göffnet"
-        }
+    "alarm_contact": {
+      "title": {
+        "en": "Window open",
+        "de": "Fenster göffnet"
+      }
     }
   }
 }

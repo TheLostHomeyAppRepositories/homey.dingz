@@ -4,11 +4,6 @@
   },
   "$extends": "default",
   "class": "light",
-  "icon": "../../led/assets/icon.svg",
-  "images": {
-    "small": "drivers/led/assets/images/small.png",
-    "large": "drivers/led/assets/images/large.png"
-  },
   "capabilities": [
     "onoff",
     "dim",

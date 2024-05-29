@@ -5,11 +5,6 @@
   },
   "$extends": "default",
   "class": "socket",
-  "icon": "../../always/assets/icon.svg",
-  "images": {
-    "small": "drivers/always/assets/images/small.png",
-    "large": "drivers/always/assets/images/large.png"
-  },
   "capabilities": [
     "measure_power"
   ]

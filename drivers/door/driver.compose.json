@@ -5,28 +5,23 @@
   },
   "$extends": "default",
   "class": "windowcoverings",
-  "icon": "../../door/assets/icon.svg",
-  "images": {
-    "small": "drivers/door/assets/images/small.png",
-    "large": "drivers/door/assets/images/large.png"
-  },
   "capabilities": [
     "windowcoverings_state",
-    "windowcoverings_set", 
-    "alarm_contact", 
+    "windowcoverings_set",
+    "alarm_contact",
     "measure_power"
   ],
   "capabilitiesOptions": {
     "windowcoverings_state": {
       "title": {
-          "en": "Door state",
-          "de": "Türe-Status"
+        "en": "Door state",
+        "de": "Türe-Status"
       }
     },
     "windowcoverings_set": {
       "desc": {
-          "en": "Set the position of door. 0% is open, 100% is closed",
-          "de": "Die Position des Türe setzen. 0% ist offen, 100% ist geschlossen"
+        "en": "Set the position of door. 0% is open, 100% is closed",
+        "de": "Die Position des Türe setzen. 0% ist offen, 100% ist geschlossen"
       }
     },
     "alarm_contact": {

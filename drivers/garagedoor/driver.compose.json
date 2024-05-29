@@ -6,11 +6,6 @@
   },
   "$extends": "default",
   "class": "garagedoor",
-  "icon": "../../garagedoor/assets/icon.svg",
-  "images": {
-    "small": "drivers/garagedoor/assets/images/small.png",
-    "large": "drivers/garagedoor/assets/images/large.png"
-  },
   "capabilities": [
     "garagedoor_closed",
     "alarm_contact",

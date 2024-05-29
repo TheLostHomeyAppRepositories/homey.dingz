@@ -50,10 +50,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../always/assets/icon.svg",
+      "icon": "/drivers/always/assets/icon.svg",
       "images": {
-        "small": "drivers/always/assets/images/small.png",
-        "large": "drivers/always/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Always On",
@@ -69,10 +70,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../blind/assets/icon.svg",
+      "icon": "/drivers/blind/assets/icon.svg",
       "images": {
-        "small": "drivers/blind/assets/images/small.png",
-        "large": "drivers/blind/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Blind",
@@ -91,10 +93,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../dingz/assets/icon.svg",
+      "icon": "/drivers/dingz/assets/icon.svg",
       "images": {
-        "small": "drivers/dingz/assets/images/small.png",
-        "large": "drivers/dingz/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "deprecated": true,
       "name": "dingz",
@@ -112,10 +115,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "./assets/icon.svg",
+      "icon": "/drivers/dingzSwitch/assets/icon.svg",
       "images": {
-        "small": "drivers/dingzSwitch/assets/images/small.png",
-        "large": "drivers/dingzSwitch/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": "dingzSwitch",
       "class": "other",
@@ -174,10 +178,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../door/assets/icon.svg",
+      "icon": "/drivers/door/assets/icon.svg",
       "images": {
-        "small": "drivers/door/assets/images/small.png",
-        "large": "drivers/door/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Door",
@@ -216,10 +221,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../fan/assets/icon.svg",
+      "icon": "/drivers/fan/assets/icon.svg",
       "images": {
-        "small": "drivers/fan/assets/images/small.png",
-        "large": "drivers/fan/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Fan",
@@ -237,10 +243,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../garagedoor/assets/icon.svg",
+      "icon": "/drivers/garagedoor/assets/icon.svg",
       "images": {
-        "small": "drivers/garagedoor/assets/images/small.png",
-        "large": "drivers/garagedoor/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "deprecated": true,
       "name": {
@@ -267,10 +274,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../heater/assets/icon.svg",
+      "icon": "/drivers/heater/assets/icon.svg",
       "images": {
-        "small": "drivers/heater/assets/images/small.png",
-        "large": "drivers/heater/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "deprecated": true,
       "name": {
@@ -288,10 +296,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../led/assets/icon.svg",
+      "icon": "/drivers/led/assets/icon.svg",
       "images": {
-        "small": "drivers/led/assets/images/small.png",
-        "large": "drivers/led/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Front LED"
@@ -314,10 +323,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../light/assets/icon.svg",
+      "icon": "/drivers/light/assets/icon.svg",
       "images": {
-        "small": "drivers/light/assets/images/small.png",
-        "large": "drivers/light/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Light",
@@ -347,10 +357,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../pulse/assets/icon.svg",
+      "icon": "/drivers/pulse/assets/icon.svg",
       "images": {
-        "small": "drivers/pulse/assets/images/small.png",
-        "large": "drivers/pulse/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "deprecated": true,
       "name": {
@@ -370,10 +381,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../sensor/assets/icon.svg",
+      "icon": "/drivers/sensor/assets/icon.svg",
       "images": {
-        "small": "drivers/sensor/assets/images/small.png",
-        "large": "drivers/sensor/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": "Sensor",
       "class": "sensor",
@@ -390,10 +402,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../shade/assets/icon.svg",
+      "icon": "/drivers/shade/assets/icon.svg",
       "images": {
-        "small": "drivers/shade/assets/images/small.png",
-        "large": "drivers/shade/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Shade",
@@ -411,10 +424,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../sprinkler/assets/icon.svg",
+      "icon": "/drivers/sprinkler/assets/icon.svg",
       "images": {
-        "small": "drivers/sprinkler/assets/images/small.png",
-        "large": "drivers/sprinkler/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Sprinkler",
@@ -431,10 +445,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../switch/assets/icon.svg",
+      "icon": "/drivers/switch/assets/icon.svg",
       "images": {
-        "small": "drivers/switch/assets/images/small.png",
-        "large": "drivers/switch/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Switch",
@@ -451,10 +466,11 @@
       "connectivity": [
         "lan"
       ],
-      "icon": "../../window/assets/icon.svg",
+      "icon": "/drivers/window/assets/icon.svg",
       "images": {
-        "small": "drivers/window/assets/images/small.png",
-        "large": "drivers/window/assets/images/large.png"
+        "small": "/drivers/dingzSwitch/assets/images/small.png",
+        "large": "/drivers/dingzSwitch/assets/images/large.png",
+        "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
       },
       "name": {
         "en": "Window",

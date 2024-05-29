@@ -5,11 +5,6 @@
   },
   "$extends": "default",
   "class": "socket",
-  "icon": "../../sprinkler/assets/icon.svg",
-  "images": {
-    "small": "drivers/sprinkler/assets/images/small.png",
-    "large": "drivers/sprinkler/assets/images/large.png"
-  },
   "capabilities": [
     "onoff",
     "measure_power"

@@ -13,18 +13,19 @@
 
 - Hi Reviewer, You're right, the icons/images looked pretty crappy. But since I use google fonts for the icons, it's easy to adjust the thickness of the lines. THX Chris
 
-- I use the "official" Google Material Icons: https://fonts.google.com/icons
+- I use the "official" Google Material Icons
+> https://fonts.google.com/icons
 
-Always (on) > I have changed to Bold
-https://fonts.google.com/icons?icon.query=power
+Always (on) (I changed it to Bold) 
+> https://fonts.google.com/icons?icon.query=power&icon.size=24&icon.color=%23000000
 
 Blind & Shade
-https://fonts.google.com/icons?icon.query=blind
+> https://fonts.google.com/icons?icon.query=blind&icon.size=500&icon.color=%23000000
 
 Window (with motor):
-https://fonts.google.com/icons?icon.category=Home&icon.query=window
+> https://fonts.google.com/icons?icon.category=Home&icon.query=window
 
-BDW: If you no longer allow the Google Material Icons, then you must communicate this and/or provide a library yourself... 
+BDW: If you no longer allow the Google Material Icons, then you have to let us know. And tell us which ones are allowed or provide a library yourself... 
 
 
 ## Community
