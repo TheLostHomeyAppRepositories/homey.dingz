@@ -4,6 +4,7 @@
     "de": "Jalousie"
   },
   "$extends": "default",
+  "icon": "../../shade/assets/icon.svg",
   "class": "sunshade",
   "capabilities": [
     "windowcoverings_state",

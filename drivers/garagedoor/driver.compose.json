@@ -5,6 +5,7 @@
     "de": "Garagentor"
   },
   "$extends": "default",
+  "icon": "../../garagedoor/assets/icon.svg",
   "class": "garagedoor",
   "capabilities": [
     "garagedoor_closed",

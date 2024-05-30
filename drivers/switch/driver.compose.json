@@ -4,6 +4,7 @@
     "de": "Steckdose geschaltet"
   },
   "$extends": "default",
+  "icon": "../../switch/assets/icon.svg",
   "class": "socket",
   "capabilities": [
     "onoff",

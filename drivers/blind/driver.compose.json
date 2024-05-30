@@ -4,6 +4,7 @@
     "de": "Rolladen"
   },
   "$extends": "default",
+  "icon": "../../blind/assets/icon.svg",
   "class": "blinds",
   "capabilities": [
     "windowcoverings_set",

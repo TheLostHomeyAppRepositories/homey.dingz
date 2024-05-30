@@ -2,6 +2,7 @@
   "deprecated": true,
   "name": "dingz",
   "$extends": "default",
+  "icon": "../../dingz/assets/icon.svg",
   "class": "other",
   "capabilities": [
     "alarm_motion",

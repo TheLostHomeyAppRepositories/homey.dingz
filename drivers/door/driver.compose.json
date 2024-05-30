@@ -4,6 +4,7 @@
     "de": "Türe"
   },
   "$extends": "default",
+  "icon": "../../door/assets/icon.svg",
   "class": "windowcoverings",
   "capabilities": [
     "windowcoverings_state",

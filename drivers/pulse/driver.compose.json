@@ -5,6 +5,7 @@
     "de": "Puls"
   },
   "$extends": "default",
+  "icon": "../../pulse/assets/icon.svg",
   "class": "socket",
   "capabilities": [
     "onoff",

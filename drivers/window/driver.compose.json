@@ -4,6 +4,7 @@
     "de": "Fenster"
   },
   "$extends": "default",
+  "icon": "../../window/assets/icon.svg",
   "class": "windowcoverings",
   "capabilities": [
     "windowcoverings_state",

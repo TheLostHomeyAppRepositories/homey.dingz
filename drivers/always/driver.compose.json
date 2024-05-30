@@ -4,6 +4,7 @@
     "de": "Immer an"
   },
   "$extends": "default",
+  "icon": "../../always/assets/icon.svg",
   "class": "socket",
   "capabilities": [
     "measure_power"

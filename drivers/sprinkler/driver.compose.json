@@ -4,6 +4,7 @@
     "de": "Bewässerung"
   },
   "$extends": "default",
+  "icon": "../../sprinkler/assets/icon.svg",
   "class": "socket",
   "capabilities": [
     "onoff",

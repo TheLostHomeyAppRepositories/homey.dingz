@@ -4,6 +4,7 @@
     "de": "Licht"
   },
   "$extends": "default",
+  "icon": "../../light/assets/icon.svg",
   "class": "light",
   "capabilities": [
     "onoff",

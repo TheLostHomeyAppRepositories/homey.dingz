@@ -1,6 +1,7 @@
 {
   "name": "Sensor",
   "$extends": "default",
+  "icon": "../../sensor/assets/icon.svg",
   "class": "sensor",
   "capabilities": [
     "alarm_motion",

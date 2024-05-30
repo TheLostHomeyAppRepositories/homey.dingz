@@ -3,6 +3,7 @@
     "en": "Front LED"
   },
   "$extends": "default",
+  "icon": "../../led/assets/icon.svg",
   "class": "light",
   "capabilities": [
     "onoff",

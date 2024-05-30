@@ -5,6 +5,7 @@
     "de": "Heizung"
   },
   "$extends": "default",
+  "icon": "../../heater/assets/icon.svg",
   "class": "socket",
   "capabilities": [
     "onoff",

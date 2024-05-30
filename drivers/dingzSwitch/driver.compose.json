@@ -1,6 +1,7 @@
 {
   "name": "dingzSwitch",
   "$extends": "default",
+  "icon": "../../dingzSwitch/assets/icon.svg",
   "class": "other",
   "platforms": [
     "local"

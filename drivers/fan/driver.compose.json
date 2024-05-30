@@ -4,6 +4,7 @@
     "de": "Lüfter"
   },
   "$extends": "default",
+  "icon": "../../fan/assets/icon.svg",
   "class": "fan",
   "capabilities": [
     "onoff",
