@@ -3,4 +3,4 @@ node_modules/
 
 # Added by Homey CLI
 /.homeybuild/
-# /app.json
+/app.json
