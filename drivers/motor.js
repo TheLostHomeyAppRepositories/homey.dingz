@@ -33,7 +33,6 @@ module.exports = class MotorDevice extends BaseDevice {
   async onCapabilityWindowCoveringsState(value, opts) {
     this.logDebug(`onCapabilityWindowCoveringsState() > ${value}`);
 
-    // eslint-disable-next-line no-nested-ternary
     const motion = value === 'up' ? 1 : value === 'down' ? 2 : 0;
 
     return this.sendCommand(`/motor/${this.dataDevice}`, { motion })
@@ -60,7 +59,6 @@ module.exports = class MotorDevice extends BaseDevice {
   onTopicState(topic, data) {
     this.logDebug(`onTopicState() > ${topic} data: ${JSON.stringify(data)}`);
 
-    // eslint-disable-next-line no-nested-ternary
     this.setCapabilityValue('windowcoverings_state', data.motion === '1' ? 'up' : data.motion === '2' ? 'down' : 'idle');
     this.setCapabilityValue('windowcoverings_set', Number((data.position / 100).toFixed(2)));
 

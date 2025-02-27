@@ -14,7 +14,7 @@ module.exports = class DingzDevice extends BaseDevice {
     super.onInit(options);
 
     // NOTE: Remove v1 actionUrl >> del on next version
-    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+    const httpAPI = new HttpAPI(this.homey, `http://${this.getStoreValue('address')}/api/v1/`);
     Promise.resolve()
       .then(async (data) => {
         await httpAPI.post('action/pir1/fall/', '');

@@ -1,14 +1,20 @@
 {
   "id": "org.cflat-inc.dingz",
   "version": "2.0.10",
-  "compatibility": ">=5.0.0",
+  "compatibility": ">=12.3.0",
   "sdk": 3,
+  "platforms": [
+    "local"
+  ],
   "name": {
     "en": "dingzSwitch"
   },
   "description": {
     "en": "Infinitely intelligent and extremely simple"
   },
+  "category": [
+    "appliances"
+  ],
   "tags": {
     "en": [
       "dingz",
@@ -22,26 +28,22 @@
       "luminance"
     ]
   },
-  "category": "appliances",
+  "permissions": [
+    "homey:app:org.cflat-inc.telemetryCollector"
+  ],
+  "brandColor": "#3B5E68",
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
-  "permissions": [
-    "homey:app:nl.nielsdeklerk.log"
-  ],
-  "brandColor": "#3B5E68",
   "author": {
     "name": "Chris Gross",
     "email": "cghome@cflat-inc.org"
   },
+  "homeyCommunityTopicId": 48029,
+  "support": "https://community.athom.com/t/48029",
   "source": "https://github.com/cgHome/homey.dingz",
   "bugs": {
     "url": "https://github.com/cgHome/homey.dingz/issues"
-  },
-  "homeyCommunityTopicId": 48029,
-  "support": "https://community.athom.com/t/48029",
-  "platforms": [
-    "local"
-  ]
+  }
 }

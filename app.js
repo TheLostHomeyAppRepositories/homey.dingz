@@ -1,5 +1,9 @@
 'use strict';
 
+// eslint-disable-next-line import/newline-after-import
+const EventEmitter = require('events');
+EventEmitter.defaultMaxListeners = 100;
+
 const { MyApp } = require('my-homey');
 
 const { DINGZ } = require('./lib/dingzAPI');
@@ -26,8 +30,11 @@ module.exports = class DingzApp extends MyApp {
       }));
     }
 
-    this.dingzNet = new DingzNet(this);
-    await this.dingzNet.initDingzNet(await this.getMqttBrokerUri());
+    this.dingzNet = new DingzNet(this.homey);
+    await this.dingzNet
+      .initDingzNet(await this.getMqttBrokerUri());
+
+    this.logInfo('App has been initialized');
   }
 
   async getMqttBrokerUri() {
@@ -42,14 +49,6 @@ module.exports = class DingzApp extends MyApp {
     if (this.#onceDay !== new Date().toLocaleDateString()) {
       this.#onceDay = new Date().toLocaleDateString();
       this.notifyError('Your dingz devices are no longer working properly. Please read the "[App][Pro] dingz" documentation');
-    }
-  }
-
-  // NOTE: simplelog-api on/off
-
-  logDebug(msg) {
-    if (process.env.DEBUG === '1') {
-      super.logDebug(msg);
     }
   }
 

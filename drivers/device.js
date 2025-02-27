@@ -50,7 +50,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
     this.registerDeviceListener(`${this.dingzNet.rootTopic}/config/${v2id.replaceAll(':', '/')}`, this.onTopicConfig.bind(this));
 
     // dingzSwitch set mqtt-broker url
-    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+    const httpAPI = new HttpAPI(this.homey, `http://${this.getStoreValue('address')}/api/v1/`);
     await httpAPI.get('services_config')
       .then(async (config) => {
         const uri = await this.getMqttBrokerUri();
@@ -125,7 +125,7 @@ module.exports = class BaseDevice extends MyMqttDevice {
   async rebootDingzSwitch() {
     this.logDebug('rebootDingzSwitch()');
 
-    const httpAPI = new HttpAPI(this, `http://${this.getStoreValue('address')}/api/v1/`);
+    const httpAPI = new HttpAPI(this.homey, `http://${this.getStoreValue('address')}/api/v1/`);
 
     return this.setWarning(null)
       .then(() => httpAPI.post('reboot'))
@@ -153,14 +153,6 @@ module.exports = class BaseDevice extends MyMqttDevice {
   sendCommand(topic, data) {
     const myTopic = topic.startsWith('/') ? `dingz/${this.dataMac}/${this.dataModel}/command${topic}` : topic;
     return super.sendCommand(myTopic, data);
-  }
-
-  // NOTE: simplelog-api on/off
-
-  logDebug(msg) {
-    if (process.env.DEBUG === '1') {
-      super.logDebug(msg);
-    }
   }
 
 };
