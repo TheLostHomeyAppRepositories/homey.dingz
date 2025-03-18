@@ -4,8 +4,8 @@
   ],
   "icon": "{{driverAssetsPath}}/icon.svg",
   "images": {
-    "small": "/drivers/dingzSwitch/assets/images/small.png",
-    "large": "/drivers/dingzSwitch/assets/images/large.png",
-    "xlarge": "/drivers/dingzSwitch/assets/images/xlarge.png"
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
   }
 }
