@@ -1,5 +1,7 @@
 'use strict';
 
+const semver = require('semver');
+
 const { HttpAPI } = require('my-homey');
 
 const { MyMqttDevice } = require('my-homey');
@@ -107,8 +109,9 @@ module.exports = class BaseDevice extends MyMqttDevice {
     this.logDebug('verifyDevice()');
 
     return Promise.resolve(true).then(() => {
-      if (!(this.dingzConfig.firmware.startsWith('2.1') || this.dingzConfig.firmware.startsWith('2.2'))) {
-        throw Error(`${this.dingzConfig.name} firmware v2.1.x or v2.2.x required`);
+      // if (!(this.dingzConfig.firmware.startsWith('2.1') || this.dingzConfig.firmware.startsWith('2.2') || this.dingzConfig.firmware.startsWith('2.3'))) {
+      if (!semver.satisfies(this.dingzConfig.firmware, '>=2.1.0 <3.0.0')) {
+        throw Error(`${this.dingzConfig.name} firmware greater than is v2.1.0 required`);
       }
       if (this.dataDip !== this.dingzConfig.dip) {
         throw Error(`${this.dingzConfig.name} dip-switch has changed to "${this.dingzConfig.dip}". Remove all devices of the dingzSwitch and add them again.`);
